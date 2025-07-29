@@ -1,0 +1,30 @@
+name: "Question Issue"
+description: "질문이나 요청 사항을 남기고 싶을 때 사용합니다."
+title: "[QUESTION]"
+labels: ["question"]
+projects: ["ase10git/Team Sunday's Devfolio"]
+body:
+  - type: textarea
+    id: question-details
+    attributes:
+      label: ❓ 질문 내용
+      description: 궁금한 내용을 자세히 작성해주세요.
+      placeholder: 예: 어떻게 사용하나요, 왜 이런 에러가 발생하나요?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 📚 배경 및 상황
+      description: 해당 질문이 발생한 배경이나 맥락을 작성해주세요.
+      placeholder: 예: 사용 중인 환경, 수행한 시나리오 등
+    validations:
+      required: false
+  - type: textarea
+    id: expected-answer
+    attributes:
+      label: ✅ 원하는 답변 형태
+      description: 예시나 원하는 답변 형식이 있다면 작성해주세요.
+      placeholder: 예: 코드 예제나 결과 설명
+    validations:
+      required: false
