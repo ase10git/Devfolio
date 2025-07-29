@@ -26,5 +26,5 @@ body:
     label: 🔖 참고 자료
     description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
     placeholder: "예: 공식 문서, Closes #123"
-    validations:
-      required: false
+  validations:
+    required: false
