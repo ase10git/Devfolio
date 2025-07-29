@@ -2,7 +2,7 @@ name: "Chore Issue"
 description: "설정 변경, 의존성 업데이트, 템플릿 추가 등 유지보수 시 사용합니다."
 title: "[CHORE]"
 labels: ["chore"]
-projects: ["ase10git/Team Sunday's Devfolio"]
+projects: ["ase10git/4"]
 body:
 - type: textarea
   id: chore-description
