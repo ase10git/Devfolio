@@ -3,21 +3,23 @@ description: "새로운 기능 추가"
 labels: "feature"
 projects: ase10git/Team Sunday's Devfolio
 body:
-  - type: markdown
-    attributes:
-      label: 🔖 설명
-      description: 새로운 기능에 대한 설명을 작성해주세요.
-      placeholder: 자세히 적을수록 좋습니다.
-    validation:
-      required: true
-  - type: checkboxes
-    attributes:
-      label: ✅ To-do
-      description: 할 일을 체크박스 형태로 작성해주세요.
-      placeholder: 작업을 세분화해서 작성할수록 좋습니다.
-    validation:
-      required: true
-  - type: textarea
-    attributes:
-      label: 🔖 참고 자료
-      description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
+- type: textarea
+  attributes:
+    label: 🔖 설명
+    description: 새로운 기능에 대한 설명을 작성해주세요.
+    placeholder: 자세히 적을수록 좋습니다.
+    render: bash
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: ✅ To-do
+    description: 할 일을 체크박스 형태로 작성해주세요.
+    placeholder: 작업을 세분화해서 작성할수록 좋습니다.
+    render: bash
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: 🔖 참고 자료
+    description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
