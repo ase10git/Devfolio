@@ -1,17 +1,19 @@
 name: "Bug Issue"
-description: "버그 관련 Issue"
+description: "버그 발생 시 사용합니다."
 title: "[BUG]"
-labels: "bug"
-projects: "ase10git/Team Sunday's Devfolio"
+labels: ["bug"]
+projects: ["ase10git/Team Sunday's Devfolio"]
 body:
 - type: textarea
+  id: bug-description
   attributes:
-    label: 🔖 설명
+    label: 🐞 설명
     description: 버그에 대한 설명을 작성해주세요.
     placeholder: 어떤 동작이 이루어졌는지, 예상과 다른 부분은 무엇인지 명확히 설명해주세요.
   validations:
     required: true
 - type: textarea
+  id: bug-todo
   attributes:
     label: ✅ To-do
     description: 할 일을 체크박스 형태로 작성해주세요.
@@ -19,10 +21,14 @@ body:
   validations:
     required: true
 - type: textarea
+  id: bug-environment
   attributes:
     label: 📌 환경 정보
     description: OS / 브라우저 / 언어 버전 등 문제 재현 환경을 기입해주세요.
 - type: textarea
+  id: bug-references
   attributes:
     label: 🔖 참고 자료
     description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
+  validations:
+    required: false
