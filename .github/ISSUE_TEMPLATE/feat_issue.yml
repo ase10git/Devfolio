@@ -1,26 +1,30 @@
 name: "Feat Issue"
-description: "새로운 기능 추가"
+description: "새로운 기능을 추가할 때 사용합니다."
 title: "[FEAT]"
-labels: "feature"
-projects: "ase10git/Team Sunday's Devfolio"
+labels: ["feature"]
+projects: ["ase10git/Team Sunday's Devfolio"]
 body:
 - type: textarea
+  id: feat-description
   attributes:
     label: 🔖 설명
     description: 새로운 기능에 대한 설명을 작성해주세요.
-    placeholder: 자세히 적을수록 좋습니다.
-    render: bash
+    placeholder: "자세히 적을수록 좋습니다. 예: 로그인 페이지에서 이메일과 비밀번호를 입력하고, 버튼 클릭 시 유효성 검사를 진행한다."
   validations:
     required: true
 - type: textarea
+  id: feat-todo
   attributes:
     label: ✅ To-do
     description: 할 일을 체크박스 형태로 작성해주세요.
-    placeholder: 작업을 세분화해서 작성할수록 좋습니다.
-    render: bash
+    placeholder: "작업을 세분화해서 작성할수록 좋습니다. 예: 로그인 페이지 HTML 추가"
   validations:
     required: true
 - type: textarea
+  id: feat-references
   attributes:
     label: 🔖 참고 자료
     description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
+    placeholder: "예: 공식 문서, Closes #123"
+  validations:
+    required: false

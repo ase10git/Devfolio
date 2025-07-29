@@ -1,0 +1,30 @@
+name: "Chore Issue"
+description: "설정 변경, 의존성 업데이트, 템플릿 추가 등 유지보수 시 사용합니다."
+title: "[CHORE]"
+labels: ["chore"]
+projects: ["ase10git/Team Sunday's Devfolio"]
+body:
+- type: textarea
+  id: chore-description
+  attributes:
+    label: 🏗️ 설명
+    description: 빌드 설정, 의존성 업데이트, CI 변경, 템플릿 파일 추가 등 기능 변경 없는 작업을 작성해주세요.
+    placeholder: "자세히 적을수록 좋습니다. 예: CI/CD 설정, 의존성 업데이트 등"
+  validations:
+    required: true
+- type: textarea
+  id: chore-todo
+  attributes:
+    label: ✅ To-do
+    description: 할 일을 체크박스 형태로 작성해주세요.
+    placeholder: "작업을 세분화해서 작성할수록 좋습니다. 예: GitHub Actions 설정, 템플릿 추가 등"
+  validations:
+    required: true
+- type: textarea
+  id: chore-references
+  attributes:
+    label: 🔖 참고 자료
+    description: 참고 자료, 문서, 관련된 Issue를 작성해주세요.
+    placeholder: "예: 공식 문서, Closes #123"
+  validations:
+      required: false
