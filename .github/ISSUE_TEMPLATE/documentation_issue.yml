@@ -2,7 +2,7 @@ name: "Documentation Issue"
 description: "문서, 튜토리얼, 설명서 등이 필요할 때 사용합니다."
 title: "[DOC]"
 labels: ["documentation"]
-projects: ["ase10git/Team Sunday's Devfolio"]
+projects: ["ase10git/4"]
 body:
   - type: textarea
     id: doc-purpose
