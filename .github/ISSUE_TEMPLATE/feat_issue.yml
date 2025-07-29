@@ -1,7 +1,8 @@
 name: "Feat Issue"
 description: "새로운 기능 추가"
+title: "[FEAT]"
 labels: "feature"
-projects: ase10git/Team Sunday's Devfolio
+projects: "ase10git/Team Sunday's Devfolio"
 body:
 - type: textarea
   attributes:
