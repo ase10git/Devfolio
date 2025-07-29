@@ -1,0 +1,30 @@
+name: "Refactor Issue"
+description: "코드 구조 개선 또는 리팩터링 작업 시 사용합니다."
+title: "[REFACTOR]"
+labels: ["refactor"]
+projects: ["ase10git/Team Sunday's Devfolio"]
+body:
+  - type: textarea
+    id: refactor-description
+    attributes:
+      label: 🔄 설명
+      description: 리팩토링할 대상과 목적을 작성해주세요.
+      placeholder: "예: 중복 제거, 서비스 로직 분리 등"
+    validations:
+      required: true
+  - type: textarea
+    id: refactor-todo
+    attributes:
+      label: ✅ To‑do
+      description: 세분화된 작업 항목을 체크박스로 작성해주세요.
+      placeholder: "예: 클래스 분리, 메서드 추출 등"
+    validations:
+      required: true
+  - type: textarea
+    id: refactor-references
+    attributes:
+      label: 📚 참고 자료
+      description: 리팩터링 전후 코드 예시 또는 관련 문서 링크 등을 작성해주세요.
+      placeholder: "예: 공식 문서, Closes #123"
+    validations:
+      required: false
