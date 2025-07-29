@@ -9,7 +9,6 @@ body:
     label: 🔖 설명
     description: 버그에 대한 설명을 작성해주세요.
     placeholder: 어떤 동작이 이루어졌는지, 예상과 다른 부분은 무엇인지 명확히 설명해주세요.
-    render: bash
   validations:
     required: true
 - type: textarea
@@ -17,7 +16,6 @@ body:
     label: ✅ To-do
     description: 할 일을 체크박스 형태로 작성해주세요.
     placeholder: 작업을 세분화해서 작성할수록 좋습니다.
-    render: bash
   validations:
     required: true
 - type: textarea
