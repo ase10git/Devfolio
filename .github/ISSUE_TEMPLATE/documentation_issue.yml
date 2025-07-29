@@ -1,0 +1,38 @@
+name: "Documentation Issue"
+description: "문서, 튜토리얼, 설명서 등이 필요할 때 사용합니다."
+title: "[DOC]"
+labels: ["documentation"]
+projects: ["ase10git/Team Sunday's Devfolio"]
+body:
+  - type: textarea
+    id: doc-purpose
+    attributes:
+      label: 📖 문서 목적
+      description: 어떤 문서나 설명서를 작성하시려는지 설명해주세요.
+      placeholder: 예: API 사용법, 설치 가이드 등
+    validations:
+      required: true
+  - type: textarea
+    id: audience
+    attributes:
+      label: 🎯 대상 독자
+      description: 누가 이 문서를 사용하는지 작성해주세요.
+      placeholder: 예: 초보자, 관리자, 개발자 등
+    validations:
+      required: false
+  - type: textarea
+    id: expected-content
+    attributes:
+      label: ✅ 포함되어야 할 내용
+      description: 문서에 포함해야 할 주요 항목을 나열해주세요.
+      placeholder: 예: 예제 코드, 스크린샷, 테이블 등
+    validations:
+      required: false
+  - type: textarea
+    id: references
+    attributes:
+      label: 📚 참고 자료
+      description: 추가적인 참고 자료나 Issue, Commit 등을 남겨주세요.
+      placeholder: 예: 공식문서 링크, Closes #123
+    validations:
+      required: false
