@@ -1,0 +1,50 @@
+server:
+  port: ${SEVER_PORT:8080}
+
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+    database-platform: ${DATABASE_DIALECT}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SECURITY_OAUTH2_GOOGLE_CLIENT_ID}
+            client-secret: ${SECURITY_OAUTH2_GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+            redirect-uri: ${SECURITY_OAUTH2_GOOGLE_REDIRECT_URI_PROD}
+        provider:
+          google:
+            authorization-uri: ${SECURITY_OAUTH2_GOOGLE_AUTHORIZATION_URI}
+            token-uri: ${SECURITY_OAUTH2_GOOGLE_TOKEN_URI}
+            user-info-uri: ${SECURITY_OAUTH2_GOOGLE_USER_INFO_URI}
+            user-name-attribute: ${SECURITY_OAUTH2_GOOGLE_USER_NAME_ATTRIBUTE}
+
+logging:
+  level:
+    root: ${LOG_LEVEL}
+    io.github.sunday: ${APP_LOG_LEVEL_DEV}
+    org.springframework:
+      security: ${APP_LOG_LEVEL_DEV}
+      securityoauth2: ${APP_LOG_LEVEL_DEV}
+
+aws:
+  access-key-id: ${AWS_ACCESS_KEY_ID}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME}
