@@ -1,7 +1,5 @@
 package io.github.sunday.devfolio.entity.table.user;
 
-import io.github.sunday.devfolio.util.ZonedDateTimeConverter;
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
