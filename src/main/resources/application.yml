@@ -17,6 +17,11 @@ spring:
     suffix: .html
     mode: HTML
     encoding: UTF-8
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul  # 시간대 설정
 
 app:
   name: ${APP_NAME:DevFolio}
