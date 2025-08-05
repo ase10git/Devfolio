@@ -1,14 +1,17 @@
 package io.github.sunday.devfolio.entity.table.user;
 
-import io.github.sunday.devfolio.util.ZonedDateTimeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
- * 이메일 인증 정보를 나타내는 엔티티 클래스입니다.
- * 사용자가 이메일 인증을 요청할 때 생성되며, 인증 코드와 만료 시간, 인증 여부 등을 저장합니다.
+ * 이메일 인증 정보를 저장하는 엔티티 클래스입니다.
+ *
+ * <p>
+ * 이 클래스는 이메일 인증 코드, 만료 시간, 인증 여부 등의 정보를 포함하며,
+ * 사용자의 이메일 주소를 검증하는 데 사용됩니다.
+ * </p>
  */
 @Entity
 @Table(name = "email_verifications")
@@ -20,7 +23,7 @@ import java.util.Objects;
 public class EmailVerification {
 
     /**
-     * 이메일 인증의 고유 식별자 (PK).
+     * 이메일 인증 고유 식별자 (PK)
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,43 +31,51 @@ public class EmailVerification {
     private Long idx;
 
     /**
-     * 이 인증 요청을 생성한 사용자와의 다대일 관계.
+     * 인증을 요청한 사용자 (users 테이블과 다대일 관계)
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx", nullable = false)
     private User user;
 
     /**
-     * 인증 대상 이메일 주소.
+     * 인증 대상 이메일 주소
      */
     @Column(name = "email", nullable = false, length = 255)
     private String email;
 
     /**
-     * 인증 코드 (6자리 문자열).
+     * 인증 코드 (6자리 숫자)
      */
     @Column(name = "code", nullable = false, length = 6)
     private String code;
 
     /**
-     * 인증 코드 만료 시간.
+     * 인증 코드의 만료 시간 (기본: 생성 후 5분)
      */
-    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "expired_at", nullable = false)
     private ZonedDateTime expiredAt;
 
     /**
-     * 인증 완료 여부.
-     * true: 인증 완료, false: 미완료
+     * 인증 완료 여부 (true: 인증 완료, false: 미인증)
      */
     @Column(name = "verified", nullable = false)
     private Boolean verified;
 
     /**
-     * 두 EmailVerification 객체가 같은지 비교합니다. 주로 식별자(idx)를 기준으로 비교합니다.
+     * 엔티티가 저장되기 전, 만료 시간이 비어 있다면 5분 뒤로 자동 설정합니다.
+     */
+    @PrePersist
+    protected void onCreate() {
+        if (this.expiredAt == null) {
+            this.expiredAt = ZonedDateTime.now().plusMinutes(5); // 현재 시각 + 5분
+        }
+    }
+
+    /**
+     * 두 EmailVerification 객체의 동등성을 판단합니다.
      *
-     * @param o 비교할 객체
-     * @return 같은 객체이면 true, 아니면 false
+     * @param o 비교 대상 객체
+     * @return 고유 식별자(idx)가 동일하면 true
      */
     @Override
     public boolean equals(Object o) {
@@ -76,9 +87,9 @@ public class EmailVerification {
     }
 
     /**
-     * 해시 코드 생성 (idx 기준).
+     * EmailVerification 객체의 해시코드를 반환합니다.
      *
-     * @return 해시 코드 값
+     * @return 해시값
      */
     @Override
     public int hashCode() {
