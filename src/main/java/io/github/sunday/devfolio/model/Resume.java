@@ -1,0 +1,62 @@
+package io.github.sunday.devfolio.model;
+
+import lombok.*;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * 사용자가 작성한 이력서(Resume) 정보를 관리하는 엔티티.
+ * 본문, 첨부파일, 경력/학력/스킬/교육 정보와 연관됩니다.
+ */
+@Entity
+@Table(name = "resumes")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Resume {
+    /** 이력서 고유 식별자 (PK) */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "resume_idx")
+    private Long resumeIdx;
+
+    /** 이력서 작성자 (User) 참조 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
+
+    /** 이력서 본문 내용 */
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    /** 이력서 생성 일시 */
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    /** 이력서 업데이트 일시 */
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    /** 프로필 요약 또는 대표 이미지 URL */
+    @Column(name = "profile", length = 255)
+    private String profile;
+
+    /** 이력서에 첨부된 파일 목록 */
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ResumeFile> files;
+
+    /** 이력서에 포함된 경력 정보 목록 */
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experience> experiences;
+
+    /** 이력서에 포함된 학력 정보 목록 */
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> educations;
+
+    /** 이력서에 포함된 스킬 정보 목록 */
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills;
+
+    /** 이력서에 포함된 교육/트레이닝 정보 목록 */
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainings;
+}
