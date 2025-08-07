@@ -5,8 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -65,21 +63,6 @@ public class CommunityPost {
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, columnDefinition = "VARCHAR(20)")
     private Category category;
-
-    /** 연관 이미지 목록 */
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<CommunityImages> images = new ArrayList<>();
-
-    /** 연관 댓글 목록 */
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<CommunityComments> comments = new ArrayList<>();
-
-    /** 연관 좋아요 목록 */
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<CommunityLikes> likes = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

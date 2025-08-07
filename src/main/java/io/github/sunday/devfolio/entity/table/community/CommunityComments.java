@@ -3,8 +3,6 @@ package io.github.sunday.devfolio.entity.table.community;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,11 +29,6 @@ public class CommunityComments {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_idx")
     private CommunityComments parent;
-
-    /** 자식 댓글 */
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<CommunityComments> replies = new ArrayList<>();
 
     /** 이 댓글이 속한 게시글 */
     @ManyToOne(fetch = FetchType.LAZY)
