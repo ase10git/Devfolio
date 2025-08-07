@@ -6,49 +6,110 @@ import io.github.sunday.devfolio.service.UserService;
 import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 
+/**
+ * {@link UserService}의 구현체로, 사용자 관련 비즈니스 로직을 처리합니다.
+ * 아이디/닉네임 중복 확인, 유효성 검사, 사용자 저장 등의 기능을 제공합니다.
+ */
 @Service
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
 
+    /**
+     * UserServiceImpl 생성자.
+     *
+     * @param userRepository 사용자 엔티티에 대한 데이터 접근을 위한 리포지토리
+     */
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * 사용자 식별자(userIdx)로 사용자 정보를 조회합니다.
+     *
+     * @param userIdx 사용자 식별자
+     * @return 해당 사용자 정보, 없으면 null
+     */
     @Override
     public User findByUserIdx(Long userIdx) {
         return userRepository.findByUserIdx(userIdx).orElse(null);
     }
 
+    /**
+     * 로그인 아이디 중복 여부를 확인합니다.
+     *
+     * @param loginId 확인할 로그인 아이디
+     * @return 중복이면 true, 중복이 아니면 false
+     */
     @Override
     public boolean isLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
     }
 
+    /**
+     * 닉네임 중복 여부를 확인합니다.
+     *
+     * @param nickname 확인할 닉네임
+     * @return 중복이면 true, 중복이 아니면 false
+     */
     @Override
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 
+    /**
+     * 로그인 아이디 유효성 검사.
+     * 영문 또는 숫자로 이루어진 6~20자만 허용합니다.
+     *
+     * @param loginId 검사할 로그인 아이디
+     * @return 유효하면 true, 아니면 false
+     */
     @Override
     public boolean isValidLoginId(String loginId) {
         return Pattern.matches("^[a-zA-Z0-9]{6,20}$", loginId);
     }
 
+    /**
+     * 닉네임 유효성 검사.
+     * 한글, 영문, 숫자로 이루어진 4~12자만 허용합니다.
+     *
+     * @param nickname 검사할 닉네임
+     * @return 유효하면 true, 아니면 false
+     */
     @Override
     public boolean isValidNickname(String nickname) {
         return Pattern.matches("^[가-힣a-zA-Z0-9]{4,12}$", nickname);
     }
 
+    /**
+     * 비밀번호 유효성 검사.
+     * 영문과 숫자가 반드시 포함되어야 하며,
+     * 특수문자는 !@#$%^&*()만 허용되고 길이는 8~20자입니다.
+     *
+     * @param password 검사할 비밀번호
+     * @return 유효하면 true, 아니면 false
+     */
     @Override
     public boolean isValidPassword(String password) {
         return Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d!@#$%^&*()]{8,20}$", password);
     }
 
+    /**
+     * 사용자 정보를 저장합니다.
+     *
+     * @param user 저장할 사용자 엔티티
+     */
     @Override
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
+    /**
+     * 로그인 아이디로 사용자 정보를 조회합니다.
+     *
+     * @param loginId 로그인 아이디
+     * @return 해당 사용자 정보, 없으면 null
+     */
     @Override
     public User findByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElse(null);
