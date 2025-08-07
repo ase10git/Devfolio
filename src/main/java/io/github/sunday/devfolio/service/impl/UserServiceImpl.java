@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 
 /**
- * {@link UserService}의 구현체로, 사용자 관련 비즈니스 로직을 처리합니다.
- * 아이디/닉네임 중복 확인, 유효성 검사, 사용자 저장 등의 기능을 제공합니다.
+ * {@link UserService} 인터페이스의 구현체로,
+ * 사용자 관련 비즈니스 로직(회원 저장, 중복 검사, 유효성 검사 등)을 처리합니다.
+ * <p>
+ * 비밀번호는 {@link PasswordEncoder}를 통해 암호화되어 저장됩니다.
+ * </p>
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,9 +20,14 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * UserServiceImpl 생성자.
+     * {@code UserServiceImpl} 생성자.
+     * <p>
+     * 사용자 데이터베이스 접근을 위한 {@link UserRepository}와,
+     * 비밀번호 암호화를 위한 {@link PasswordEncoder}를 주입받습니다.
+     * </p>
      *
-     * @param userRepository 사용자 엔티티에 대한 데이터 접근을 위한 리포지토리
+     * @param userRepository 사용자 엔티티에 대한 CRUD 처리를 담당하는 JPA 리포지토리
+     * @param passwordEncoder 비밀번호 암호화에 사용되는 Spring Security 제공 인코더 (BCrypt)
      */
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
