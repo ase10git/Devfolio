@@ -17,7 +17,7 @@ MAX_REQUEST_SIZE = 100MB
 # Database 설정
 DATABASE_URL = jdbc:postgresql://localhost:5432/testdb
 DATABASE_USERNAME = postgres
-DATABASE_PASSWORD =
+DATABASE_PASSWORD = 1234qwer
 DB_POOL_SIZE = 20
 DATABASE_DIALECT = org.hibernate.dialect.PostgreSQLDialect
 
