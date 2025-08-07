@@ -40,13 +40,13 @@ public class PortfolioCategory {
     /**
      * 카테고리의 이름
      */
-    @Column(length = 50, nullable = false)
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
     /**
      * 카테고리의 설명
      */
-    @Column
+    @Column(name = "description")
     private String description;
 
     /**

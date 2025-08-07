@@ -49,31 +49,31 @@ public class Portfolio {
     /**
      * 포트폴리오 제목
      */
-    @Column(length = 200, nullable = false)
+    @Column(name = "title", length = 200, nullable = false)
     private String title;
 
     /**
      * 프로젝트 시작일
      */
-    @Column
+    @Column(name = "start_date")
     private Date startDate;
 
     /**
      * 프로젝트 종료일
      */
-    @Column
+    @Column(name = "end_date")
     private Date endDate;
 
     /**
      * 포트폴리오 내용
      */
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     /**
      * 포트폴리오 조회수
      */
-    @Column(nullable = false)
+    @Column(name = "views", nullable = false)
     @ColumnDefault("0")
     private Integer views;
 

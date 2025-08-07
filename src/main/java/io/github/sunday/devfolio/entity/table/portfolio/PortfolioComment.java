@@ -48,7 +48,7 @@ public class PortfolioComment {
     /**
      * 댓글의 내용
      */
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     /**

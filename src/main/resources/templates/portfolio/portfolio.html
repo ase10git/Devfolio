@@ -91,7 +91,7 @@
             </header>
             <div class="portfolio-list">
                 <th:block th:each="portfolio:${portfolio}">
-                    <div th:replace="~{fragments/common-fragments :: portfolio-card (${portfolio})}"
+                    <div th:replace="~{fragments/portfolio-fragments :: portfolio-card (${portfolio})}"
                         class="trade-card"></div>
                 </th:block>
             </div>
