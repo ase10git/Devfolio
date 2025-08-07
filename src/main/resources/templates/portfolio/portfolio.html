@@ -104,8 +104,11 @@
                             </button>
                         </div>
                     </form>
-                    <div>
-                        <a th:href="@{/portfolio/new}">새 포트폴리오 작성</a>
+                    <div class="write-btn-wrap">
+                        <a th:href="@{/portfolio/new}">
+                            <img th:src="@{/assets/icon/pencil.svg}">
+                            <span>작성하기</span>
+                        </a>
                     </div>
                 </div>
                 <div class="sort-box">
@@ -117,8 +120,7 @@
             </header>
             <div class="portfolio-list">
                 <th:block th:each="portfolio:${portfolios}">
-                    <div th:replace="~{fragments/common-fragments :: portfolio-card (${portfolio})}"
-                        class="trade-card"></div>
+                    <div th:replace="~{fragments/common-fragments :: portfolio-card (${portfolio})}"></div>
                 </th:block>
             </div>
             <div id="loading-indicator"></div>

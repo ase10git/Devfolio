@@ -231,9 +231,10 @@ main {
 .search-box {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     gap: 10px;
+    position: relative;
 }
 
 .search-form {
@@ -242,6 +243,7 @@ main {
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .search-form input {
@@ -291,11 +293,29 @@ main {
     border-radius: 50%;
 }
 
-.reset-button svg {
+.reset-button img {
     color: white;
 }
 
-.search-box 
+.write-btn-wrap {
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.write-btn-wrap a{
+    padding: 5px 10px;
+    color: white;
+    background-color: #3A5BA0;
+    border-radius: var(--box-radius-10);
+}
+
+.write-btn-wrap img {
+    filter: invert(1);
+}
 
 /* custom select*/
 .custom-select {
@@ -376,4 +396,29 @@ main {
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
+}
+
+.sort-box span {
+    padding: 3px 4px;
+    color: black;
+    background-color: #CFE8FF;
+    border-radius: var(--box-radius-8);
+}
+
+.sort-box span:hover {
+    cursor: pointer;
+}
+
+.sort-box span.selected {
+    color: white;
+    background-color: #2C99FF;
+}
+
+/* portfolio-list */
+.portfolio-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
 }
