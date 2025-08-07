@@ -1,6 +1,5 @@
 package io.github.sunday.devfolio.entity.table.portfolio;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -23,7 +22,7 @@ import java.util.*;
  * <p>
  * 연관 관계:
  * <ul>
- *     <li>{Users}: 포트폴리오의 작성자 정보 관리 (1:1)</li>
+ *     <li>{Users}: 포트폴리오의 작성자 정보 관리 (1:N)</li>
  * </ul>
  * </p>
  *
@@ -37,7 +36,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Portfolios {
+public class Portfolio {
 
     /**
      * 포트폴리오의 고유 식별자 (기본키)
@@ -49,21 +48,30 @@ public class Portfolios {
 
     /**
      * 포트폴리오 제목
-     *
      */
     @Column(length = 200, nullable = false)
     private String title;
 
     /**
+     * 프로젝트 시작일
+     */
+    @Column
+    private Date startDate;
+
+    /**
+     * 프로젝트 종료일
+     */
+    @Column
+    private Date endDate;
+
+    /**
      * 포트폴리오 내용
-     *
      */
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     /**
      * 포트폴리오 조회수
-     *
      */
     @Column(nullable = false)
     @ColumnDefault("0")
@@ -71,7 +79,6 @@ public class Portfolios {
 
     /**
      * 포트폴리오 좋아요 수
-     *
      */
     @Column(name = "like_count", nullable = false)
     @ColumnDefault("0")
@@ -79,54 +86,20 @@ public class Portfolios {
 
     /**
      * 포트폴리오 생성일시
-     *
      */
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;
 
     /**
      * 포트폴리오 수정일시
-     *
      */
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_idx", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Users user;
-
-//    @OneToMany(
-//            mappedBy = "portfolios",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private List<PortfolioLikes> likes = new ArrayList<>();
-//
-//    @OneToMany(
-//            mappedBy = "portfolios",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private List<PortfolioImages> images = new ArrayList<>();
-//
-//    @OneToMany(
-//            mappedBy = "portfolios",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private List<PortfolioComments> comments = new ArrayList<>();
-
-//    @OneToMany(
-//            mappedBy = "portfolios",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private Set<PortfolioCategoryMap> categories = new HashSet<>();
+    // Todo : 병합 후 사용
+//    @ManyToOne
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    private User user;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드
@@ -135,8 +108,8 @@ public class Portfolios {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Portfolios portfolios = (Portfolios) o;
-        return Objects.equals(portfolioIdx, portfolios.portfolioIdx);
+        Portfolio portfolio = (Portfolio) o;
+        return Objects.equals(portfolioIdx, portfolio.portfolioIdx);
     }
 
     /**

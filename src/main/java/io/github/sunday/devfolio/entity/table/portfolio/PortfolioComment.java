@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,8 +20,9 @@ import java.util.Objects;
  * <p>
  * 연관 관계:
  * <ul>
- *     <li>{@link Portfolios}: 댓글이 속한 포트폴리오와의 관계 (1:N)</li>
- *     <li>{@link PortfolioComments}: 대댓글 구조를 위한 자기 참조 관계 (1:N)</li>
+ *     <li>{User}: 댓글 작성자와의 관계 (1:N)</li>
+ *     <li>{@link Portfolio}: 댓글이 속한 포트폴리오와의 관계 (1:N)</li>
+ *     <li>{@link PortfolioComment}: 대댓글 구조를 위한 자기 참조 관계 (1:N)</li>
  * </ul>
  * </p>
  *
@@ -36,7 +35,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PortfolioComments {
+public class PortfolioComment {
 
     /**
      * 댓글의 고유 식별자 (기본키)
@@ -67,29 +66,24 @@ public class PortfolioComments {
     /**
      * 댓글을 작성한 사용자
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    private Users user;
+    // Todo : 병합 후 사용
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    private User user;
 
     /**
      * 댓글이 속한 포트폴리오
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_idx", nullable = false)
-    private Portfolios portfolios;
+    private Portfolio portfolio;
 
     /**
      * 부모 댓글
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_idx")
-    private PortfolioComments parentComment;
-
-    /**
-     * 대댓글 목록
-     */
-//    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PortfolioComments> replyComments = new ArrayList<>();
+    private PortfolioComment parentComment;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드
@@ -98,8 +92,8 @@ public class PortfolioComments {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PortfolioComments portfolioComments = (PortfolioComments) o;
-        return Objects.equals(commentIdx, portfolioComments.commentIdx);
+        PortfolioComment portfolioComment = (PortfolioComment) o;
+        return Objects.equals(commentIdx, portfolioComment.commentIdx);
     }
 
     /**

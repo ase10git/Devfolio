@@ -19,8 +19,8 @@ import java.util.Objects;
  * <p>
  * 연관 관계:
  * <ul>
- *     <li>{@link Portfolios}: 매핑된 포트폴리오와의 관계 (1:N)</li>
- *     <li>{@link PortfolioCategories}: 매핑된 카테고리와의 관계 (1:N)</li>
+ *     <li>{@link Portfolio}: 매핑된 포트폴리오와의 관계 (1:N)</li>
+ *     <li>{@link PortfolioCategory}: 매핑된 카테고리와의 관계 (1:N)</li>
  * </ul>
  * </p>
  *
@@ -51,14 +51,14 @@ public class PortfolioCategoryMap {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_idx", nullable = false)
-    private Portfolios portfolios;
+    private Portfolio portfolio;
 
     /**
      * 매핑된 카테고리
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_idx", nullable = false)
-    private PortfolioCategories categories;
+    private PortfolioCategory categories;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

@@ -1,6 +1,5 @@
 package io.github.sunday.devfolio.entity.table.portfolio;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +26,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PortfolioImages {
+public class PortfolioImage {
 
     /**
      * 이미지의 고유 식별자 (기본키)
@@ -42,7 +41,7 @@ public class PortfolioImages {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_idx", nullable = false)
-    private Portfolios portfolios;
+    private Portfolio portfolio;
 
     /**
      * 이미지의 URL(AWS S3)
@@ -61,8 +60,8 @@ public class PortfolioImages {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PortfolioImages portfolioImages = (PortfolioImages) o;
-        return Objects.equals(imageIdx, portfolioImages.imageIdx);
+        PortfolioImage portfolioImage = (PortfolioImage) o;
+        return Objects.equals(imageIdx, portfolioImage.imageIdx);
     }
 
     /**

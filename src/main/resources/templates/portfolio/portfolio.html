@@ -19,7 +19,7 @@
             <h1>포트폴리오</h1>
             <p>다양한 프로젝트 포트폴리오를 검색하고 다른 개발자와 포트폴리오를 공유해보세요</p>
         </div>
-        <section class="hot-portfolios">
+        <section class="hot-portfolio">
             <h2>최근 핫한 포트폴리오</h2>
             <div class="carousel" id="carousel">
                 <div class="carousel-track" id="carousel-track">
@@ -64,7 +64,7 @@
                 </th:block>
             </div>
         </section>
-        <section class="portfolios">
+        <section class="portfolio">
             <header class="portfolio-list-header">
                 <div class="search-box">
                     <form th:action="@{/portfolio}" method="get" id="search-form" class="search-bar">
@@ -90,7 +90,7 @@
                 </div>
             </header>
             <div class="portfolio-list">
-                <th:block th:each="portfolio:${portfolios}">
+                <th:block th:each="portfolio:${portfolio}">
                     <div th:replace="~{fragments/common-fragments :: portfolio-card (${portfolio})}"
                         class="trade-card"></div>
                 </th:block>

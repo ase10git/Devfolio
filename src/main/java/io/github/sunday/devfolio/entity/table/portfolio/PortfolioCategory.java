@@ -3,9 +3,7 @@ package io.github.sunday.devfolio.entity.table.portfolio;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * 포트폴리오 카테고리 정보를 나타내는 JPA 엔티티 클래스입니다.
@@ -19,11 +17,6 @@ import java.util.Set;
  * </p>
  *
  * <p>
- * 연관 관계:
- * <ul>
- *     <li>{@link PortfolioCategoryMap}: 포트폴리오와의 매핑 관계 (N:M)</li>
- * </ul>
- * </p>
  *
  * @since 2025-08-05
  */
@@ -34,7 +27,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PortfolioCategories {
+public class PortfolioCategory {
 
     /**
      * 카테고리의 고유 식별자 (기본키)
@@ -56,14 +49,6 @@ public class PortfolioCategories {
     @Column
     private String description;
 
-//    @OneToMany(
-//            mappedBy = "categories",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private Set<PortfolioCategoryMap> portfolios = new HashSet<>();
-
     /**
      * 객체의 동등성 비교를 위한 equals 메서드
      */
@@ -71,8 +56,8 @@ public class PortfolioCategories {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PortfolioCategories portfolioCategories = (PortfolioCategories) o;
-        return Objects.equals(categoryIdx, portfolioCategories.categoryIdx);
+        PortfolioCategory portfolioCategory = (PortfolioCategory) o;
+        return Objects.equals(categoryIdx, portfolioCategory.categoryIdx);
     }
 
     /**

@@ -17,6 +17,14 @@ import java.util.Objects;
  * </ul>
  * </p>
  *
+ * <p>
+ * 연관 관계:
+ * <ul>
+ *     <li>{User}: 좋아요를 누른 사용자와의 관계 (1:N)</li>
+ *     <li>{@link Portfolio}: 좋아요된 포트폴리오와의 관계 (1:N)</li>
+ * </ul>
+ * </p>
+ *
  * @since 2025-08-05
  */
 
@@ -30,7 +38,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PortfolioLikes {
+public class PortfolioLike {
 
     /**
      * 좋아요의 고유 식별자 (기본키)
@@ -43,16 +51,17 @@ public class PortfolioLikes {
     /**
      * 좋아요를 누른 사용자
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    private Users user;
+    // Todo : 병합 후 사용
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    private User user;
 
     /**
      * 좋아요를 받은 포트폴리오
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_idx", nullable = false)
-    private Portfolios portfolios;
+    private Portfolio portfolio;
 
     /**
      * 좋아요가 생성된 시점
@@ -67,7 +76,7 @@ public class PortfolioLikes {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PortfolioLikes like = (PortfolioLikes) o;
+        PortfolioLike like = (PortfolioLike) o;
         return Objects.equals(likeIdx, like.likeIdx);
     }
 
