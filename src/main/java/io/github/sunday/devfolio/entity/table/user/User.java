@@ -39,12 +39,12 @@ public class User {
      * OAuth 제공자 이름 (예: GOOGLE, LOCAL)
      */
     @Column(name = "oauth_provider", length = 50)
-    private String oauthProvider;
+    private AuthProvider oauthProvider = AuthProvider.LOCAL;
 
     /**
      * 이메일 주소 (고유, 필수)
      */
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = true, unique = true, length = 255) // 나중에 nullable = false로 변경
     private String email;
 
     /**
