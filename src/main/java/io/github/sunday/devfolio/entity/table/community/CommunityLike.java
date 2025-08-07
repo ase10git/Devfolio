@@ -22,9 +22,10 @@ public class CommunityLike {
     private Long likeIdx;
 
     /** 좋아요를 누른 사용자 */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    private User user;
+    //TODO: 병합 후 사용
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    private User user;
 
     /** 좋아요 대상 게시글 */
     @ManyToOne(fetch = FetchType.LAZY)
