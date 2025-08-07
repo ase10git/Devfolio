@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.service.impl;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 
@@ -12,15 +13,16 @@ import java.util.regex.Pattern;
  */
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * UserServiceImpl 생성자.
      *
      * @param userRepository 사용자 엔티티에 대한 데이터 접근을 위한 리포지토리
      */
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -95,12 +97,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 사용자 정보를 저장합니다.
+     * 사용자의 비밀번호를 BCrypt 방식으로 암호화한 후 사용자 정보를 저장합니다.
+     * <p>
+     * 비밀번호가 null이 아닌 경우에만 암호화를 수행하며, 이후 {@link UserRepository}를 통해 DB에 저장합니다.
+     * </p>
      *
-     * @param user 저장할 사용자 엔티티
+     * @param user 저장할 사용자 객체. 비밀번호 필드는 평문이어야 하며, 이 메서드 내에서 암호화됩니다.
      */
     @Override
     public void saveUser(User user) {
+        if (user.getPassword() != null) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+        }
         userRepository.save(user);
     }
 
