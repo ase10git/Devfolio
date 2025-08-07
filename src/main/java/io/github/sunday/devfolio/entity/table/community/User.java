@@ -6,6 +6,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
+
+/**
+ * 테스트용 유저 엔티티입니다.
+ */
 @Entity
 @Table(name = "users")
 @Getter
