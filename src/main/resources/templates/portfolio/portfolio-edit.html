@@ -13,8 +13,100 @@
 <body>
 <header></header>
 <main>
-    <section class="container">
-    </section>
+    <div class="container">
+        <section class="write-form">
+            <div class="title-box">
+                <h1>포트폴리오 수정하기</h1>
+                <span>*은 필수 입력 항목입니다.</span>
+            </div>
+            <form th:action="@{/portfolio/new}" method="post" id="write-form"
+            th:object="${portfolioWriteDto}">
+                <div class="input-group">
+                    <label for="title" class="group-label">
+                        <span>제목</span>
+                        <span>*</span>
+                    </label>
+                    <input type="text" id="title" th:field="*{title}"
+                    placeholder="포트폴리오 제목을 작성해주세요"
+                    maxlength="200" required>
+                </div>
+                <div class="input-group">
+                    <label for="start-date" class="group-label">프로젝트 기간</label>
+                    <input type="date" id="start-date" th:field="*{startDate}">
+                    <span>-</span>
+                    <input type="date" id="end-date" th:field="*{endDate}">
+                </div>
+                <div class="input-group">
+                    <div class="group-label">
+                        <span>카테고리</span>
+                        <span>*</span>
+                    </div>
+                    <div class="category-box">
+                        <ul class="category-list"
+                        th:each="category : ${categories}">
+                            <li>
+                                <input type="checkbox" th:id="${category.name}" th:field="*{category}" required>
+                                <label th:for="${category.name}" th:text="${category.name}">카테고리 이름</label>
+                            </li>
+                        </ul>
+                        <span>카테고리는 중복 선택할 수 있습니다.</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="thumbnail">포트폴리오의 썸네일을 추가해주세요</label>
+                    <input type="file" id="thumbnail" th:field="*{thumbnail}"
+                    multiple>
+                </div>
+                <div class="input-group">
+                    <label for="title">상세 설명</label>
+                    <input type="textarea" id="description" th:field="*{description}"
+                    value="포트폴리오에 대한 상세 정보를 작성해주세요\n템플릿에 따라 변동됩니다"
+                    required>
+                </div>
+                <div class="btn-wrap">
+                    <button type="submit" class="write-btn">작성하기</button>
+                    <button type="button"
+                            onclick="history.back()"
+                            class="cancel-btn">취소</button>
+                </div>
+            </form>
+        </section>
+        <aside class="template-select">
+            <h2>템플릿 선택</h2>
+            <div class="template-list">
+                <ul>
+                    <li>
+                        <div>
+                            <input type="radio" id="template-1" name="template">
+                            <label>템플릿 1</label>
+                        </div>
+                        <span>프로젝트 설명을 위한 기본 템플릿 1</span>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="radio" id="template-2" name="template">
+                            <label>템플릿 2</label>
+                        </div>
+                        <span>프로젝트 설명을 위한 기본 템플릿 1</span>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="radio" id="template-custom" name="template">
+                            <label>자유 템플릿</label>
+                        </div>
+                        <span>자유 형식 템플릿</span>
+                    </li>
+                    <li>
+                        <div>
+                            <input type="radio" id="template-ai" name="template">
+                            <label>템플릿 1</label>
+                        </div>
+                        <span>Alan AI가 추천하는 템플릿</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </div>
 </main>
 <footer></footer>
 </body>
