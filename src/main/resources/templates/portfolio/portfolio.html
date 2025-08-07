@@ -120,7 +120,7 @@
             </header>
             <div class="portfolio-list">
                 <th:block th:each="portfolio:${portfolios}">
-                    <div th:replace="~{fragments/common-fragments :: portfolio-card (${portfolio})}"></div>
+                    <div th:replace="~{fragments/portfolio_fragments :: portfolio-card (${portfolio})}"></div>
                 </th:block>
             </div>
             <div id="loading-indicator"></div>
