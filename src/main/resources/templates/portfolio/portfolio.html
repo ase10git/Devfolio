@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/portfolio/portfolio.css}">
     <title th:if="${keyword}" th:text="${keyword} + ' 포트폴리오 검색 결과 | DevFolio'">키워드 포트폴리오 검색 결과 | DevFolio</title>
     <title th:unless="${keyword}">포트폴리오 | DevFolio</title>
 </head>
@@ -32,6 +33,22 @@
                                 alt="포트폴리오 이미지"
                                 title="포트폴리오 이미지"
                         />
+                        <div class="item-description">
+                            <div class="writer-meta">
+                                <div class="writer-profile">
+                                    <img th:src="${writer.imageUrl}">
+                                </div>
+                                <div class="writer-info">
+                                    <span th:text="${writer.nickname}">작성자 닉네임</span>
+                                    <span th:text="${portfolio.updatedAt}">2025-08-11</span>
+                                </div>
+                            </div>
+                            <div class="portfolio-meta">
+                                <span th:text="${portfolio.title}">포트폴리오 제목</span>
+                                <p th:text="${portfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                            </div>
+                            <div th:replace="~{fragments/common-fragments :: stats (${portfolio})}" class="stats"></div>
+                        </div>
                     </div>
                     <div class="carousel-item"
                          th:if="${images == null} OR ${#lists.isEmpty(images)}">
