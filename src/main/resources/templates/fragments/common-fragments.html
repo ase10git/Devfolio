@@ -1,4 +1,5 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!--portfolio card-->
 <div th:fragment="portfolio-card (portfolio)" class="portfolio-card">
   <a
     th:href="@{/portfolio/{id}(id=${portfolio.portfolioIdx})}"
@@ -33,17 +34,18 @@
   </a>
 </div>
 
+<!--portfolio, community stats-->
 <div th:fragment="stats (target)" class="stats">
   <span>
-    <img th:src="@{/assets/}" alt="좋아요 아이콘">
+    <img th:src="@{/assets/icon/hand-thumbs-up.svg}" alt="좋아요 아이콘">
     <span th:text="${target.likeCount}"></span>
   </span>
   <span>
-    <img th:src="@{/assets/}" alt="조회수 아이콘">
+    <img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘">
     <span th:text="${target.views}"></span>
   </span>
   <span>
-    <img th:src="@{/assets/}" alt="댓글 아이콘">
+    <img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘">
     <span th:text="${target.commentCount}"></span>
   </span>
 </div>

@@ -28,7 +28,7 @@
                          th:each="image, iterStat : ${images}">
                         <img
                                 th:classappend="${iterStat.index == 0} ? ' active' : ''"
-                                th:src="${image.url == null or #strings.isEmpty(image.url)} ? @{/assets/icon/card-image.svg} : ${image.url}"
+                                th:src="${image.url == null or #strings.isEmpty(image.url)} ? @{/assets/} : ${image.url}"
                                 alt="포트폴리오 이미지"
                                 title="포트폴리오 이미지"
                         />
@@ -36,7 +36,7 @@
                     <div class="carousel-item"
                          th:if="${images == null} OR ${#lists.isEmpty(images)}">
                         <img
-                                th:src="@{/assets/images/default-trade-image.png}"
+                                th:src="@{/assets/}"
                                 alt="빈 포트폴리오 이미지"
                                 title="포트폴리오 이미지 없음"
                         />
@@ -71,10 +71,10 @@
                         <input type="text" placeholder="검색" name="keyword" id="search-input">
                         <div class="search-btn-wrap">
                             <button type="reset" class="reset-btn">
-                                <img th:src="" alt="삭제 버튼">
+                                <img th:src="@{/assets/icon/x-lg.svg}" alt="삭제 버튼">
                             </button>
                             <button type="submit" id="search-btn">
-                                <img src="" alt="검색 버튼">
+                                <img th:src="@{/assets/icon/search.svg}" alt="검색 버튼">
                             </button>
                         </div>
                     </form>
