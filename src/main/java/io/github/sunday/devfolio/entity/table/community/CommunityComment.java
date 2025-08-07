@@ -13,7 +13,7 @@ import java.util.Objects;
 @Table(name = "community_comments")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class CommunityComments {
+public class CommunityComment {
 
     /** 댓글 고유 식별자 (자동 생성) */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class CommunityComments {
     /** 부모 댓글 (답글인 경우 지정, 최상위 댓글은 null) */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_idx")
-    private CommunityComments parent;
+    private CommunityComment parent;
 
     /** 이 댓글이 속한 게시글 */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,8 +51,8 @@ public class CommunityComments {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommunityComments communityComments = (CommunityComments) o;
-        return Objects.equals(commentIdx, communityComments.commentIdx);
+        CommunityComment communityComment = (CommunityComment) o;
+        return Objects.equals(commentIdx, communityComment.commentIdx);
     }
 
     @Override

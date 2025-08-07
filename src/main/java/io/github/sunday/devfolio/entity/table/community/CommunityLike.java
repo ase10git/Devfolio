@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table(name = "community_likes")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class CommunityLikes {
+public class CommunityLike {
 
     /** 좋아요 고유 식별자 (자동 생성) */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +40,8 @@ public class CommunityLikes {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommunityLikes communityLikes = (CommunityLikes) o;
-        return Objects.equals(likeIdx, communityLikes.likeIdx);
+        CommunityLike communityLike = (CommunityLike) o;
+        return Objects.equals(likeIdx, communityLike.likeIdx);
     }
 
     @Override

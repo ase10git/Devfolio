@@ -12,7 +12,7 @@ import java.util.Objects;
 @Table(name = "community_images")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class CommunityImages {
+public class CommunityImage {
 
     /** 이미지 고유 식별자 (자동 생성) */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +32,8 @@ public class CommunityImages {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommunityImages communityImages = (CommunityImages) o;
-        return Objects.equals(imageIdx, communityImages.imageIdx);
+        CommunityImage communityImage = (CommunityImage) o;
+        return Objects.equals(imageIdx, communityImage.imageIdx);
     }
 
     @Override
