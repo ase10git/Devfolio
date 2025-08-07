@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 교육/트레이닝(Training) 정보를 나타내는 엔티티입니다.
@@ -37,4 +38,18 @@ public class Training {
     /** 상세 내용 */
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Training that = (Training) o;
+        return Objects.equals(trainingIdx, that.trainingIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(trainingIdx);
+    }
 }

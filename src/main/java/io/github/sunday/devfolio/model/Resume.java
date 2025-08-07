@@ -4,6 +4,7 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 사용자가 작성한 이력서(Resume) 정보를 관리하는 엔티티.
@@ -40,23 +41,19 @@ public class Resume {
     @Column(name = "profile", length = 255)
     private String profile;
 
-    /** 이력서에 첨부된 파일 목록 */
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ResumeFile> files;
 
-    /** 이력서에 포함된 경력 정보 목록 */
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Experience> experiences;
-
-    /** 이력서에 포함된 학력 정보 목록 */
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Education> educations;
-
-    /** 이력서에 포함된 스킬 정보 목록 */
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Skill> skills;
-
-    /** 이력서에 포함된 교육/트레이닝 정보 목록 */
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Training> trainings;
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Resume resume = (Resume) o;
+        return Objects.equals(resumeIdx, resume.resumeIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(resumeIdx);
+    }
 }
+

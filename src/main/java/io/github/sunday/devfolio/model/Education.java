@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 학력(Education) 정보를 관리하는 엔티티입니다.
@@ -53,4 +54,19 @@ public class Education {
     /** 레코드 생성 일자 */
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDate createdAt;
+
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Education that = (Education) o;
+        return Objects.equals(eduIdx, that.eduIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(eduIdx);
+    }
 }
+

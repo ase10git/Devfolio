@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 경력(Experience) 정보를 저장하는 엔티티입니다.
@@ -45,4 +46,18 @@ public class Experience {
     /** 레코드 생성 일자 */
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDate createdAt;
+
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Experience that = (Experience) o;
+        return Objects.equals(expIdx, that.expIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(expIdx);
+    }
 }

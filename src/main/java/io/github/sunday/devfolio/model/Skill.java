@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 스킬(사용 언어 및 툴)(Skill) 정보를 저장하는 엔티티.
@@ -37,4 +38,18 @@ public class Skill {
     /** 종료 일자 */
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Skill that = (Skill) o;
+        return Objects.equals(skillIdx, that.skillIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(skillIdx);
+    }
 }

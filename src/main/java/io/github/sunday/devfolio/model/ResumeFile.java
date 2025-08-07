@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 이력서 첨부 파일 정보를 나타내는 엔티티입니다.
@@ -33,4 +34,18 @@ public class ResumeFile {
     /** 파일 업로드 일시 */
     @Column(name = "uploaded_at", nullable = false)
     private LocalDateTime uploadedAt;
+
+    /** 객체 동등성 비교 */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResumeFile that = (ResumeFile) o;
+        return Objects.equals(fileIdx, that.fileIdx);
+    }
+    /** 해시코드계산 */
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileIdx);
+    }
 }

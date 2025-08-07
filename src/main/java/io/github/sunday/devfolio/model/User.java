@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 사용자 정보를 나타내는 엔티티
@@ -18,7 +19,7 @@ public class User {
     @Column(name = "user_idx")
     private Long userIdx;
 
-    @Column(name = "id", nullable = false, unique = true, length = 50)
+    @Column(name = "userid", nullable = false, unique = true, length = 50)
     private String loginId;
 
     @Column(name = "oauth_provider", length = 50)
@@ -54,14 +55,22 @@ public class User {
     @Column(name = "verified")
     private Boolean verified;
 
-    // 내가 작성한 이력서들
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resume> resumes;
+    /**
+     * 객체 동등성 비교: 사용자 ID 기준
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userIdx, user.userIdx);
+    }
 
-    // 팔로우 관계
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Follow> following;
-
-    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Follow> followers;
+    /**
+     * 해시코드 계산: 사용자 ID 기준
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(userIdx);
+    }
 }
