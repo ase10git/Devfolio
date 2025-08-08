@@ -1,3 +1,10 @@
+:root {
+  --max-content-width: 1700px;
+  --box-radius-15: 15px;
+  --box-radius-10: 10px;
+  --box-radius-8: 8px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
