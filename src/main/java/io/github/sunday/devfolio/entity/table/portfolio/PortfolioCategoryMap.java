@@ -23,8 +23,6 @@ import java.util.Objects;
  *     <li>{@link PortfolioCategory}: 매핑된 카테고리와의 관계 (1:N)</li>
  * </ul>
  * </p>
- *
- * @since 2025-08-05
  */
 @Entity
 @Table(

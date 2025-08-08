@@ -17,8 +17,6 @@ import java.util.Objects;
  * </p>
  *
  * <p>
- *
- * @since 2025-08-05
  */
 @Entity
 @Table(name = "portfolio_categories")

@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.portfolio;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,8 +26,6 @@ import java.util.Objects;
  *     <li>{@link PortfolioComment}: 대댓글 구조를 위한 자기 참조 관계 (1:N)</li>
  * </ul>
  * </p>
- *
- * @since 2025-08-05
  */
 @Entity
 @Table(name = "portfolio_comments")
@@ -66,10 +65,9 @@ public class PortfolioComment {
     /**
      * 댓글을 작성한 사용자
      */
-    // Todo : 병합 후 사용
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_idx", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     /**
      * 댓글이 속한 포트폴리오

@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.portfolio;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -25,8 +26,6 @@ import java.util.*;
  *     <li>{Users}: 포트폴리오의 작성자 정보 관리 (1:N)</li>
  * </ul>
  * </p>
- *
- * @since 2025-08-05
  */
 
 @Entity
@@ -96,10 +95,9 @@ public class Portfolio {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    // Todo : 병합 후 사용
-//    @ManyToOne
-//    @JoinColumn(name = "user_idx", nullable = false)
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

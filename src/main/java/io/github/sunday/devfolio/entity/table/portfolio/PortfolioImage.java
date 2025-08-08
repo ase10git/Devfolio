@@ -15,8 +15,6 @@ import java.util.Objects;
  *     <li>포트폴리오와의 연관 관계 관리</li>
  * </ul>
  * </p>
- *
- * @since 2025-08-05
  */
 
 @Entity
