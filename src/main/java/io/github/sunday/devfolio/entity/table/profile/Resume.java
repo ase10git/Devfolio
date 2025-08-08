@@ -1,9 +1,8 @@
-package io.github.sunday.devfolio.model;
+package io.github.sunday.devfolio.entity.table.profile;
 
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /**

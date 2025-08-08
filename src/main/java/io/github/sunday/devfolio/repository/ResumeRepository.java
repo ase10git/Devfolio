@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.repository;
 
-import io.github.sunday.devfolio.model.Resume;
+import io.github.sunday.devfolio.entity.table.profile.Resume;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
