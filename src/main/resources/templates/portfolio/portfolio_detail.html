@@ -33,23 +33,18 @@
                         </div>
                         <span th:text="${writer.nickname}">작성자 닉네임</span>
                     </div>
-                    <div class="portfolio-info timestamps">
-                        <div>
-                            <span>기간</span>
+                    <div class="portfolio-info-wrap">
+                        <div class="portfolio-info">
+                            <span class="info-label">기간</span>
                             <span th:text="*{startDate} + ' - ' + *{endDate}">2025.07.30 - 2025.08.25</span>
+                            <span class="info-label">카테고리</span>
+                            <div class="category-box">
+                                <span th:each="category : ${portfolio.categories}"
+                                      th:text="*{category.name}">카테고리 이름</span>
+                            </div>
                         </div>
-                        <div>
+                        <div class="portfolio-stats-wrap">
                             <span th:text="*{updatedAt}">2025.09.01 14:03</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-info">
-                        <div>
-                            <span>카테고리</span>
-                            <span 
-                                th:each="category : ${portfolio.categories}"
-                                th:text="*{category.name}">카테고리 이름</span>
-                        </div>
-                        <div>
                             <div th:replace="~{fragments/portfolio_fragments :: stats (${portfolio})}"></div>
                         </div>
                     </div>
@@ -57,17 +52,21 @@
                 <div class="portfolio-thumbnail">
                     <img th:src="*{thumbnailUrl}" th:alt="*{title}">
                 </div>
-                <div class="description" th:text="*{description}"></div>
-                <div class="btn-wrap">
-                    <button type="button">
-                        <img th:src="@{/assets/}" alt="하트">
+                <div th:text="*{description}" class="description"></div>
+                <div class="like-btn-wrap">
+                    <button type="button" id="like-btn">
+                        <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
                         <span>좋아요</span>
+                    </button>
+                    <button type="button" id="like-undo-btn">
+                        <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
+                        <span>좋아요 중</span>
                     </button>
                 </div>
             </section>
-            <section class="comments">
+            <section class="comment-section">
                 <div class="title-box">
-                    <h2>댓글</h2>
+                    <h2 id="comment-title">댓글</h2>
                     <span th:text="'총 ' + ${portfolio.commentCount} + '개'">총 6개</span>
                 </div>
                 <div class="comments-input"></div>
@@ -79,13 +78,20 @@
         </div>
         <nav class="portfolio-nav">
             <h2>포트폴리오 목차</h2>
-            <ol>
-                <li>포트폴리오 정보</li>
-                <th:block th:each="section : ${portfolio.sections}">
-                    <li th:text="${section.title}">목차</li>
-                </th:block>
-            </ol>
-            <button type="button" class="back-btn">목록으로 가기</button>
+            <div class="nav-link-wrap">
+                <a href="#portfolio-title">포트폴리오 정보</a>
+                <div class="nav-divider-line"></div>
+                <ol>
+                    <th:block th:each="section : ${portfolio.sections}">
+                        <li><a th:text="${section.title}" href="#">목차</a></li>
+                    </th:block>
+                </ol>
+                <div class="nav-divider-line"></div>
+                <a href="#comment-title">댓글</a>
+            </div>
+            <div class="nav-btn-wrap">
+                <button type="button" class="back-btn">목록으로 가기</button>
+            </div>
         </nav>
     </div>
 </main>
