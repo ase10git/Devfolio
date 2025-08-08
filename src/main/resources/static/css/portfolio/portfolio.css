@@ -62,7 +62,7 @@ main {
 /* carousel */
 .carousel {
     width: 100%; max-width: 600px;
-    aspect-ratio: 1.74 / 1;
+    aspect-ratio: 16 / 9;
     position: relative;
     overflow: hidden;
     border-radius: var(--box-radius-8);
