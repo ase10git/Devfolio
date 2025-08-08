@@ -7,20 +7,14 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     hikari:
-      connecion-timezone: UTC
       maximum-pool-size: ${DB_POOL_SIZE:10}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
-        jdbc:
-          time_zone: UTC
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-
+        format-sql: true
     database-platform: ${DATABASE_DIALECT}
   security:
     oauth2:

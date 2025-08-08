@@ -1,6 +1,5 @@
 package io.github.sunday.devfolio.repository;
 
-import io.github.sunday.devfolio.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
