@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.profile;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

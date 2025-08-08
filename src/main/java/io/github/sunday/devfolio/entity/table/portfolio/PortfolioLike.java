@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.portfolio;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,8 +25,6 @@ import java.util.Objects;
  *     <li>{@link Portfolio}: 좋아요된 포트폴리오와의 관계 (1:N)</li>
  * </ul>
  * </p>
- *
- * @since 2025-08-05
  */
 
 @Entity
@@ -51,10 +50,9 @@ public class PortfolioLike {
     /**
      * 좋아요를 누른 사용자
      */
-    // Todo : 병합 후 사용
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_idx", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     /**
      * 좋아요를 받은 포트폴리오

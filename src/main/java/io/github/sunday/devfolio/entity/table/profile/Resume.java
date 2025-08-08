@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.profile;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -20,9 +21,9 @@ public class Resume {
     private Long resumeIdx;
 
     /** 이력서 작성자 (User) 참조 */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    private User user;
 
     /** 이력서 본문 내용 */
     @Column(name = "content", columnDefinition = "TEXT")

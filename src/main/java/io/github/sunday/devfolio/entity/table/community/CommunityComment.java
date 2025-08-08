@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.community;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
@@ -21,10 +22,9 @@ public class CommunityComment {
     private Long commentIdx;
 
     /** 댓글 작성자 사용자 정보 */
-    //TODO: 병합 후 사용
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_idx", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     /** 부모 댓글 (답글인 경우 지정, 최상위 댓글은 null) */
     @ManyToOne(fetch = FetchType.LAZY)
