@@ -29,7 +29,7 @@ input:-webkit-autofill:active {
 	-webkit-text-fill-color: var(--font);
 	-webkit-box-shadow: 0 0 0px 1000px var(--search) inset;
     box-shadow: 0 0 0px 1000px var(--search) inset;
-	transition: background-color 5000x ease-in-out 0s;
+	transition: background-color 5000s ease-in-out 0s;
 }
 
 input:autofill,
