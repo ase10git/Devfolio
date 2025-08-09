@@ -11,5 +11,5 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
     private final UserRepository userRepo;
     private final FollowRepository followrepo;
-    private final ResumeRepository
+    private final ResumeRepository resumeRepo;
 }

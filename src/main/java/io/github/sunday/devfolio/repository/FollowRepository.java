@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.repository;
 
 import io.github.sunday.devfolio.entity.table.profile.Follow;
+import io.github.sunday.devfolio.entity.table.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

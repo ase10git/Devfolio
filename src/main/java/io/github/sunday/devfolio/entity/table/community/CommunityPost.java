@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.entity.table.community;
 
+import io.github.sunday.devfolio.entity.table.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -26,10 +27,9 @@ public class CommunityPost {
     private Long postIdx;
 
     /** 작성자 사용자 */
-    //TODO: 병합 후 사용
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_idx", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     /** 게시글 제목 */
     @Column(name = "title", length = 200, nullable = false)
