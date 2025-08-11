@@ -4,6 +4,7 @@ import io.github.sunday.devfolio.dto.user.WriterDto;
 import lombok.*;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * 포트폴리오의 정보를 응답으로 전송하는 DTO
@@ -61,4 +62,8 @@ public class PortfolioListDto {
      */
     private WriterDto writer;
 
+    /**
+     * 카테고리 정보
+     */
+    private List<PortfolioCategoryDto> categories;
 }

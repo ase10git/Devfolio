@@ -103,6 +103,12 @@ public class Portfolio {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
+    /**
+     * 검색을 위한 tsvector
+     */
+    @Column(name = "search_vector", columnDefinition = "tsvector")
+    private String searchVector;
+
     @ManyToOne
     @JoinColumn(name = "user_idx", nullable = false)
     private User user;

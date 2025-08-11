@@ -1,9 +1,12 @@
 package io.github.sunday.devfolio.service;
 
+import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
+import io.github.sunday.devfolio.entity.table.portfolio.PortfolioCategoryMap;
+import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
 import io.github.sunday.devfolio.repository.portfolio.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,10 @@ public class PortfolioService {
     private final PortfolioLikeRepository portfolioLikeRepository;
     private static final int LIST_PAGE_SIZE = 20;
 
+    /**
+     * 포트폴리오 검색 및 조회
+     * 페이지, 키워드, 카테고리, 정렬 기준을 요청을 받음
+     */
     // Todo : 포트폴리오 검색 기능 추가
     public List<PortfolioListDto> search(PortfolioSearchRequestDto searchRequestDto) {
         // 페이지 생성
@@ -35,11 +42,14 @@ public class PortfolioService {
         // repository에서 portfolio 가져오기
         Page<Portfolio> pages = portfolioRepository.findAll(pageable);
 
-        // 카테고리 검색 결과
-
         // 키워드 검색 결과
 
+
+        // 카테고리 검색 결과
+
+        
         // 정렬 수행
+        
 
         // 리스트로 가공
         return pages.stream()
@@ -50,6 +60,16 @@ public class PortfolioService {
                             .profileImg(portfolio.getUser().getProfileImg())
                             .build();
 
+                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    List<PortfolioCategoryMap> categoryMapList = portfolioCategoryMapRepository.findAllByPortfolio(portfolio);
+                    List<PortfolioCategoryDto> categoryDtoList = categoryMapList.stream()
+                            .map(categoryMap ->  PortfolioCategoryDto.builder()
+                                        .categoryIdx(categoryMap.getCategory().getCategoryIdx())
+                                        .name(categoryMap.getCategory().getName())
+                                        .build()
+                            )
+                            .toList();
+
                     return PortfolioListDto.builder()
                             .portfolioIdx(portfolio.getPortfolioIdx())
                             .title(portfolio.getTitle())
@@ -57,9 +77,10 @@ public class PortfolioService {
                             .views(portfolio.getViews())
                             .likeCount(portfolio.getLikeCount())
                             .updatedAt(portfolio.getUpdatedAt())
-                            .commentCount(0)
-                            .imageUrl("")
+                            .commentCount(portfolio.getCommentCount())
+                            .imageUrl(image != null ? image.getImageUrl() : "")
                             .writer(writerDto)
+                            .categories(categoryDtoList)
                             .build();
         }).toList();
     }
