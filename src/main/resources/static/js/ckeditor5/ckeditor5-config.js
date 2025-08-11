@@ -66,7 +66,7 @@ import translations from 'ckeditor5/translations/ko.js';
 
 const LICENSE_KEY = 'GPL';
 
-const editorConfig = {
+export const editorConfig = {
 	toolbar: {
 		items: [
 			'undo',
@@ -307,5 +307,3 @@ const editorConfig = {
 	},
 	translations: [translations]
 };
-
-ClassicEditor.create(document.querySelector('#editor'), editorConfig);
