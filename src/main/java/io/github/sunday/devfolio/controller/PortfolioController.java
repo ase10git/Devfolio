@@ -1,17 +1,41 @@
 package io.github.sunday.devfolio.controller;
 
+import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.service.PortfolioService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/portfolio")
+@RequiredArgsConstructor
 public class PortfolioController {
+    private final PortfolioService portfolioService;
 
     @GetMapping
-    public String list() {
+    public String list(
+            @ModelAttribute PortfolioSearchRequestDto requestDto,
+            Model model
+    ) {
+        List<PortfolioListDto> list = portfolioService.search(requestDto);
+
+        model.addAttribute("hotPortfolios", list);
+        model.addAttribute("portfolios", list);
+        model.addAttribute("requestDto", requestDto);
         return "portfolio/portfolio";
+    }
+
+    @GetMapping("/api/list")
+    public ResponseEntity<?> apiList(
+            @ModelAttribute PortfolioSearchRequestDto requestDto
+    ) {
+        List<PortfolioListDto> list = portfolioService.search(requestDto);
+        return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")

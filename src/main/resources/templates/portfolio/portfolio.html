@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio.css}">
+    <!-- Todo: 병합 후 styles.css로 통합 -->
+    <link rel="stylesheet" th:href="@{/css/common/portfolio_card.css}">
     <title th:if="${keyword}" th:text="${keyword} + ' 포트폴리오 검색 결과 | DevFolio'">키워드 포트폴리오 검색 결과 | DevFolio</title>
     <title th:unless="${keyword}">포트폴리오 | DevFolio</title>
 </head>
@@ -27,51 +29,51 @@
             <div class="carousel" id="carousel">
                 <div class="carousel-track" id="carousel-track">
                     <div class="carousel-item"
-                         th:if="${!#lists.isEmpty(images)}"
-                         th:each="image, iterStat : ${images}">
+                         th:if="${!#lists.isEmpty(hotPortfolios)}"
+                         th:each="hotPortfolio, iterStat : ${hotPortfolios}">
                         <img
-                                th:classappend="${iterStat.index == 0} ? ' active' : ''"
-                                th:src="${image.url == null or #strings.isEmpty(image.url)} ? @{/assets/} : ${image.url}"
-                                alt="포트폴리오 이미지"
-                                title="포트폴리오 이미지"
+                            th:classappend="${iterStat.index == 0} ? ' active' : ''"
+                            th:src="${hotPortfolio.imageUrl == null or #strings.isEmpty(hotPortfolio.imageUrl)} ? @{/assets/icon/x-lg.svg} : ${hotPortfolio.imageUrl}"
+                            alt="포트폴리오 이미지"
+                            title="포트폴리오 이미지"
                         />
                         <div class="item-description">
                             <div class="writer-meta">
                                 <div class="writer-profile">
-                                    <img th:src="${writer.imageUrl}">
+                                    <img th:src="${hotPortfolio.writer.profileImg}" th:alt="${hotPortfolio.writer.nickname}">
                                 </div>
                                 <div class="writer-info">
-                                    <span th:text="${writer.nickname}">작성자 닉네임</span>
-                                    <span th:text="${portfolio.updatedAt}">2025-08-11</span>
+                                    <span th:text="${hotPortfolio.writer.nickname}">작성자 닉네임</span>
+                                    <span th:text="${hotPortfolio.updatedAt}">2025-08-11</span>
                                 </div>
                             </div>
                             <div class="portfolio-meta">
-                                <span th:text="${portfolio.title}"
+                                <span th:text="${hotPortfolio.title}"
                                 class="hot-portfolio-title">포트폴리오 제목</span>
-                                <p th:text="${portfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                                <p th:text="${hotPortfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
                             </div>
-                            <div th:replace="~{fragments/common-fragments :: stats (${portfolio})}" class="stats"></div>
+                            <div th:replace="~{fragments/portfolio_fragments :: stats (${hotPortfolio})}"></div>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-indicators">
                     <button class="indicator-buttons"
-                            th:each="image, iterStat : ${images}"
+                            th:each="hotPortfolio, iterStat : ${hotPortfolios}"
                             th:data-index="${iterStat.index}"
                             th:classappend="${iterStat.index == 0} ? ' active' : ''"
                     >
                     </button>
                 </div>
-                <th:block th:if="${!#lists.isEmpty(images)}">
+                <th:block th:if="${!#lists.isEmpty(hotPortfolios)}">
                     <button class="carousel-button prev">
                         <img th:src="@{/assets/icon/chevron-left.svg}"
-                             title="이전 사진"
-                             alt="chevron-left">
+                             title="이전 포트폴리오"
+                             alt="이전 포트폴리오">
                     </button>
                     <button class="carousel-button next">
                         <img th:src="@{/assets/icon/chevron-right.svg}"
-                             title="다음 사진"
-                             alt="chevron-right">
+                             title="다음 포트폴리오"
+                             alt="다음 포트폴리오">
                     </button>
                 </th:block>
             </div>

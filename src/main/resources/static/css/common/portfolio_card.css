@@ -27,11 +27,11 @@
 
 .portfolio-link .card-info-box {
     width: 100%;
-    padding: 0 15px;
+    padding: 0 15px 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
 }
 
@@ -53,6 +53,7 @@
 }
 
 .portfolio-link .writer-info {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -61,11 +62,16 @@
 }
 
 .portfolio-link .portfolio-meta {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
+}
+
+.portfolio-link .portfolio-info {
+    width: 100%;
 }
 
 .portfolio-link .portfolio-title {
@@ -80,4 +86,20 @@
     text-overflow: ellipsis;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+/* stats */
+.stats-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }

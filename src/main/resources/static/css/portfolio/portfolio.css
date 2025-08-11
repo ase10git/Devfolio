@@ -50,19 +50,19 @@ main {
 .hot-title-box {
     width: 100%; max-width: 600px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 }
 
 /* carousel */
 .carousel {
-    width: 100%; max-width: 600px;
+    width: 100%; max-width: 1080px;
     aspect-ratio: 16 / 9;
     position: relative;
     overflow: hidden;
     border-radius: var(--box-radius-8);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+}
 
 .carousel-track {
     display: flex;
@@ -70,9 +70,11 @@ main {
 }
 
 .carousel-item {
-    min-width: 100%;
-    height: 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    flex: 0 0 100%;
     transition: opacity 0.5s ease;
+    position: relative;
 }
 
 .carousel-item img {
@@ -86,31 +88,34 @@ main {
     padding: 15px 30px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: flex-start;
     gap: 10px;
+    position: absolute;
+    bottom: 30px; bott: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    color: white;
 }
 
-.writer-meta {
+.carousel .writer-meta {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
 }
 
-.writer-profile {
+.carousel .writer-profile {
     width: 60px; height: 60px;
     border-radius: 50%;
     overflow: hidden;
 }
 
-.writer-profile img {
+.carousel .writer-profile img {
     width: 100%; height: 100%;
     object-fit: cover;
 }
 
-.writer-info {
+.carousel .writer-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -118,11 +123,11 @@ main {
     gap: 5px;
 }
 
-.writer-info span {
+.carousel .writer-info span {
     color: white;
 }
 
-.portfolio-meta {
+.carousel .portfolio-meta {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -130,7 +135,7 @@ main {
     gap: 10px;
 }
 
-.portfolio-meta span {
+.carousel .portfolio-meta .portfolio-meta span {
     color: white;
 }
 
@@ -143,7 +148,7 @@ main {
     overflow-wrap: break-word;
 }
 
-.portfolio-meta p {
+.carousel .portfolio-meta p {
     display: -webkit-box;
     -webkit-line-clamp: 7; 
     -webkit-box-orient: vertical;
@@ -151,6 +156,10 @@ main {
     text-overflow: ellipsis;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+.item-description .stats img {
+    filter: invert(1);
 }
 
 .carousel-indicators {
@@ -190,6 +199,10 @@ main {
     font-size: 18px;
     font-weight: bold;
     z-index: 10;
+}
+
+.carousel-button:hover {
+    background: rgba(255, 255, 255, 1);
 }
 
 .carousel-button.prev {

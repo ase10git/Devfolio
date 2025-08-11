@@ -11,10 +11,10 @@
     <div class="card-info-box">
       <div class="writer-meta">
         <div class="writer-profile">
-          <img th:src="@{writer.imageUrl}" th:alt="${writer.nickname}" />
+          <img th:src="@{portfolio.writer.profileImg}" th:alt="${portfolio.writer.nickname}" />
         </div>
         <div class="writer-info">
-          <span th:text="${writer.nickname}">작성자 닉네임</span>
+          <span th:text="${portfolio.writer.nickname}">작성자 닉네임</span>
           <span th:text="${portfolio.updatedAt}">2025-08-01</span>
         </div>
       </div>
@@ -35,18 +35,18 @@
 </div>
 
 <!--portfolio, community stats-->
-<div th:fragment="stats (target)" class="stats">
-  <span>
+<div th:fragment="stats (target)" class="stats-box">
+  <div class="stats">
     <img th:src="@{/assets/icon/hand-thumbs-up.svg}" alt="좋아요 아이콘">
     <span th:text="${target.likeCount}"></span>
-  </span>
-  <span>
+  </div>
+  <div class="stats">
     <img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘">
     <span th:text="${target.views}"></span>
-  </span>
-  <span>
+  </div>
+  <div class="stats">
     <img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘">
     <span th:text="${target.commentCount}"></span>
-  </span>
+  </div>
 </div>
 </html>
