@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.service.impl;
 
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.repository.EmailVerificationRepository;
 import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     /**
      * {@code UserServiceImpl} 생성자.
@@ -29,9 +31,10 @@ public class UserServiceImpl implements UserService {
      * @param userRepository 사용자 엔티티에 대한 CRUD 처리를 담당하는 JPA 리포지토리
      * @param passwordEncoder 비밀번호 암호화에 사용되는 Spring Security 제공 인코더 (BCrypt)
      */
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailVerificationRepository emailVerificationRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.emailVerificationRepository = emailVerificationRepository;
     }
 
     /**

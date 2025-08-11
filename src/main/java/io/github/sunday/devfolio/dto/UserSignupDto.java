@@ -10,4 +10,5 @@ public class UserSignupDto {
     private String nickname;
     private String password;
     private String passwordConfirm;
+    private String email;
 }

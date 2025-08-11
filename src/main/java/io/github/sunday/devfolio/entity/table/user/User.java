@@ -3,6 +3,8 @@ package io.github.sunday.devfolio.entity.table.user;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -44,7 +46,7 @@ public class User {
     /**
      * 이메일 주소 (고유, 필수)
      */
-    @Column(nullable = true, unique = true, length = 255) // 나중에 nullable = false로 변경
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
     /**

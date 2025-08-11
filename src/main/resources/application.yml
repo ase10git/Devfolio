@@ -17,6 +17,14 @@ spring:
     suffix: .html
     mode: HTML
     encoding: UTF-8
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: est.devfolio@gmail.com
+    password: jrtqmmkwncdknsxc
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 app:
   name: ${APP_NAME:DevFolio}

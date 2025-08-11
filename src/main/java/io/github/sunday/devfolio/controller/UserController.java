@@ -2,11 +2,15 @@ package io.github.sunday.devfolio.controller;
 
 import io.github.sunday.devfolio.dto.UserSignupDto;
 import io.github.sunday.devfolio.entity.table.user.AuthProvider;
+import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.repository.EmailVerificationRepository;
 import io.github.sunday.devfolio.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.ZonedDateTime;
 
 /**
  * 사용자 관련 요청을 처리하는 컨트롤러 클래스입니다.
@@ -16,14 +20,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     /**
      * UserController 생성자.
      *
      * @param userService 사용자 서비스 객체
      */
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailVerificationRepository emailVerificationRepository) {
         this.userService = userService;
+        this.emailVerificationRepository = emailVerificationRepository;
     }
 
     /**
@@ -85,11 +91,34 @@ public class UserController {
             return "signup";
         }
 
+        // 이메일 인증 여부 확인
+        EmailVerification verification = emailVerificationRepository
+                .findTopByEmailOrderByExpiredAtDesc(dto.getEmail())
+                .orElse(null);
+
+        if (verification == null) {
+            model.addAttribute("error", "이메일 인증을 진행해 주세요.");
+            return "signup";
+        }
+
+        // 인증 여부 확인
+        if (!Boolean.TRUE.equals(verification.getVerified())) {
+            model.addAttribute("error", "이메일 인증이 완료되지 않았습니다.");
+            return "signup";
+        }
+
+        // 인증 시간 만료 여부(예: 인증 후 10분 내에만 회원가입 가능)
+        if (verification.getExpiredAt().isBefore(ZonedDateTime.now())) {
+            model.addAttribute("error", "이메일 인증이 만료되었습니다. 다시 인증해 주세요.");
+            return "signup";
+        }
+
         // 사용자 생성 및 저장
         User user = User.builder()
                 .loginId(dto.getLoginId())
                 .nickname(dto.getNickname())
                 .password(dto.getPassword())
+                .email(dto.getEmail())
                 .oauthProvider(AuthProvider.LOCAL)
                 .build();
         userService.saveUser(user);

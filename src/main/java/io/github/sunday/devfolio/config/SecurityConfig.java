@@ -20,6 +20,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    // 추가로 Spring Security 설정이 필요하면 여기에 작성 (예: 인증/인가)
 }

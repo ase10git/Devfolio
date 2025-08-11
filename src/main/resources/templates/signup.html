@@ -6,55 +6,106 @@
 
     <script>
         async function checkLoginId() {
-          const loginId = document.getElementById("loginId").value;
-          if (!loginId) {
-            setLoginIdMsg("");
-            return;
-          }
-          const res = await fetch(`/check/loginId?loginId=${loginId}`);
-          const isDuplicate = await res.json();
-          setLoginIdMsg(isDuplicate ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.", isDuplicate);
+            const loginId = document.getElementById("loginId").value;
+            if (!loginId) {
+                setLoginIdMsg("");
+                return;
+            }
+            const res = await fetch(`/check/loginId?loginId=${loginId}`);
+            const isDuplicate = await res.json();
+            setLoginIdMsg(isDuplicate ? "이미 존재하는 아이디입니다." : "사용 가능한 아이디입니다.", isDuplicate);
         }
 
         async function checkNickname() {
-          const nickname = document.getElementById("nickname").value;
-          if (!nickname) {
-            setNicknameMsg("");
-            return;
-          }
-          const res = await fetch(`/check/nickname?nickname=${nickname}`);
-          const isDuplicate = await res.json();
-          setNicknameMsg(isDuplicate ? "이미 존재하는 닉네임입니다." : "사용 가능한 닉네임입니다.", isDuplicate);
+            const nickname = document.getElementById("nickname").value;
+            if (!nickname) {
+                setNicknameMsg("");
+                return;
+            }
+            const res = await fetch(`/check/nickname?nickname=${nickname}`);
+            const isDuplicate = await res.json();
+            setNicknameMsg(isDuplicate ? "이미 존재하는 닉네임입니다." : "사용 가능한 닉네임입니다.", isDuplicate);
         }
 
         function setLoginIdMsg(msg, isError) {
-          const el = document.getElementById("loginId-msg");
-          el.innerText = msg;
-          el.style.color = isError ? "red" : "green";
+            const el = document.getElementById("loginId-msg");
+            el.innerText = msg;
+            el.style.color = isError ? "red" : "green";
         }
 
         function setNicknameMsg(msg, isError) {
-          const el = document.getElementById("nickname-msg");
-          el.innerText = msg;
-          el.style.color = isError ? "red" : "green";
+            const el = document.getElementById("nickname-msg");
+            el.innerText = msg;
+            el.style.color = isError ? "red" : "green";
         }
 
         function checkPasswordMatch() {
-          const pw = document.getElementById("password").value;
-          const pwConfirm = document.getElementById("passwordConfirm").value;
-          const msgEl = document.getElementById("password-match-msg");
+            const pw = document.getElementById("password").value;
+            const pwConfirm = document.getElementById("passwordConfirm").value;
+            const msgEl = document.getElementById("password-match-msg");
 
-          if (!pwConfirm) {
-            msgEl.innerText = "";
-            return;
-          }
+            if (!pwConfirm) {
+                msgEl.innerText = "";
+                return;
+            }
 
-          if (pw !== pwConfirm) {
-            msgEl.innerText = "비밀번호가 일치하지 않습니다.";
-            msgEl.style.color = "red";
-          } else {
-            msgEl.innerText = "";
-          }
+            if (pw !== pwConfirm) {
+                msgEl.innerText = "비밀번호가 일치하지 않습니다.";
+                msgEl.style.color = "red";
+            } else {
+                msgEl.innerText = "";
+            }
+        }
+
+        async function sendCode() {
+            const email = document.getElementById("email").value;
+            const msgEl = document.getElementById("email-send-msg");
+
+            if (!email) {
+                msgEl.innerText = "이메일을 입력해주세요.";
+                msgEl.style.color = "red";
+                return;
+            }
+
+            const res = await fetch("/email/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "email=" + encodeURIComponent(email)
+            });
+
+            const msg = await res.text();
+            msgEl.innerText = msg;
+            msgEl.style.color = "green";
+        }
+
+        async function verifyCode() {
+            const email = document.getElementById("email").value;
+            const verificationCode = document.getElementById("emailCode").value;
+            const msgEl = document.getElementById("email-verify-msg");
+
+            if (!verificationCode) {
+                msgEl.innerText = "인증 코드를 입력해주세요.";
+                msgEl.style.color = "red";
+                return;
+            }
+
+            const res = await fetch("/email/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `email=${encodeURIComponent(email)}&verificationCode=${encodeURIComponent(verificationCode)}`
+            });
+
+            const msg = await res.text();
+
+            if (res.ok) {
+                // 200 OK → 인증 성공
+                msgEl.innerText = "이메일 인증 성공!";
+                msgEl.style.color = "green";
+            } else {
+                // 실패 시 서버에서 내려준 메시지 그대로 표시
+                msgEl.innerText = msg;
+                msgEl.style.color = "red";
+            }
         }
     </script>
 
@@ -218,6 +269,20 @@
             </div>
             <div id="nickname-msg" class="msg"></div>
             <div class="guideText">한글/영문/숫자 4~12자, 특수문자 X (선택)</div>
+
+            <label style="margin-top: 15px;">이메일</label>
+            <div class="input-row">
+                <input type="email" th:field="*{email}" id="email" placeholder="이메일 (필수 입력)" class="input-field" />
+                <button type="button" onclick="sendCode()" class="check-btn">인증코드 발송</button>
+            </div>
+            <div class="msg" id="email-send-msg"></div>
+
+            <div class="input-row" style="margin-top: 10px;">
+                <input type="text" id="emailCode" placeholder="6자리 인증 코드 입력" class="input-field" />
+                <button type="button" onclick="verifyCode()" class="check-btn">인증 확인</button>
+            </div>
+            <div class="msg" id="email-verify-msg"></div>
+            <div class="guideText">이메일로 전송된 인증 코드를 입력해 주세요.</div>
 
             <button type="submit" class="signupBtn">회원가입</button>
         </form>
