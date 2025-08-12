@@ -61,9 +61,4 @@ public class PortfolioListDto {
      * 작성자 정보
      */
     private WriterDto writer;
-
-    /**
-     * 카테고리 정보
-     */
-    private List<PortfolioCategoryDto> categories;
 }
