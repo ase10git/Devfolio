@@ -1,0 +1,83 @@
+/* Todo : HTML, CSS 병합 후 styles.css로 이동 */
+.portfolio-card {
+    border: 1px solid #9D9D9D;
+    border-radius: 15px;
+}
+
+.portfolio-link {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .card-img-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.portfolio-link .card-img-box img {
+    width: 100%; 
+    aspect-ratio: 16 / 9;
+    display: block;
+    object-fit: cover;
+}
+
+.portfolio-link .card-info-box {
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .writer-meta {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .writer-profile {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+}
+
+.portfolio-link .writer-profile img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.portfolio-link .writer-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.portfolio-link .portfolio-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .portfolio-title {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.portfolio-link .portfolio-description {
+    -webkit-line-clamp: 5; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

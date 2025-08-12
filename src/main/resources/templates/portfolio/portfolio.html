@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/css/common/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/portfolio/portfolio.css}">
+    <title th:if="${keyword}" th:text="${keyword} + ' 포트폴리오 검색 결과 | DevFolio'">키워드 포트폴리오 검색 결과 | DevFolio</title>
+    <title th:unless="${keyword}">포트폴리오 | DevFolio</title>
+</head>
+<body>
+<header></header>
+<main>
+    <div class="container">
+        <div class="title-box">
+            <h1>포트폴리오</h1>
+            <p>다양한 프로젝트 포트폴리오를 검색하고 다른 개발자와 포트폴리오를 공유해보세요</p>
+        </div>
+        <section class="hot-portfolios">
+            <div class="hot-title-box">
+                <h2>최근 핫한 포트폴리오</h2>
+            </div>
+            <div class="carousel" id="carousel">
+                <div class="carousel-track" id="carousel-track">
+                    <div class="carousel-item"
+                         th:if="${!#lists.isEmpty(images)}"
+                         th:each="image, iterStat : ${images}">
+                        <img
+                                th:classappend="${iterStat.index == 0} ? ' active' : ''"
+                                th:src="${image.url == null or #strings.isEmpty(image.url)} ? @{/assets/} : ${image.url}"
+                                alt="포트폴리오 이미지"
+                                title="포트폴리오 이미지"
+                        />
+                        <div class="item-description">
+                            <div class="writer-meta">
+                                <div class="writer-profile">
+                                    <img th:src="${writer.imageUrl}">
+                                </div>
+                                <div class="writer-info">
+                                    <span th:text="${writer.nickname}">작성자 닉네임</span>
+                                    <span th:text="${portfolio.updatedAt}">2025-08-11</span>
+                                </div>
+                            </div>
+                            <div class="portfolio-meta">
+                                <span th:text="${portfolio.title}"
+                                class="hot-portfolio-title">포트폴리오 제목</span>
+                                <p th:text="${portfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                            </div>
+                            <div th:replace="~{fragments/common-fragments :: stats (${portfolio})}" class="stats"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-indicators">
+                    <button class="indicator-buttons"
+                            th:each="image, iterStat : ${images}"
+                            th:data-index="${iterStat.index}"
+                            th:classappend="${iterStat.index == 0} ? ' active' : ''"
+                    >
+                    </button>
+                </div>
+                <th:block th:if="${!#lists.isEmpty(images)}">
+                    <button class="carousel-button prev">
+                        <img th:src="@{/assets/icon/chevron-left.svg}"
+                             title="이전 사진"
+                             alt="chevron-left">
+                    </button>
+                    <button class="carousel-button next">
+                        <img th:src="@{/assets/icon/chevron-right.svg}"
+                             title="다음 사진"
+                             alt="chevron-right">
+                    </button>
+                </th:block>
+            </div>
+        </section>
+        <section class="portfolios">
+            <header class="portfolio-list-header">
+                <div class="search-box">
+                    <form th:action="@{/portfolio}" method="get" id="search-form" class="search-form">
+                        <!-- Todo: 카테고리 데이터 추가 시 사용 -->
+                        <!-- <div class="custom-select">
+                            <select class="categories"
+                                    th:field="${category}"
+                            >
+                              <option value="" disabled selected>카테고리 선택</option>
+                                <option
+                                    th:each="item: ${categories}"
+                                    th:value="${item.name}"
+                                    th:text="${item.name}"
+                                >
+                                </option>
+                            </select>
+                          </div> -->
+                        <input type="text" placeholder="검색" name="keyword" id="search-input">
+                        <div class="search-btn-wrap">
+                            <button type="reset" class="reset-btn">
+                                <img th:src="@{/assets/icon/x-lg.svg}" alt="삭제 버튼">
+                            </button>
+                            <button type="submit" id="search-btn">
+                                <img th:src="@{/assets/icon/search.svg}" alt="검색 버튼">
+                            </button>
+                        </div>
+                    </form>
+                    <div class="write-btn-wrap">
+                        <a th:href="@{/portfolio/new}">
+                            <img th:src="@{/assets/icon/pencil.svg}">
+                            <span>작성하기</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="sort-box">
+                    <span class="sort-button">최신순</span>
+                    <span class="sort-button">댓글순</span>
+                    <span class="sort-button">조회수순</span>
+                    <span class="sort-button">좋아요순</span>
+                </div>
+            </header>
+            <div class="portfolio-list">
+                <th:block th:each="portfolio:${portfolios}">
+                    <div th:replace="~{fragments/portfolio_fragments :: portfolio-card (${portfolio})}"></div>
+                </th:block>
+            </div>
+            <div id="loading-indicator"></div>
+        </section>
+    </div>
+</main>
+<footer></footer>
+<script type="module" th:src="@{/js/portfolio/portfolio.js}"></script>
+</body>
+</html>
