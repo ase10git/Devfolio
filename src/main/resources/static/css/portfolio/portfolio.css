@@ -334,7 +334,7 @@ main {
 .select-selected {
     position: relative;
     padding: 8px 16px;
-    background-color: blue;
+    background-color: #3A5BA0;
     color: white;
     border-radius: 10px;
     cursor: pointer;
@@ -343,7 +343,7 @@ main {
 .select-selected:after {
     position: absolute;
     content: "";
-    top: 50%;
+    top: 60%;
     right: 16px;
     transform: translateY(-50%);
     border: 6px solid transparent;
@@ -352,12 +352,12 @@ main {
 
 .select-arrow-active:after {
     border-color: transparent transparent white transparent;
-    top: 45%;
+    top: 40%;
 }
 
 .select-items {
     position: absolute;
-    background-color: blue;
+    background-color: #3A5BA0;
     top: 100%;
     left: 0;
     right: 0;
@@ -380,7 +380,7 @@ main {
 
 .select-items div:hover,
 .same-as-selected {
-    background-color: var(--orange-600);
+    background-color: #3A5BA0;
 }
 
 .select-hide {
@@ -389,7 +389,7 @@ main {
 
 .select-items div:hover,
 .same-as-selected {
-    background-color: var(--orange-600);
+    background-color: #3A5BA0;
 }
 
 .sort-box {

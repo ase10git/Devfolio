@@ -42,6 +42,12 @@ public class PortfolioCategory {
     private String name;
 
     /**
+     * 카테고리의 이름(한글)
+     */
+    @Column(name = "name_ko", length = 50, nullable = false)
+    private String nameKo;
+
+    /**
      * 카테고리의 설명
      */
     @Column(name = "description")

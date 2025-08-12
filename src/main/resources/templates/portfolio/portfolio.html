@@ -11,8 +11,8 @@
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio.css}">
     <!-- Todo: 병합 후 styles.css로 통합 -->
     <link rel="stylesheet" th:href="@{/css/common/portfolio_card.css}">
-    <title th:if="${keyword}" th:text="${keyword} + ' 포트폴리오 검색 결과 | DevFolio'">키워드 포트폴리오 검색 결과 | DevFolio</title>
-    <title th:unless="${keyword}">포트폴리오 | DevFolio</title>
+    <title th:if="${requestDto.keyword != null}" th:text="${#strings.defaultString(requestDto.keyword + ' ', '')} + '포트폴리오 검색 결과 | DevFolio'">키워드 포트폴리오 검색 결과 | DevFolio</title>
+    <title th:unless="${requestDto.keyword != null}">포트폴리오 | DevFolio</title>
 </head>
 <body>
 <header></header>
@@ -82,20 +82,19 @@
             <header class="portfolio-list-header">
                 <div class="search-box">
                     <form th:action="@{/portfolio}" method="get" id="search-form" class="search-form">
-                        <!-- Todo: 카테고리 데이터 추가 시 사용 -->
-                        <!-- <div class="custom-select">
+                        <div class="custom-select">
                             <select class="categories"
-                                    th:field="${category}"
+                                    th:field="${requestDto.category}"
                             >
                               <option value="" disabled selected>카테고리 선택</option>
                                 <option
                                     th:each="item: ${categories}"
                                     th:value="${item.name}"
-                                    th:text="${item.name}"
+                                    th:text="${item.nameKo}"
                                 >
                                 </option>
                             </select>
-                          </div> -->
+                        </div>
                         <input type="text" placeholder="검색 키워드를 입력해주세요" name="keyword" id="search-input"
                             th:value="${requestDto.keyword}">
                         <div class="search-btn-wrap">

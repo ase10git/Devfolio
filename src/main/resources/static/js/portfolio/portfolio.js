@@ -1,4 +1,5 @@
 import addCarouselListeners from "./portfolio-carousel.js";
+import customSelect from "./portfolio-custom-select.js";
 
 /**
  * 검색 폼 내의 입력창과 버튼 이벤트 리스너
@@ -52,6 +53,7 @@ function addSortButtonAction() {
  * DOMContentLoaded 이벤트 리스너
  */
 document.addEventListener("DOMContentLoaded", () => {
+  customSelect();
   addCarouselListeners();
   addSortButtonAction();
   addSearchFormAction();

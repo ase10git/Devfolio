@@ -1,8 +1,10 @@
 package io.github.sunday.devfolio.controller;
 
+import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
+import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PortfolioController {
     private final PortfolioService portfolioService;
+    private final PortfolioCategoryService portfolioCategoryService;
 
     @GetMapping
     public String list(
@@ -24,9 +27,11 @@ public class PortfolioController {
             Model model
     ) {
         List<PortfolioListDto> list = portfolioService.search(requestDto);
+        List<PortfolioCategoryDto> categoryList = portfolioCategoryService.list();
 
         model.addAttribute("hotPortfolios", list);
         model.addAttribute("portfolios", list);
+        model.addAttribute("categories", categoryList);
         model.addAttribute("requestDto", requestDto);
         model.addAttribute("sortOptions", PortfolioSort.values());
         return "portfolio/portfolio";

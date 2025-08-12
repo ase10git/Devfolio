@@ -17,13 +17,13 @@ import java.util.List;
 
 /**
  * 포트폴리오 Entity를 다루는 Service
+ * 포트폴리오 CRUD 기능 제공
  */
 @Service
 @RequiredArgsConstructor
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final PortfolioQueryDslRepository portfolioQueryDslRepository;
-    private final PortfolioCategoryRepository portfolioCategoryRepository;
     private final PortfolioCategoryMapRepository portfolioCategoryMapRepository;
     private final PortfolioCommentRepository portfolioCommentRepository;
     private final PortfolioImageRepository portfolioImageRepository;
@@ -34,7 +34,6 @@ public class PortfolioService {
      * 포트폴리오 검색 및 조회
      * 페이지, 키워드, 카테고리, 정렬 기준을 요청을 받음
      */
-    // Todo : 포트폴리오 검색 기능 추가
     public List<PortfolioListDto> search(PortfolioSearchRequestDto searchRequestDto) {
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), LIST_PAGE_SIZE);
 
@@ -49,14 +48,6 @@ public class PortfolioService {
                             .build();
 
                     PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
-                    List<PortfolioCategoryMap> categoryMapList = portfolioCategoryMapRepository.findAllByPortfolio(portfolio);
-                    List<PortfolioCategoryDto> categoryDtoList = categoryMapList.stream()
-                            .map(categoryMap ->  PortfolioCategoryDto.builder()
-                                        .categoryIdx(categoryMap.getCategory().getCategoryIdx())
-                                        .name(categoryMap.getCategory().getName())
-                                        .build()
-                            )
-                            .toList();
 
                     return PortfolioListDto.builder()
                             .portfolioIdx(portfolio.getPortfolioIdx())
@@ -68,7 +59,6 @@ public class PortfolioService {
                             .commentCount(portfolio.getCommentCount())
                             .imageUrl(image != null ? image.getImageUrl() : "")
                             .writer(writerDto)
-                            .categories(categoryDtoList)
                             .build();
         }).toList();
     }
