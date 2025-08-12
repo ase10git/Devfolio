@@ -9,7 +9,6 @@ import io.github.sunday.devfolio.entity.table.portfolio.PortfolioCategoryMap;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
 import io.github.sunday.devfolio.repository.portfolio.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
+    private final PortfolioQueryDslRepository portfolioQueryDslRepository;
     private final PortfolioCategoryRepository portfolioCategoryRepository;
     private final PortfolioCategoryMapRepository portfolioCategoryMapRepository;
     private final PortfolioCommentRepository portfolioCommentRepository;
@@ -36,23 +36,11 @@ public class PortfolioService {
      */
     // Todo : 포트폴리오 검색 기능 추가
     public List<PortfolioListDto> search(PortfolioSearchRequestDto searchRequestDto) {
-        // 페이지 생성
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), LIST_PAGE_SIZE);
 
-        // repository에서 portfolio 가져오기
-        Page<Portfolio> pages = portfolioRepository.findAll(pageable);
+        List<Portfolio> results = portfolioQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
 
-        // 키워드 검색 결과
-
-
-        // 카테고리 검색 결과
-
-        
-        // 정렬 수행
-        
-
-        // 리스트로 가공
-        return pages.stream()
+        return results.stream()
                 .map(portfolio -> {
                     WriterDto writerDto = WriterDto.builder()
                             .userIdx(portfolio.getUser().getUserIdx())
