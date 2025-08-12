@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.DTO;
+package io.github.sunday.devfolio.dto;
 
 import lombok.Builder;
 import lombok.Data;
