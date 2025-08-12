@@ -3,7 +3,7 @@ package io.github.sunday.devfolio.controller;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
-import io.github.sunday.devfolio.service.PortfolioService;
+import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

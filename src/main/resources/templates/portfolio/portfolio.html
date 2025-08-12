@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="writer-info">
                                     <span th:text="${hotPortfolio.writer.nickname}">작성자 닉네임</span>
-                                    <span th:text="${hotPortfolio.updatedAt}">2025-08-11</span>
+                                    <span th:text="${hotPortfolio.updatedAt}">수정 날짜</span>
                                 </div>
                             </div>
                             <div class="portfolio-meta">
@@ -109,7 +109,7 @@
                     </form>
                     <div class="write-btn-wrap">
                         <a th:href="@{/portfolio/new}">
-                            <img th:src="@{/assets/icon/pencil.svg}">
+                            <img th:src="@{/assets/icon/pencil.svg}" alt="작성 아이콘">
                             <span>작성하기</span>
                         </a>
                     </div>

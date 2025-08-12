@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
