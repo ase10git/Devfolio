@@ -60,6 +60,7 @@
         async function sendCode() {
             const email = document.getElementById("email").value;
             const msgEl = document.getElementById("email-send-msg");
+            const btn = event.target;
 
             if (!email) {
                 msgEl.innerText = "이메일을 입력해주세요.";
@@ -67,15 +68,33 @@
                 return;
             }
 
-            const res = await fetch("/email/send", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "email=" + encodeURIComponent(email)
-            });
+            // 클릭 시 안내 메시지 표시 + 버튼 비활성화
+            btn.disabled = true;
+            btn.textContent = "발송 중...";
+            msgEl.innerText = "인증코드 발송 중입니다. 잠시만 기다려 주세요.";
+            msgEl.style.color = "blue";
 
-            const msg = await res.text();
-            msgEl.innerText = msg;
-            msgEl.style.color = "green";
+            try {
+                // 서버 요청
+                const res = await fetch("/email/send", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "email=" + encodeURIComponent(email)
+                });
+
+                // 응답 메시지 표시
+                const msg = await res.text();
+                msgEl.innerText = msg;
+                msgEl.style.color = res.ok ? "green" : "red";
+
+            } catch (error) {
+                msgEl.innerText = "서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.";
+                msgEl.style.color = "red";
+            } finally {
+                // 버튼 복구
+                btn.disabled = false;
+                btn.textContent = "인증코드 발송";
+            }
         }
 
         async function verifyCode() {
@@ -98,11 +117,9 @@
             const msg = await res.text();
 
             if (res.ok) {
-                // 200 OK → 인증 성공
-                msgEl.innerText = "이메일 인증 성공!";
+                msgEl.innerText = "이메일 인증에 성공하셨습니다.";
                 msgEl.style.color = "green";
             } else {
-                // 실패 시 서버에서 내려준 메시지 그대로 표시
                 msgEl.innerText = msg;
                 msgEl.style.color = "red";
             }
@@ -169,6 +186,10 @@
           border: none;
           border-radius: 10px;
           cursor: pointer;
+        }
+        .check-btn:disabled {
+            cursor: default;
+            opacity: 0.6;
         }
         .guideText {
           color: gray;

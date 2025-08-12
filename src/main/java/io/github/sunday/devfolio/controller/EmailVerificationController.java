@@ -57,7 +57,7 @@ public class EmailVerificationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메일 발송 실패");
         }
 
-        return ResponseEntity.ok("인증 코드가 발송되었습니다.");
+        return ResponseEntity.ok("인증 코드가 발송되었습니다. 5분 안에 인증을 완료하세요.");
     }
 
     /**
