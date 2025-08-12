@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.controller;
 
 import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.repository.EmailVerificationRepository;
+import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import java.util.Map;
 @RequestMapping("/email")
 public class EmailVerificationController {
 
+    private final UserRepository userRepository;
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
 
-    public EmailVerificationController(EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
+    public EmailVerificationController(UserRepository userRepository, EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
+        this.userRepository = userRepository;
         this.emailService = emailService;
         this.emailVerificationRepository = emailVerificationRepository;
     }
@@ -28,8 +31,17 @@ public class EmailVerificationController {
      */
     @PostMapping("/send")
     public ResponseEntity<?> sendVerificationCode(@RequestParam String email) {
-        String verificationCode = generateCode();
         String emailClean = email.trim().toLowerCase();
+
+        // 1. 이미 사용 중인 이메일인지 확인 (users 테이블)
+        boolean emailExists = userRepository.existsByEmail(emailClean);
+        if (emailExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요.");
+        }
+
+        // 2. 인증 코드 생성
+        String verificationCode = generateCode();
 
         EmailVerification existing = emailVerificationRepository.findTopByEmailOrderByExpiredAtDesc(emailClean).orElse(null);
 
