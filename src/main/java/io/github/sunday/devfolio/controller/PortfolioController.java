@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.controller;
 
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
 import io.github.sunday.devfolio.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class PortfolioController {
         model.addAttribute("hotPortfolios", list);
         model.addAttribute("portfolios", list);
         model.addAttribute("requestDto", requestDto);
+        model.addAttribute("sortOptions", PortfolioSort.values());
         return "portfolio/portfolio";
     }
 

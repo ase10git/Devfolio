@@ -96,9 +96,10 @@
                                 </option>
                             </select>
                           </div> -->
-                        <input type="text" placeholder="검색" name="keyword" id="search-input">
+                        <input type="text" placeholder="검색 키워드를 입력해주세요" name="keyword" id="search-input"
+                            th:value="${requestDto.keyword}">
                         <div class="search-btn-wrap">
-                            <button type="reset" class="reset-btn">
+                            <button type="button" id="reset-btn">
                                 <img th:src="@{/assets/icon/x-lg.svg}" alt="삭제 버튼">
                             </button>
                             <button type="submit" id="search-btn">
@@ -114,10 +115,13 @@
                     </div>
                 </div>
                 <div class="sort-box">
-                    <span class="sort-button">최신순</span>
-                    <span class="sort-button">댓글순</span>
-                    <span class="sort-button">조회수순</span>
-                    <span class="sort-button">좋아요순</span>
+                    <th:block th:each="sort : ${sortOptions}">
+                        <button type="button" class="sort-btn"
+                                th:data-sort="${sort.fieldName}"
+                                th:classappend="${#strings.equals(requestDto.sort, sort.fieldName) ? 'selected' : ''}"
+                                th:text="${sort.fieldNameKo}"
+                        ></button>
+                    </th:block>
                 </div>
             </header>
             <div class="portfolio-list">

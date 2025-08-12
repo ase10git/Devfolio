@@ -42,18 +42,17 @@ public class PortfolioQueryDslRepository {
 
         StringTemplate tsQuery = Expressions.stringTemplate(
                 "websearch_to_tsquery('simple', {0})",
-                searchRequestDto.getKeyword() != null ?
-                        searchRequestDto.getKeyword() : ""
+                searchRequestDto.getKeyword() != null ? searchRequestDto.getKeyword() : ""
         );
 
         NumberTemplate<Float> rank = Expressions.numberTemplate(
                 Float.class,
-                "ts_rank({0}, {1})",
+                "tsrank({0}, {1})",
                 portfolio.searchVector, tsQuery
         );
 
         BooleanExpression keywordCondition = Expressions.booleanTemplate(
-                "{0} @@ {1}",
+                "pgfts({0}, {1})",
                 portfolio.searchVector, tsQuery
         );
 
