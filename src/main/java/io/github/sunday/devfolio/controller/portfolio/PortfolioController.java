@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.controller;
+package io.github.sunday.devfolio.controller.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
@@ -18,6 +18,7 @@ import java.util.List;
  * 포트폴리오 요청을 처리하는 Controller
  */
 @Controller
+@RequestMapping("/portfolio")
 @RequiredArgsConstructor
 public class PortfolioController {
     private final PortfolioService portfolioService;
@@ -27,7 +28,7 @@ public class PortfolioController {
      * 포트폴리오 메인 페이지 출력
      * 포트폴리오 검색, 핫한 포트폴리오 제공
      */
-    @GetMapping("/portfolio")
+    @GetMapping()
     public String list(
             @ModelAttribute PortfolioSearchRequestDto requestDto,
             Model model
@@ -49,19 +50,6 @@ public class PortfolioController {
         model.addAttribute("requestDto", requestDto);
         model.addAttribute("sortOptions", PortfolioSort.values());
         return "portfolio/portfolio";
-    }
-
-    /**
-     * 포트폴리오 목록 출력 API
-     * 무한 스크롤에 적용되는 정보 요청 API
-     */
-    @GetMapping("/api/portfolio/list")
-    @ResponseBody
-    public ResponseEntity<List<PortfolioListDto>> apiList(
-            @ModelAttribute PortfolioSearchRequestDto requestDto
-    ) {
-        List<PortfolioListDto> list = portfolioService.search(requestDto);
-        return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
