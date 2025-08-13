@@ -57,10 +57,16 @@ function addInfiniteScroll() {
   const params = new URLSearchParams(window.location.search);
   let page = parseInt(params.get("page") || 1);
   let isLoading = false;
+  let isLastPage = false;
 
   const portfolioSection = document.getElementsByClassName("portfolios")[0];
   const portfolioList = document.getElementById("portfolio-list");
+  const pageSize = parseInt(portfolioList.dataset.pageSize)??.20;
   const spinner = makeSpinner();
+  if (portfolioList.children.length === 0 || portfolioList.children.length < pageSize) {
+    isLastPage = true;
+    return;
+  }
 
   /**
    * 포트폴리오 데이터 로딩 표시용 스피너
@@ -117,6 +123,8 @@ function addInfiniteScroll() {
    * 포트폴리오 데이터 요청
    */
   function fetchPortfolioData() {
+    if (isLastPage) return;
+
     params.set("page", page);
     const requestUrl = `/api/portfolio/list?${params.toString()}`;
 
@@ -128,6 +136,10 @@ function addInfiniteScroll() {
     })
       .then((res) => res.json())
       .then((data) => {
+        if (data.length < pageSize) {
+          isLastPage = true;
+        }
+
         if (data.length === 0) {
           loadingFinish();
           return;
@@ -139,7 +151,9 @@ function addInfiniteScroll() {
         page++;
         loadingFinish();
 
-        observeLastItem(observer, portfolioList.children);
+        if (!isLastPage) {
+          observeLastItem(observer, portfolioList.children);
+        }
       })
       .catch(() => {
         const errorBox = makeScrollErrorMessage();

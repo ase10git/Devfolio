@@ -8,7 +8,7 @@ export default function createPortfolioCard(portfolio) {
   // 링크
   const link = document.createElement("a");
   link.className = "portfolio-link";
-  link.href = `/portfolio/${portfolio.id}`;
+  link.href = `/portfolio/${portfolio.portfolioIdx}`;
 
   // 이미지 박스
   const cardImgBox = document.createElement("div");

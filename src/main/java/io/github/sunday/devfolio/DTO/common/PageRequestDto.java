@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @Builder
 public class PageRequestDto {
+
     /**
      * 페이지
      */
@@ -24,7 +25,7 @@ public class PageRequestDto {
      * 페이지 크기
      */
     @Min(value = 1)
-    private int size;
+    private int size = 20;
 
     /**
      * 정렬 기준

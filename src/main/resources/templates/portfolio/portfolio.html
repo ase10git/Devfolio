@@ -127,7 +127,9 @@
                     </th:block>
                 </div>
             </header>
-            <div th:if="${!#lists.isEmpty(portfolios)}" id="portfolio-list">
+            <div th:if="${!#lists.isEmpty(portfolios)}" id="portfolio-list"
+                 th:data-page-size="${requestDto.size}"
+            >
                 <th:block th:each="portfolio:${portfolios}">
                     <div th:replace="~{fragments/portfolio_fragments :: portfolio-card (${portfolio})}"></div>
                 </th:block>

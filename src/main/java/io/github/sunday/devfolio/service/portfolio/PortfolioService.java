@@ -35,7 +35,6 @@ public class PortfolioService {
     private final PortfolioCommentRepository portfolioCommentRepository;
     private final PortfolioImageRepository portfolioImageRepository;
     private final PortfolioLikeRepository portfolioLikeRepository;
-    private static final int LIST_PAGE_SIZE = 20;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
@@ -44,7 +43,7 @@ public class PortfolioService {
      */
     // Todo : Index 초과 에러 처리
     public List<PortfolioListDto> search(PortfolioSearchRequestDto searchRequestDto) {
-        Pageable pageable = PageRequest.of(searchRequestDto.getPage(), LIST_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize());
         List<Portfolio> results = portfolioQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
         return portfoliosToListDto(results);
     }
@@ -75,7 +74,7 @@ public class PortfolioService {
     // Todo : 존재하지 않는 userIdx에 대한 커스텀 에러 처리, Index 초과 에러 처리
     public List<PortfolioLikeListDto> getUserLikedPortfolios(Long userIdx, PageRequestDto requestDto) {
         Sort sort = getSortFromRequestDto(requestDto, true);
-        Pageable pageable = PageRequest.of(requestDto.getPage(), LIST_PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         List<PortfolioLike> results = portfolioLikeRepository.findAllByUser_UserIdx(userIdx, pageable);
         return portfoliosToLikeListDto(results);
     }
@@ -86,7 +85,7 @@ public class PortfolioService {
     // Todo : Index 초과 에러 처리
     public List<PortfolioListDto> getUserPortfolios(Long userIdx, PageRequestDto requestDto) {
         Sort sort = getSortFromRequestDto(requestDto, false);
-        Pageable pageable = PageRequest.of(requestDto.getPage(), LIST_PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         List<Portfolio> results = portfolioRepository.findAllByUser_UserIdx(userIdx, pageable);
         return userPortfoliosToListDto(results);
     }
