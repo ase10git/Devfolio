@@ -24,7 +24,8 @@
         </div>
         <section class="hot-portfolios">
             <div class="hot-title-box">
-                <h2>최근 핫한 포트폴리오</h2>
+                <h2 th:if="${isHot}">최근 핫한 포트폴리오</h2>
+                <h2 th:unless="${isHot}">인기 포트폴리오</h2>
             </div>
             <div class="carousel" id="carousel">
                 <div class="carousel-track" id="carousel-track">

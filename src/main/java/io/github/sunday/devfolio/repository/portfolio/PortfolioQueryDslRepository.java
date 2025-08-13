@@ -64,10 +64,6 @@ public class PortfolioQueryDslRepository {
             booleanBuilder.and(portfolioCategory.name.eq(searchRequestDto.getCategory()));
         }
 
-        System.out.println(pageable.getOffset());
-        System.out.println(pageable.getPageSize());
-        System.out.println(pageable.getPageNumber());
-
         return queryFactory.selectFrom(portfolio)
                 .join(portfolioCategoryMap)
                 .on(portfolio.eq(portfolioCategoryMap.portfolio))

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -38,7 +39,31 @@ public class PortfolioService {
 
         List<Portfolio> results = portfolioQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
 
-        return results.stream()
+        return portfolioToListDto(results);
+    }
+
+    /**
+     * 최근 핫한 포트폴리오 조회
+     * 현재 날짜 기준으로 일주일 간 업로드된 포트폴리오 중 좋아요, 조회수 내림차순으로 상위 5개 선정
+     */
+    public List<PortfolioListDto> getHotPortfolios() {
+        List<Portfolio> results = portfolioRepository.findTop5ByCreatedAtBetweenOrderByLikeCountDescViewsDesc(
+                ZonedDateTime.now().minusWeeks(1), ZonedDateTime.now()
+        );
+        return portfolioToListDto(results);
+    }
+
+    /**
+     * 인기 게시글 조회
+     * 포트폴리오 중 좋아요, 조회수 내림차순으로 상위 5개 선정
+     */
+    public List<PortfolioListDto> getPopularPortfolios() {
+        List<Portfolio> results = portfolioRepository.findTop5ByOrderByLikeCountDescViewsDescCreatedAtDesc();
+        return portfolioToListDto(results);
+    }
+
+    private List<PortfolioListDto> portfolioToListDto(List<Portfolio> portfolios) {
+        return portfolios.stream()
                 .map(portfolio -> {
                     WriterDto writerDto = WriterDto.builder()
                             .userIdx(portfolio.getUser().getUserIdx())
@@ -63,7 +88,7 @@ public class PortfolioService {
                             .imageUrl(image != null ? image.getImageUrl() : "")
                             .writer(writerDto)
                             .build();
-        }).toList();
+                }).toList();
     }
 
     // Todo : 포트폴리오 상세보기 기능 추가

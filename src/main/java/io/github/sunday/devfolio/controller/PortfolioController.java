@@ -27,9 +27,17 @@ public class PortfolioController {
             Model model
     ) {
         List<PortfolioListDto> list = portfolioService.search(requestDto);
+
+        boolean isHot = true;
+        List<PortfolioListDto> hotList = portfolioService.getHotPortfolios();
+        if (hotList.isEmpty()) {
+            hotList = portfolioService.getPopularPortfolios();
+            isHot = false;
+        }
         List<PortfolioCategoryDto> categoryList = portfolioCategoryService.list();
 
-        model.addAttribute("hotPortfolios", list);
+        model.addAttribute("hotPortfolios", hotList);
+        model.addAttribute("isHot", isHot);
         model.addAttribute("portfolios", list);
         model.addAttribute("categories", categoryList);
         model.addAttribute("requestDto", requestDto);
