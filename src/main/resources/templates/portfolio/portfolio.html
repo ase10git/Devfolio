@@ -127,7 +127,7 @@
                     </th:block>
                 </div>
             </header>
-            <div th:if="${!#lists.isEmpty(portfolios)}" class="portfolio-list">
+            <div th:if="${!#lists.isEmpty(portfolios)}" id="portfolio-list">
                 <th:block th:each="portfolio:${portfolios}">
                     <div th:replace="~{fragments/portfolio_fragments :: portfolio-card (${portfolio})}"></div>
                 </th:block>
@@ -137,7 +137,6 @@
                    th:text="'[' + ${requestDto.keyword} + '] 검색 결과가 없습니다.'">포트폴리오가 없습니다.</p>
                 <p th:unless="${requestDto.keyword != null}">업로드된 포트폴리오가 없습니다.</p>
             </div>
-            <div id="loading-indicator"></div>
         </section>
     </div>
 </main>
