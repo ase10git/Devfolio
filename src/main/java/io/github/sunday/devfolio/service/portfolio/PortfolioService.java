@@ -1,11 +1,9 @@
 package io.github.sunday.devfolio.service.portfolio;
 
-import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
-import io.github.sunday.devfolio.entity.table.portfolio.PortfolioCategoryMap;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
 import io.github.sunday.devfolio.repository.portfolio.*;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -55,7 +54,11 @@ public class PortfolioService {
                             .description(portfolio.getDescription())
                             .views(portfolio.getViews())
                             .likeCount(portfolio.getLikeCount())
-                            .updatedAt(portfolio.getUpdatedAt())
+                            .updatedAt(
+                                    portfolio.getUpdatedAt().format(
+                                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                                    )
+                            )
                             .commentCount(portfolio.getCommentCount())
                             .imageUrl(image != null ? image.getImageUrl() : "")
                             .writer(writerDto)

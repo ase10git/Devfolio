@@ -3,9 +3,6 @@ package io.github.sunday.devfolio.dto.portfolio;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import lombok.*;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
 /**
  * 포트폴리오의 정보를 응답으로 전송하는 DTO
  * 포트폴리오의 기본 정보, 카테고리, 작성자, 통계 정보
@@ -50,7 +47,7 @@ public class PortfolioListDto {
     /**
      * 포트폴리오 수정일시
      */
-    private ZonedDateTime updatedAt;
+    private String updatedAt;
 
     /**
      * 포트폴리오 썸네일 이미지
