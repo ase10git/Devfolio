@@ -118,7 +118,7 @@ function addInfiniteScroll() {
    */
   function fetchPortfolioData() {
     params.set("page", page);
-    const requestUrl = `/portfolio/api/list?${params.toString()}`;
+    const requestUrl = `/api/portfolio/list?${params.toString()}`;
 
     fetch(requestUrl, {
       method: "GET",
