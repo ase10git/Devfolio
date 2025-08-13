@@ -32,29 +32,31 @@
                     <div class="carousel-item"
                          th:if="${!#lists.isEmpty(hotPortfolios)}"
                          th:each="hotPortfolio, iterStat : ${hotPortfolios}">
-                        <img
-                            th:classappend="${iterStat.index == 0} ? ' active' : ''"
-                            th:src="${hotPortfolio.imageUrl == null or #strings.isEmpty(hotPortfolio.imageUrl)} ? @{/assets/icon/x-lg.svg} : ${hotPortfolio.imageUrl}"
-                            alt="포트폴리오 이미지"
-                            title="포트폴리오 이미지"
-                        />
-                        <div class="item-description">
-                            <div class="writer-meta">
-                                <div class="writer-profile">
-                                    <img th:src="${hotPortfolio.writer.profileImg}" th:alt="${hotPortfolio.writer.nickname}">
+                        <a th:href="@{/portfolio/{id}(id=${hotPortfolio.portfolioIdx})}">
+                            <img
+                                    th:classappend="${iterStat.index == 0} ? ' active' : ''"
+                                    th:src="${hotPortfolio.imageUrl == null or #strings.isEmpty(hotPortfolio.imageUrl)} ? @{/assets/icon/x-lg.svg} : ${hotPortfolio.imageUrl}"
+                                    alt="포트폴리오 이미지"
+                                    title="포트폴리오 이미지"
+                            />
+                            <div class="item-description">
+                                <div class="writer-meta">
+                                    <div class="writer-profile">
+                                        <img th:src="${hotPortfolio.writer.profileImg}" th:alt="${hotPortfolio.writer.nickname}">
+                                    </div>
+                                    <div class="writer-info">
+                                        <span th:text="${hotPortfolio.writer.nickname}">작성자 닉네임</span>
+                                        <span th:text="${hotPortfolio.updatedAt}">수정 날짜</span>
+                                    </div>
                                 </div>
-                                <div class="writer-info">
-                                    <span th:text="${hotPortfolio.writer.nickname}">작성자 닉네임</span>
-                                    <span th:text="${hotPortfolio.updatedAt}">수정 날짜</span>
-                                </div>
-                            </div>
-                            <div class="portfolio-meta">
+                                <div class="portfolio-meta">
                                 <span th:text="${hotPortfolio.title}"
-                                class="hot-portfolio-title">포트폴리오 제목</span>
-                                <p th:text="${hotPortfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                                      class="hot-portfolio-title">포트폴리오 제목</span>
+                                    <p th:text="${hotPortfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                                </div>
+                                <div th:replace="~{fragments/portfolio_fragments :: stats (${hotPortfolio})}"></div>
                             </div>
-                            <div th:replace="~{fragments/portfolio_fragments :: stats (${hotPortfolio})}"></div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div class="carousel-indicators">
@@ -96,18 +98,19 @@
                                 ></option>
                             </select>
                         </div>
-                        <input type="text" placeholder="검색 키워드를 입력해주세요" name="keyword" id="search-input"
-                            th:value="${requestDto.keyword}">
-                        <div class="search-btn-wrap">
-                            <button type="button" id="reset-btn">
+                        <input type="text" placeholder="검색 키워드를 입력해주세요"
+                               name="keyword" id="search-input"
+                               th:value="${requestDto.keyword}">
+                        <div class="search-button-wrap">
+                            <button type="button" id="reset-button">
                                 <img th:src="@{/assets/icon/x-lg.svg}" alt="삭제 버튼">
                             </button>
-                            <button type="submit" id="search-btn">
+                            <button type="submit" id="search-button">
                                 <img th:src="@{/assets/icon/search.svg}" alt="검색 버튼">
                             </button>
                         </div>
                     </form>
-                    <div class="write-btn-wrap">
+                    <div class="write-button-wrap">
                         <a th:href="@{/portfolio/new}">
                             <img th:src="@{/assets/icon/pencil.svg}" alt="작성 아이콘">
                             <span>작성하기</span>
@@ -116,7 +119,7 @@
                 </div>
                 <div class="sort-box">
                     <th:block th:each="sort : ${sortOptions}">
-                        <button type="button" class="sort-btn"
+                        <button type="button" class="sort-button"
                                 th:data-sort="${sort.fieldName}"
                                 th:classappend="${#strings.equals(requestDto.sort, sort.fieldName) ? 'selected' : ''}"
                                 th:text="${sort.fieldNameKo}"
@@ -124,10 +127,15 @@
                     </th:block>
                 </div>
             </header>
-            <div class="portfolio-list">
+            <div th:if="${!#lists.isEmpty(portfolios)}" class="portfolio-list">
                 <th:block th:each="portfolio:${portfolios}">
                     <div th:replace="~{fragments/portfolio_fragments :: portfolio-card (${portfolio})}"></div>
                 </th:block>
+            </div>
+            <div th:if="${#lists.isEmpty(portfolios)}" class="empty-result-box">
+                <p th:if="${requestDto.keyword != null}"
+                   th:text="'[' + ${requestDto.keyword} + '] 검색 결과가 없습니다.'">포트폴리오가 없습니다.</p>
+                <p th:unless="${requestDto.keyword != null}">업로드된 포트폴리오가 없습니다.</p>
             </div>
             <div id="loading-indicator"></div>
         </section>

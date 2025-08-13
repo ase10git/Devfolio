@@ -255,7 +255,7 @@ main {
     flex-shrink: 0;
 }
 
-.search-form input {
+#search-input {
     width: 100%;
     background: none;
     padding: 10px 20px;
@@ -266,14 +266,18 @@ main {
     font-size: 14px;
 }
 
-.search-btn-wrap {
+#search-input:focus {
+    box-shadow: 0 0 5px #3A5BA0;
+}
+
+.search-button-wrap {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
 }
 
-.search-btn-wrap button {
+.search-button-wrap button {
     padding: 10px;
     border: none;
     background-color: #3A5BA0;
@@ -281,25 +285,33 @@ main {
     cursor: pointer;
 }
 
-.search-btn-wrap button img {
+.search-button-wrap button img {
     filter: invert(1);
 }
 
-#search-btn, #reset-btn.visible{
+#search-button, #reset-button.visible{
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#reset-btn {
+#search-button:hover {
+    opacity: 0.8;
+}
+
+#reset-button {
     display: none;
 }
 
-#reset-btn img {
+#reset-button img {
     color: white;
 }
 
-.write-btn-wrap {
+#reset-button:hover {
+    opacity: 0.8;
+}
+
+.write-button-wrap {
     position: absolute;
     right: 0;
     display: flex;
@@ -308,14 +320,18 @@ main {
     gap: 10px;
 }
 
-.write-btn-wrap a{
+.write-button-wrap a{
     padding: 5px 10px;
     color: white;
     background-color: #3A5BA0;
     border-radius: var(--box-radius-10);
 }
 
-.write-btn-wrap img {
+.write-button-wrap a:hover{
+    opacity: 0.8;
+}
+
+.write-button-wrap img {
     filter: invert(1);
 }
 
@@ -357,7 +373,7 @@ main {
 
 .select-items {
     position: absolute;
-    background-color: #3A5BA0;
+    background-color: #9FC7F0;
     top: 100%;
     left: 0;
     right: 0;
@@ -370,7 +386,13 @@ main {
     scroll-padding: 1px;
 }
 
-.select-items div,
+.select-items div {
+    color: black;
+    padding: 8px 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
 .select-selected {
     color: white;
     padding: 8px 16px;
@@ -381,15 +403,11 @@ main {
 .select-items div:hover,
 .same-as-selected {
     background-color: #3A5BA0;
+    color: white;
 }
 
 .select-hide {
     display: none;
-}
-
-.select-items div:hover,
-.same-as-selected {
-    background-color: #3A5BA0;
 }
 
 .sort-box {
@@ -400,7 +418,7 @@ main {
     gap: 10px;
 }
 
-.sort-btn {
+.sort-button {
     padding: 5px 8px;
     color: black;
     background-color: #CFE8FF;
@@ -409,9 +427,13 @@ main {
     cursor: pointer;
 }
 
-.sort-btn.selected {
+.sort-button.selected {
     color: white;
     background-color: #2C99FF;
+}
+
+.sort-button:hover {
+    opacity: 0.8;
 }
 
 /* portfolio-list */
@@ -420,5 +442,17 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
-    margin-top: 30px;
+}
+
+.empty-result-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-result-box p {
+    font-weight: 500;
+    font-size: 16px;
 }

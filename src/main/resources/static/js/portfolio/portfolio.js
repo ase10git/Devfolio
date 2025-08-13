@@ -6,7 +6,7 @@ import customSelect from "./portfolio-custom-select.js";
  */
 function addSearchFormAction() {
   const searchInput = document.getElementById("search-input");
-  const resetButton = document.getElementById("reset-btn");
+  const resetButton = document.getElementById("reset-button");
 
   function updateResetButtonVisibility() {
     if (searchInput.value) {
@@ -31,7 +31,7 @@ function addSearchFormAction() {
  * 정렬 버튼 이벤트 리스너
  */
 function addSortButtonAction() {
-  const sortButtons = document.querySelectorAll(".sort-btn");
+  const sortButtons = document.querySelectorAll(".sort-button");
   sortButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const sort = button.dataset.sort;
