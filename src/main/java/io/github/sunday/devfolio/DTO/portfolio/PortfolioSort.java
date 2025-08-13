@@ -19,4 +19,12 @@ public enum PortfolioSort {
 
     private final String fieldName;
     private final String fieldNameKo;
+
+    public static PortfolioSort fromFieldName(String fieldName) {
+        for (PortfolioSort sort : values()) {
+            if (sort.getFieldName().equalsIgnoreCase(fieldName))
+                return sort;
+        }
+        return null;
+    }
 }

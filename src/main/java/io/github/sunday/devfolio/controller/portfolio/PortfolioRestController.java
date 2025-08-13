@@ -5,10 +5,7 @@ import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,4 +29,26 @@ public class PortfolioRestController {
         List<PortfolioListDto> list = portfolioService.search(requestDto);
         return ResponseEntity.ok().body(list);
     }
+
+//    // Todo : UserController로 이동 예정
+//    // 추천 형식 : /api/user/{id}/portfolios
+//    @GetMapping("/users/{userIdx}")
+//    public ResponseEntity<List<PortfolioListDto>> userList(
+//            @PathVariable Long userIdx,
+//            @ModelAttribute PageRequestDto requestDto
+//            ) {
+//        List<PortfolioListDto> list = portfolioService.getUserPortfolios(userIdx, requestDto);
+//        return ResponseEntity.ok().body(list);
+//    }
+//
+//    // Todo : UserController로 이동 예정
+//    // 추천 형식 : /api/user/{id}/liked-portfolios
+//    @GetMapping("/users/{userIdx}/liked-portfolios")
+//    public ResponseEntity<List<PortfolioLikeListDto>> userLikedList(
+//            @PathVariable Long userIdx,
+//            @ModelAttribute PageRequestDto requestDto
+//    ) {
+//        List<PortfolioLikeListDto> list = portfolioService.getUserLikedPortfolios(userIdx, requestDto);
+//        return ResponseEntity.ok().body(list);
+//    }
 }

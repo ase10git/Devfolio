@@ -55,7 +55,7 @@ function addSortButtonAction() {
  */
 function addInfiniteScroll() {
   const params = new URLSearchParams(window.location.search);
-  let page = parseInt(params.get("page") || 2);
+  let page = parseInt(params.get("page") || 1);
   let isLoading = false;
 
   const portfolioSection = document.getElementsByClassName("portfolios")[0];

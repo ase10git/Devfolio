@@ -1,18 +1,25 @@
 package io.github.sunday.devfolio.service.portfolio;
 
+import io.github.sunday.devfolio.dto.common.PageRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioLikeListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
+import io.github.sunday.devfolio.entity.table.portfolio.PortfolioLike;
+import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.portfolio.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,17 +36,17 @@ public class PortfolioService {
     private final PortfolioImageRepository portfolioImageRepository;
     private final PortfolioLikeRepository portfolioLikeRepository;
     private static final int LIST_PAGE_SIZE = 20;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * 포트폴리오 검색 및 조회
      * 페이지, 키워드, 카테고리, 정렬 기준을 요청을 받음
      */
+    // Todo : Index 초과 에러 처리
     public List<PortfolioListDto> search(PortfolioSearchRequestDto searchRequestDto) {
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), LIST_PAGE_SIZE);
-
         List<Portfolio> results = portfolioQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
-
-        return portfolioToListDto(results);
+        return portfoliosToListDto(results);
     }
 
     /**
@@ -50,7 +57,7 @@ public class PortfolioService {
         List<Portfolio> results = portfolioRepository.findTop5ByCreatedAtBetweenOrderByLikeCountDescViewsDesc(
                 ZonedDateTime.now().minusWeeks(1), ZonedDateTime.now()
         );
-        return portfolioToListDto(results);
+        return portfoliosToListDto(results);
     }
 
     /**
@@ -59,36 +66,29 @@ public class PortfolioService {
      */
     public List<PortfolioListDto> getPopularPortfolios() {
         List<Portfolio> results = portfolioRepository.findTop5ByOrderByLikeCountDescViewsDescCreatedAtDesc();
-        return portfolioToListDto(results);
+        return portfoliosToListDto(results);
     }
 
-    private List<PortfolioListDto> portfolioToListDto(List<Portfolio> portfolios) {
-        return portfolios.stream()
-                .map(portfolio -> {
-                    WriterDto writerDto = WriterDto.builder()
-                            .userIdx(portfolio.getUser().getUserIdx())
-                            .nickname(portfolio.getUser().getNickname())
-                            .profileImg(portfolio.getUser().getProfileImg())
-                            .build();
+    /**
+     * 사용자가 좋아요 표시한 포트폴리오 목록 조회
+     */
+    // Todo : 존재하지 않는 userIdx에 대한 커스텀 에러 처리, Index 초과 에러 처리
+    public List<PortfolioLikeListDto> getUserLikedPortfolios(Long userIdx, PageRequestDto requestDto) {
+        Sort sort = getSortFromRequestDto(requestDto, true);
+        Pageable pageable = PageRequest.of(requestDto.getPage(), LIST_PAGE_SIZE, sort);
+        List<PortfolioLike> results = portfolioLikeRepository.findAllByUser_UserIdx(userIdx, pageable);
+        return portfoliosToLikeListDto(results);
+    }
 
-                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
-
-                    return PortfolioListDto.builder()
-                            .portfolioIdx(portfolio.getPortfolioIdx())
-                            .title(portfolio.getTitle())
-                            .description(portfolio.getDescription())
-                            .views(portfolio.getViews())
-                            .likeCount(portfolio.getLikeCount())
-                            .updatedAt(
-                                    portfolio.getUpdatedAt().format(
-                                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-                                    )
-                            )
-                            .commentCount(portfolio.getCommentCount())
-                            .imageUrl(image != null ? image.getImageUrl() : "")
-                            .writer(writerDto)
-                            .build();
-                }).toList();
+    /**
+     * 사용자의 포트폴리오 목록 조회
+     */
+    // Todo : Index 초과 에러 처리
+    public List<PortfolioListDto> getUserPortfolios(Long userIdx, PageRequestDto requestDto) {
+        Sort sort = getSortFromRequestDto(requestDto, false);
+        Pageable pageable = PageRequest.of(requestDto.getPage(), LIST_PAGE_SIZE, sort);
+        List<Portfolio> results = portfolioRepository.findAllByUser_UserIdx(userIdx, pageable);
+        return userPortfoliosToListDto(results);
     }
 
     // Todo : 포트폴리오 상세보기 기능 추가
@@ -101,4 +101,86 @@ public class PortfolioService {
 
 
     // Todo : 포트폴리오 삭제 기능 추가
+
+    /**
+     * 요청 DTO 정보로 정렬 기준 설정
+     */
+    private Sort getSortFromRequestDto(PageRequestDto requestDto, boolean isNestedProperty) {
+        // 정렬 기준 설정
+        String sortBy = requestDto.getSort();
+        PortfolioSort portfolioSort = PortfolioSort.fromFieldName(sortBy);
+        if (portfolioSort == null) {
+            portfolioSort = PortfolioSort.UPDATED_AT;
+        }
+
+        // 정렬 형식 변환
+        String sortProperty = (isNestedProperty) ?
+                "portfolio." + portfolioSort.getFieldName()
+                : portfolioSort.getFieldName()
+                ;
+
+        // 정렬 방향 설정
+        Sort.Direction direction = requestDto.getDirection() != null ? requestDto.getDirection() : Sort.Direction.DESC;
+
+        return Sort.by(direction, sortProperty);
+    }
+
+    private WriterDto userToWriterDto(User user) {
+        return WriterDto.builder()
+                .userIdx(user.getUserIdx())
+                .nickname(user.getNickname())
+                .profileImg(user.getProfileImg())
+                .build();
+    }
+
+    private PortfolioListDto portfolioToListDto(Portfolio portfolio, PortfolioImage image, WriterDto writerDto) {
+        return PortfolioListDto.builder()
+                .portfolioIdx(portfolio.getPortfolioIdx())
+                .title(portfolio.getTitle())
+                .description(portfolio.getDescription())
+                .views(portfolio.getViews())
+                .likeCount(portfolio.getLikeCount())
+                .updatedAt(portfolio.getUpdatedAt().format(formatter))
+                .commentCount(portfolio.getCommentCount())
+                .imageUrl(image != null ? image.getImageUrl() : "")
+                .writer(writerDto)
+                .build();
+    }
+
+    private List<PortfolioListDto> portfoliosToListDto(List<Portfolio> portfolios) {
+        return portfolios.stream()
+                .map(portfolio -> {
+                    WriterDto writerDto = userToWriterDto(portfolio.getUser());
+                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    return portfolioToListDto(portfolio, image, writerDto);
+                }).toList();
+    }
+
+    private List<PortfolioListDto> userPortfoliosToListDto(List<Portfolio> portfolios) {
+        Portfolio firstPortfolio = portfolios.get(1);
+        if (firstPortfolio == null) {
+            return new ArrayList<>();
+        }
+        WriterDto writerDto = userToWriterDto(firstPortfolio.getUser());
+
+        return portfolios.stream()
+                .map(portfolio -> {
+                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    return portfolioToListDto(portfolio, image, writerDto);
+                }).toList();
+    }
+
+    private List<PortfolioLikeListDto> portfoliosToLikeListDto(List<PortfolioLike> portfolioLikes) {
+        return portfolioLikes.stream()
+                .map(portfolioLike -> {
+                    Portfolio portfolio = portfolioLike.getPortfolio();
+                    WriterDto writerDto = userToWriterDto(portfolio.getUser());
+                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+
+                    return PortfolioLikeListDto.builder()
+                            .portfolioListDto(portfolioToListDto(portfolio, image, writerDto))
+                            .likedAt(portfolioLike.getLikedAt().format(formatter))
+                            .build();
+                }).toList();
+    }
 }
