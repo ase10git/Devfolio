@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class PortfolioCategoryValidator implements ConstraintValidator<PortfolioCategoryValid, String> {
+public class PortfolioCategoryValidator implements ConstraintValidator<PortfolioCategoryValid, Long> {
     private final PortfolioCategoryService portfolioCategoryService;
 
     /**
      * 포트폴리오 카테고리 서비스의 메서드로 값 검증 진행
      */
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(Long value, ConstraintValidatorContext context) {
         if (value == null) return true;
         return portfolioCategoryService.exists(value);
     }

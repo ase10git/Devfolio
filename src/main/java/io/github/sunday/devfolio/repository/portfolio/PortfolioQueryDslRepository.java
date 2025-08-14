@@ -42,8 +42,8 @@ public class PortfolioQueryDslRepository {
         List<Portfolio> list;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if (searchRequestDto.getCategory() != null && !searchRequestDto.getCategory().isEmpty()) {
-            booleanBuilder.and(portfolioCategory.name.equalsIgnoreCase(searchRequestDto.getCategory()));
+        if (searchRequestDto.getCategoryIdx() != null) {
+            booleanBuilder.and(portfolioCategory.categoryIdx.eq(searchRequestDto.getCategoryIdx()));
         }
 
         String keyword = searchRequestDto.getKeyword();

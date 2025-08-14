@@ -87,13 +87,13 @@
                     <form th:action="@{/portfolio}" method="get" id="search-form" class="search-form">
                         <div class="custom-select">
                             <select class="categories"
-                                    th:field="${requestDto.category}"
+                                    th:field="${requestDto.categoryIdx}"
                             >
                                 <option value="" disabled selected>카테고리 선택</option>
                                 <option value="">전체</option>
                                 <option
                                     th:each="item: ${categories}"
-                                    th:value="${item.name}"
+                                    th:value="${item.categoryIdx}"
                                     th:text="${item.nameKo}"
                                 ></option>
                             </select>

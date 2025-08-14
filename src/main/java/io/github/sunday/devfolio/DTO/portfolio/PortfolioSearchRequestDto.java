@@ -44,7 +44,7 @@ public class PortfolioSearchRequestDto {
      * 카테고리
      */
     @PortfolioCategoryValid
-    private String category;
+    private Long categoryIdx;
 
     /**
      * 정렬 기준

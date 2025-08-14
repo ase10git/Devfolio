@@ -43,10 +43,10 @@ public class PortfolioCategoryService {
     /**
      * 카테고리 이름으로 존재하는 카테고리인지 검증
      */
-    public boolean exists(String categoryName) {
-        if (categoryName == null || categoryName.isEmpty()) return true;
+    public boolean exists(Long categoryIdx) {
+        if (categoryIdx == null) return true;
         return cachedCategories.stream()
-                .anyMatch(category -> category.getName().equalsIgnoreCase(categoryName));
+                .anyMatch(category -> category.getCategoryIdx().equals(categoryIdx));
     }
 
     // Todo : 카테고리 매핑 추가
