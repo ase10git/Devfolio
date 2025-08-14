@@ -3,6 +3,8 @@ package io.github.sunday.devfolio.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 /**
  * 포트폴리오 정렬 기준을 설정한 ENUM
  */
@@ -20,6 +22,9 @@ public enum PortfolioSort {
     private final String fieldName;
     private final String fieldNameKo;
 
+    /**
+     * 필드 이름으로 PortfolioSort 탐색
+     */
     public static PortfolioSort fromFieldName(String fieldName) {
         for (PortfolioSort sort : values()) {
             if (sort.getFieldName().equalsIgnoreCase(fieldName))
