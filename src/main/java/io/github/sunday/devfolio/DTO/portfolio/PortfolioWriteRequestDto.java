@@ -1,11 +1,10 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
-import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +30,13 @@ public class PortfolioWriteRequestDto {
      * 프로젝트 시작일
      */
     @Pattern(regexp = "", message = "잘못된 날짜 형식입니다.")
-    private String startDate;
+    private LocalDate startDate;
 
     /**
      * 프로젝트 종료일
      */
     @Pattern(regexp = "", message = "잘못된 날짜 형식입니다.")
-    private String endDate;
+    private LocalDate endDate;
 
     /**
      * 포트폴리오 내용
@@ -68,11 +67,9 @@ public class PortfolioWriteRequestDto {
      */
     @AssertTrue(message = "프로젝트의 시작 날짜와 종료 날짜가 잘못 입력되었습니다.")
     private boolean isDateValid() {
-        if (startDate == null || startDate.isEmpty() || endDate == null || endDate.isEmpty()) {
+        if (startDate == null || endDate == null) {
             return true;
         }
-        LocalDateTime startLocalDate = LocalDateTime.parse(startDate);
-        LocalDateTime endLocalDate = LocalDateTime.parse(endDate);
-        return endLocalDate.isAfter(startLocalDate);
+        return endDate.isAfter(startDate);
     }
 }
