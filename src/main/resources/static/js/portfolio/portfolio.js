@@ -163,7 +163,23 @@ function addInfiniteScroll() {
   }
 
   /**
+   * Throttle 적용
+   * 마지막 호출 이후 1초 이내 호출 제한
+   */
+  let lastFetchTime = 0;
+  function throttleFetch() {
+    const now = Date.now();
+    if (now - lastFetchTime < 1000 || isLoading) return;
+    lastFetchTime = now;
+    loadingStart();
+    fetchPortfolioData();
+  }
+
+  /**
    * 포트폴리오 리스트 내의 마지막 요소 체크
+   * Todo : 구조 수정(Spinner - Loading Sentinal 순으로 배치, Loading Sential은 상단 마진 적용된 상태)
+   * Todo : Sential 위에 prefetch를 걸어둔다면 로딩 스피너는 필요없음
+   * Todo : 옵저버를 계속 변경하면 관측 대상이 누락될 수 있음
    */
   function observeLastItem(io, items) {
     const lastItem = items[items.length - 1];
@@ -175,11 +191,10 @@ function addInfiniteScroll() {
     entries.forEach((entry) => {
       if (!isLoading && entry.isIntersecting) {
         io.unobserve(entry.target);
-        loadingStart();
-        fetchPortfolioData();
+        throttleFetch();
       }
     });
-  }, {threshold: 0.8});
+  }, { threshold: 0.8 });
 
   observeLastItem(observer, portfolioList.children);
 }
