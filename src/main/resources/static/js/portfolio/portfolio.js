@@ -51,7 +51,7 @@ function addSortButtonAction() {
 }
 
 /**
- * 무한 스크롤을 위한 Intersection Oberser 이벤트 리스너
+ * 무한 스크롤을 위한 Intersection Oberser
  */
 function addInfiniteScroll() {
   const params = new URLSearchParams(window.location.search);
@@ -61,7 +61,7 @@ function addInfiniteScroll() {
 
   const portfolioSection = document.getElementsByClassName("portfolios")[0];
   const portfolioList = document.getElementById("portfolio-list");
-  const pageSize = parseInt(portfolioList.dataset.pageSize)??.20;
+  const pageSize = parseInt(portfolioList.dataset.pageSize)??20;
   const spinner = makeSpinner();
   if (portfolioList.children.length === 0 || portfolioList.children.length < pageSize) {
     isLastPage = true;
