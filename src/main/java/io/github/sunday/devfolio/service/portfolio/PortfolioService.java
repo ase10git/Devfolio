@@ -149,13 +149,14 @@ public class PortfolioService {
         return portfolios.stream()
                 .map(portfolio -> {
                     WriterDto writerDto = userToWriterDto(portfolio.getUser());
-                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
+                            .orElse(null);
                     return portfolioToListDto(portfolio, image, writerDto);
                 }).toList();
     }
 
     private List<PortfolioListDto> userPortfoliosToListDto(List<Portfolio> portfolios) {
-        Portfolio firstPortfolio = portfolios.get(1);
+        Portfolio firstPortfolio = portfolios.get(0);
         if (firstPortfolio == null) {
             return new ArrayList<>();
         }
@@ -163,7 +164,8 @@ public class PortfolioService {
 
         return portfolios.stream()
                 .map(portfolio -> {
-                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
+                            .orElse(null);
                     return portfolioToListDto(portfolio, image, writerDto);
                 }).toList();
     }
@@ -173,7 +175,8 @@ public class PortfolioService {
                 .map(portfolioLike -> {
                     Portfolio portfolio = portfolioLike.getPortfolio();
                     WriterDto writerDto = userToWriterDto(portfolio.getUser());
-                    PortfolioImage image = portfolioImageRepository.findFirst1ByPortfolio(portfolio).orElse(null);
+                    PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
+                            .orElse(null);
 
                     return PortfolioLikeListDto.builder()
                             .portfolioListDto(portfolioToListDto(portfolio, image, writerDto))

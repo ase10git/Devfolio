@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface PortfolioImageRepository extends JpaRepository<PortfolioImage, Long> {
 
     /**
-     * 포트폴리오로 이미지 찾기
+     * 포트폴리오로 썸네일용 이미지 찾기
+     * 썸네일 여부를 확인하는 컬럼이 True인 이미지를 선택
      */
-    Optional<PortfolioImage> findFirst1ByPortfolio(Portfolio portfolio);
+    Optional<PortfolioImage> findByPortfolio_PortfolioIdxAndIsThumbnailTrue(Long portfolioIdx);
 }
