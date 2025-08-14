@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.dto.portfolio;
+package io.github.sunday.devfolio.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

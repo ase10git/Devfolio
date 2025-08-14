@@ -8,7 +8,7 @@ import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
+import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.QPortfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.QPortfolioCategory;

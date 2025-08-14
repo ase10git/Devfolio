@@ -4,7 +4,7 @@ import io.github.sunday.devfolio.dto.portfolio.PortfolioPageRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioLikeListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioSort;
+import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
