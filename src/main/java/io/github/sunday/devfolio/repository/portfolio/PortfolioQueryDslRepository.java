@@ -109,8 +109,7 @@ public class PortfolioQueryDslRepository {
      */
     private OrderSpecifier<?> getSortedColumn(PortfolioSearchRequestDto searchRequestDto) {
         // 정렬 기준 설정
-        String sortBy = searchRequestDto.getSort();
-        PortfolioSort portfolioSort = PortfolioSort.fromFieldName(sortBy);
+        PortfolioSort portfolioSort = searchRequestDto.getSort();
         if (portfolioSort == null) {
             portfolioSort = PortfolioSort.UPDATED_AT;
         }

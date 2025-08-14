@@ -120,8 +120,8 @@
                 <div class="sort-box">
                     <th:block th:each="sort : ${sortOptions}">
                         <button type="button" class="sort-button"
-                                th:data-sort="${sort.fieldName}"
-                                th:classappend="${#strings.equals(requestDto.sort, sort.fieldName) ? 'selected' : ''}"
+                                th:data-sort="${sort}"
+                                th:classappend="${#strings.equals(requestDto.sort, sort) ? 'selected' : ''}"
                                 th:text="${sort.fieldNameKo}"
                         ></button>
                     </th:block>
@@ -138,6 +138,9 @@
                 <p th:if="${requestDto.keyword != null}"
                    th:text="'[' + ${requestDto.keyword} + '] 검색 결과가 없습니다.'">포트폴리오가 없습니다.</p>
                 <p th:unless="${requestDto.keyword != null}">업로드된 포트폴리오가 없습니다.</p>
+            </div>
+            <div th:if="${error}" class="error-box">
+                <p th:text="${error}" class="error"></p>
             </div>
         </section>
     </div>

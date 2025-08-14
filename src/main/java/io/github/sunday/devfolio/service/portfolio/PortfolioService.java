@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.service.portfolio;
 
-import io.github.sunday.devfolio.dto.common.PageRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioPageRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioLikeListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
@@ -72,8 +72,8 @@ public class PortfolioService {
      * 사용자가 좋아요 표시한 포트폴리오 목록 조회
      */
     // Todo : 존재하지 않는 userIdx에 대한 커스텀 에러 처리, Index 초과 에러 처리
-    public List<PortfolioLikeListDto> getUserLikedPortfolios(Long userIdx, PageRequestDto requestDto) {
-        Sort sort = getSortFromRequestDto(requestDto, true);
+    public List<PortfolioLikeListDto> getUserLikedPortfolios(Long userIdx, PortfolioPageRequestDto requestDto) {
+        Sort sort = getSortFromPageRequestDto(requestDto, true);
         Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         List<PortfolioLike> results = portfolioLikeRepository.findAllByUser_UserIdx(userIdx, pageable);
         return portfoliosToLikeListDto(results);
@@ -83,8 +83,8 @@ public class PortfolioService {
      * 사용자의 포트폴리오 목록 조회
      */
     // Todo : Index 초과 에러 처리
-    public List<PortfolioListDto> getUserPortfolios(Long userIdx, PageRequestDto requestDto) {
-        Sort sort = getSortFromRequestDto(requestDto, false);
+    public List<PortfolioListDto> getUserPortfolios(Long userIdx, PortfolioPageRequestDto requestDto) {
+        Sort sort = getSortFromPageRequestDto(requestDto, false);
         Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         List<Portfolio> results = portfolioRepository.findAllByUser_UserIdx(userIdx, pageable);
         return userPortfoliosToListDto(results);
@@ -104,10 +104,9 @@ public class PortfolioService {
     /**
      * 요청 DTO 정보로 정렬 기준 설정
      */
-    private Sort getSortFromRequestDto(PageRequestDto requestDto, boolean isNestedProperty) {
+    private Sort getSortFromPageRequestDto(PortfolioPageRequestDto requestDto, boolean isNestedProperty) {
         // 정렬 기준 설정
-        String sortBy = requestDto.getSort();
-        PortfolioSort portfolioSort = PortfolioSort.fromFieldName(sortBy);
+        PortfolioSort portfolioSort = requestDto.getSort();
         if (portfolioSort == null) {
             portfolioSort = PortfolioSort.UPDATED_AT;
         }
