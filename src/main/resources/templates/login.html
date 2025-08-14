@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>로그인</title>
+  <style>
+    .container {
+        margin-top: 160px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;"
+    }
+    .msg {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    .msg.success {
+        color: green;
+        border: none;
+    }
+
+    .msg.error {
+        color: red;
+        border: none;
+    }
+
+    label {
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .input-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .input-field {
+        width: 400px;
+        height: 49px;
+        padding: 8px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+    }
+
+    .login {
+        width: 400px;
+        height: 49px;
+        background: #FF6F0E;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-bottom: 15px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .googleLogin {
+        width: 400px;
+        height: 49px;
+        background: #FFFFFF;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #111111;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .google-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .google-icon {
+        width: 20px;
+        height: 20px;
+    }
+    .signup {
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        color: #FF6F0E;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body style="margin: 0;">
+
+<div class="container">
+
+  <div style="width: 400px; margin-bottom: 20px;">
+    <div th:if="${param.signupSuccess}" class="msg success">
+      회원가입이 완료되었습니다. 로그인해 주세요.
+    </div>
+
+    <div th:if="${param.error} == 'email'" class="msg error">
+      이미 사용 중인 이메일입니다. 기존 계정으로 로그인해 주세요.
+    </div>
+
+    <div th:if="${param.error}" class="msg error">아이디 또는 비밀번호가 잘못되었습니다.</div>
+  </div>
+
+  <form method="post" th:action="@{/login}">
+    <label>아이디</label>
+    <div class="input-row">
+      <input type="text" name="loginId" placeholder="아이디를 입력해주세요" required class="input-field" />
+    </div>
+
+    <label>비밀번호</label>
+    <div class="input-row">
+      <input type="password" name="password" placeholder="비밀번호를 입력해주세요" required class="input-field" />
+    </div>
+
+    <button type="submit" class="login">로그인</button>
+
+    <button type="button" class="googleLogin" onclick="location.href='/oauth2/authorization/google'">
+      <div class="google-content">
+        <img th:src="@{/images/googleLogo.svg}" alt="Google 로고" class="google-icon">
+        <span>Google로 로그인</span>
+      </div>
+    </button>
+
+    <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center;">
+      <p>당근마켓 회원이 아니신가요?</p>
+      <button type="button" onclick="location.href='/signup'" class="signup">회원가입</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

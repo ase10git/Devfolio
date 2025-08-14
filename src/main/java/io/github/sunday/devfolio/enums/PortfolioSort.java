@@ -3,8 +3,6 @@ package io.github.sunday.devfolio.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
-
 /**
  * 포트폴리오 정렬 기준을 설정한 ENUM
  */
