@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.entity.table.portfolio;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Objects;
 
@@ -50,6 +51,13 @@ public class PortfolioImage {
             nullable = false
     )
     private String imageUrl;
+
+    /**
+     * 이미지의 썸네일 여부
+     */
+    @Column(name = "is_thumbnail")
+    @ColumnDefault("false")
+    private Boolean isThumbnail;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

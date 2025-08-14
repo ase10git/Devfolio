@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -55,13 +56,13 @@ public class Portfolio {
      * 프로젝트 시작일
      */
     @Column(name = "start_date")
-    private Date startDate;
+    private LocalDate startDate;
 
     /**
      * 프로젝트 종료일
      */
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     /**
      * 포트폴리오 내용
@@ -84,6 +85,13 @@ public class Portfolio {
     private Integer likeCount;
 
     /**
+     * 댓글 수
+     */
+    @Column(name = "comment_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer commentCount;
+
+    /**
      * 포트폴리오 생성일시
      */
     @Column(name = "created_at", nullable = false)
@@ -94,6 +102,12 @@ public class Portfolio {
      */
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
+
+    /**
+     * 검색을 위한 tsvector
+     */
+    @Column(name = "search_vector", columnDefinition = "tsvector")
+    private String searchVector;
 
     @ManyToOne
     @JoinColumn(name = "user_idx", nullable = false)
