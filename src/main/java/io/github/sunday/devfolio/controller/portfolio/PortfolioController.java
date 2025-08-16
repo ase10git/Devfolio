@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -106,8 +105,14 @@ public class PortfolioController {
         return "portfolio/portfolio";
     }
 
+    /**
+     * 포트폴리오 상세 페이지 출력
+     */
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id) {
+    public String detail(
+            @PathVariable Long id,
+            Model model
+    ) {
         return "portfolio/portfolio_detail";
     }
 
@@ -125,18 +130,48 @@ public class PortfolioController {
         return "portfolio/portfolio_write";
     }
 
+    /**
+     * 포트폴리오 작성 동작
+     */
+    // Todo : 전역 에러 처리 설정 필요
     @PostMapping("/new")
-    public ResponseEntity<?> write(
-            @ModelAttribute PortfolioWriteRequestDto writeDto
+    public String write(
+            @ModelAttribute PortfolioWriteRequestDto writeDto,
+            BindingResult bindingResult,
+            Model model
             ) {
-        return ResponseEntity.ok().build();
+
+        if (bindingResult.hasErrors()) {
+            List<PortfolioCategoryDto> categories = portfolioCategoryService.getCachedCategories();
+            model.addAttribute("writeDto", writeDto);
+            model.addAttribute("categories", categories);
+            return "portfolio/portfolio_write";
+        }
+        // Todo : 로그인한 사용자 정보 전달
+        Long testUserIdx = 1L;
+        Long portfolioIdx = portfolioService.addNewPortfolio(writeDto, testUserIdx);
+        return "redirect:/portfolio_detail/" + portfolioIdx;
     }
 
     /**
      * 포트폴리오 수정 페이지 출력
      */
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable Long id) {
+    public String editPage(
+            @PathVariable Long id,
+            Model model
+    ) {
+        return "portfolio/portfolio_edit";
+    }
+
+    /**
+     * 포트폴리오 수정
+     */
+    @PostMapping("/{id}/edit")
+    public String edit(
+            @PathVariable Long id,
+            Model model
+    ) {
         return "portfolio/portfolio_edit";
     }
 }
