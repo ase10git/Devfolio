@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
+import io.github.sunday.devfolio.annotation.common.DateValid;
 import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -18,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PortfolioWriteRequestDto {
-
     /**
      * 포트폴리오 제목
      */
@@ -30,13 +30,13 @@ public class PortfolioWriteRequestDto {
     /**
      * 프로젝트 시작일
      */
-    @Pattern(regexp = "", message = "잘못된 날짜 형식입니다.")
+    @DateValid
     private LocalDate startDate;
 
     /**
      * 프로젝트 종료일
      */
-    @Pattern(regexp = "", message = "잘못된 날짜 형식입니다.")
+    @DateValid
     private LocalDate endDate;
 
     /**
