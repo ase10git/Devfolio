@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -58,6 +59,18 @@ public class PortfolioImage {
     @Column(name = "is_thumbnail")
     @ColumnDefault("false")
     private Boolean isThumbnail;
+
+    /**
+     * 생성일
+     */
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+
+    /**
+     * 만료일
+     */
+    @Column(name = "expire_at")
+    private ZonedDateTime expireAt;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

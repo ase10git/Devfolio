@@ -29,7 +29,9 @@ public class PortfolioService {
     private final PortfolioQueryDslRepository portfolioQueryDslRepository;
     private final PortfolioImageRepository portfolioImageRepository;
     private final PortfolioLikeRepository portfolioLikeRepository;
+    private final PortfolioImageService portfolioImageService;
     private final PortfolioCategoryService portfolioCategoryService;
+    private final PortfolioCommentService portfolioCommentService;
     private final UserServiceImpl userService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -86,7 +88,47 @@ public class PortfolioService {
         return userPortfoliosToListDto(results);
     }
 
-    // Todo : 포트폴리오 상세보기 기능 추가
+    /**
+     * 포트폴리오 상세 정보 가져오기
+     * 포트폴리오 정보, 작성자 정보, 카테고리 정보, 댓글 정보
+     */
+    public PortfolioDetailDto getPortfolioById(Long portfolioIdx) {
+        // 포트폴리오 정보 가져오기
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow();
+        // 포트폴리오 작성자 정보 가져오기
+        User user = userService.findByUserIdx(portfolio.getUser().getUserIdx());
+        WriterDto writerDto = userToWriterDto(user);
+
+        // Todo : 작성자 없을 때 예외처리 추가
+        if (user == null) {
+            System.out.println("포트폴리오 작성자 없음");
+        }
+        // 포트폴리오 카테고리 가져오기
+        List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
+
+        // 포트폴리오 이미지 가져오기
+        List<PortfolioImageDto> imageList = portfolioImageService.getPortfolioImages(portfolioIdx);
+
+        // 포트폴리오 댓글 가져오기
+        List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
+
+        return PortfolioDetailDto.builder()
+                .portfolioIdx(portfolioIdx)
+                .title(portfolio.getTitle())
+                .startDate(portfolio.getStartDate())
+                .endDate(portfolio.getEndDate())
+                .description(portfolio.getDescription())
+                .views(portfolio.getViews())
+                .likeCount(portfolio.getLikeCount())
+                .commentCount(portfolio.getCommentCount())
+                .createdAt(portfolio.getCreatedAt())
+                .updatedAt(portfolio.getUpdatedAt())
+                .images(imageList)
+                .writer(writerDto)
+                .categories(categories)
+                .comments(comments)
+                .build();
+    }
 
     /**
      * 포트폴리오 저장
@@ -105,6 +147,7 @@ public class PortfolioService {
         portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
 
         // 이미지 파일을 저장한다
+        // portfolioImageService.addNewImages();
 
         return newPortfolio.getPortfolioIdx();
     }

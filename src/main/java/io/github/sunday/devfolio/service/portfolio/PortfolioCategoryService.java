@@ -52,6 +52,22 @@ public class PortfolioCategoryService {
     }
 
     /**
+     * 포트폴리오 카테고리 목록 조회
+     */
+    public List<PortfolioCategoryDto> getCategoriesByPortfolio(Portfolio portfolio) {
+        List<PortfolioCategoryMap> mapList = portfolioCategoryMapRepository.findAllByPortfolio(portfolio);
+        return mapList.stream()
+                .map(map -> {
+                    PortfolioCategory category = map.getCategory();
+                    return PortfolioCategoryDto.builder()
+                            .categoryIdx(category.getCategoryIdx())
+                            .name(category.getName())
+                            .nameKo(category.getNameKo())
+                            .build();
+                }).toList();
+    }
+
+    /**
      * 포트폴리오와 카테고리 매핑 데이터 추가
      */
     public void addPortfolioCategoryMap(Portfolio portfolio, List<Long> portfolioCategoryIdxList) {
@@ -66,6 +82,15 @@ public class PortfolioCategoryService {
                     portfolioCategoryMapRepository.save(categoryMap);
                 });
     }
-    
-    // Todo : 카테고리 매핑 제거
+
+    /**
+     * 포트폴리오와 카테고리 매핑 관계 제거
+     */
+    public void removePortfolioCategoryMap(Portfolio portfolio, List<Long> portfolioCategoryIdxList) {
+        portfolioCategoryIdxList
+                .forEach(idx ->
+                    portfolioCategoryMapRepository
+                            .deleteByPortfolioAndPortfolioCategory_CategoryIdx(portfolio, idx)
+                );
+    }
 }
