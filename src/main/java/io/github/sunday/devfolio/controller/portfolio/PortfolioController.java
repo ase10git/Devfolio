@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.controller.portfolio;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -109,11 +111,30 @@ public class PortfolioController {
         return "portfolio/portfolio_detail";
     }
 
+    /**
+     * 포트폴리오 작성 페이지 출력
+     */
     @GetMapping("/new")
-    public String write() {
+    public String writePage(
+            @ModelAttribute PortfolioWriteRequestDto writeDto,
+            Model model
+    ) {
+        List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
+        model.addAttribute("writeDto", writeDto);
+        model.addAttribute("categories", categoryList);
         return "portfolio/portfolio_write";
     }
 
+    @PostMapping("/new")
+    public ResponseEntity<?> write(
+            @ModelAttribute PortfolioWriteRequestDto writeDto
+            ) {
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 포트폴리오 수정 페이지 출력
+     */
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable Long id) {
         return "portfolio/portfolio_edit";
