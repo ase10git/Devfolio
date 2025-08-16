@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
+import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,7 +48,8 @@ public class PortfolioWriteRequestDto {
     /**
      * 포트폴리오 카테고리
      */
-    private List<Integer> categories = new ArrayList<>();
+    @PortfolioCategoryValid
+    private List<Long> categories = new ArrayList<>();
 
     /**
      * 포트폴리오 썸네일 이미지
