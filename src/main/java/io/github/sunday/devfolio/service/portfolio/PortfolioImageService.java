@@ -1,9 +1,11 @@
 package io.github.sunday.devfolio.service.portfolio;
 
+import io.github.sunday.devfolio.dto.common.ImageUploadResult;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioImageDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
+import io.github.sunday.devfolio.exception.common.ImageUploadException;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioImageRepository;
 import io.github.sunday.devfolio.service.common.S3Service;
 import io.github.sunday.devfolio.service.common.SecureImageService;
@@ -23,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PortfolioImageService {
     private final PortfolioImageRepository portfolioImageRepository;
-    //private final SecureImageService secureImageService;
+    private final SecureImageService secureImageService;
     private final S3Service s3Service;
 
     /**
@@ -40,7 +42,7 @@ public class PortfolioImageService {
      * 포트폴리오 이미지 추가
      * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드
      */
-    public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto) throws IOException {
+    public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto) throws Exception {
         String filePath = "/portfolio/" + portfolio.getPortfolioIdx();
         PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
         List<PortfolioImage> imageList = addNewImageList(writeRequestDto.getImages(), filePath);
@@ -72,11 +74,13 @@ public class PortfolioImageService {
     /**
      * AWS S3에 이미지 추가하기
      */
-    private PortfolioImage addNewImage(MultipartFile file, String filePath, boolean isThumbnail) throws IOException {
-        String s3Url = s3Service.uploadFile(file, filePath);
+    // Todo : 예외 처리 로직 추가
+    private PortfolioImage addNewImage(MultipartFile file, String filePath, boolean isThumbnail) throws ImageUploadException{
+        ImageUploadResult uploadResult = secureImageService.uploadImage(file, filePath);
+
         return PortfolioImage.builder()
-                .imageUrl(s3Url)
-                .s3Key(extractKeyFromUrl(s3Url))
+                .imageUrl(uploadResult.getImageUrl())
+                .s3Key(uploadResult.getS3Key())
                 .isThumbnail(isThumbnail)
                 .createdAt(ZonedDateTime.now())
                 .expireAt(ZonedDateTime.now().plusMonths(1))
@@ -116,13 +120,6 @@ public class PortfolioImageService {
                 .build();
     }
 
-    /**
-     * URL에서 S3Key값 추출하기
-     */
-    private String extractKeyFromUrl(String url) {
-        return url.substring(url.lastIndexOf("/") + 1);
-    }
-    
     private String fullFilePath(String filePath, String fileName) {
         return filePath + "/" + URLDecoder.decode(fileName);
     }

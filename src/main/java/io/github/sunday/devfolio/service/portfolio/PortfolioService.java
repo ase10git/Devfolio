@@ -139,6 +139,10 @@ public class PortfolioService {
         // 요청을 받는다
         // 사용자 정보를 가져온다
         User user = userService.findByUserIdx(userIdx);
+        if (user == null) {
+            return null;
+        }
+
         Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
 
         // 데이터를 저장한다
@@ -151,7 +155,7 @@ public class PortfolioService {
         // Todo : 에러 핸들링
         try {
             portfolioImageService.addPortfolioImage(portfolio, writeRequestDto);
-        } catch (IOException e) {}
+        } catch (Exception e) {}
 
         return newPortfolio.getPortfolioIdx();
     }
