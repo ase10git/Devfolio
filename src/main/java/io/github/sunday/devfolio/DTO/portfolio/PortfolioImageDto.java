@@ -32,15 +32,4 @@ public class PortfolioImageDto {
      * 이미지의 썸네일 여부
      */
     private Boolean isThumbnail;
-
-    /**
-     * 생성일
-     */
-    private ZonedDateTime createdAt;
-
-    /**
-     * 만료일
-     */
-    private ZonedDateTime expireAt;
-
 }

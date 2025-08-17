@@ -1,11 +1,19 @@
 package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.PortfolioImageDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
+import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioImageRepository;
+import io.github.sunday.devfolio.service.common.S3Service;
+import io.github.sunday.devfolio.service.common.SecureImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -15,24 +23,88 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PortfolioImageService {
     private final PortfolioImageRepository portfolioImageRepository;
-    
-    // Todo : 포트폴리오의 이미지 조회
+    //private final SecureImageService secureImageService;
+    private final S3Service s3Service;
+
+    /**
+     * 포트폴리오의 모든 이미지 조회
+     */
     public List<PortfolioImageDto> getPortfolioImages(Long portfolioIdx) {
         return portfolioImageRepository.findAllByPortfolio_PortfolioIdx(portfolioIdx)
                 .stream()
                 .map(this::imageToDto)
                 .toList();
     }
-    
-    // Todo : 포트폴리오의 이미지 추가
-    public void addNewImages() {
-        // 이미지 추가 동작 - AWS S3 연동
+
+    /**
+     * 포트폴리오 이미지 추가
+     * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드
+     */
+    public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto) throws IOException {
+        String filePath = "/portfolio/" + portfolio.getPortfolioIdx();
+        PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
+        List<PortfolioImage> imageList = addNewImageList(writeRequestDto.getImages(), filePath);
+
+        // DB에 이미지 추가
+        savePortfolioImage(portfolio, thumbnailImage);
+        imageList.forEach(image -> savePortfolioImage(portfolio, image));
     }
+
+    /**
+     * DB에 포트폴리오 Entity 저장하기
+     */
+    private void savePortfolioImage(Portfolio portfolio, PortfolioImage image) {
+        image.setPortfolio(portfolio);
+        portfolioImageRepository.save(image);
+    }
+
+    /**
+     * 포트폴리오 이미지 제거
+     * DB Entity와 AWS S3의 파일 제거
+     */
+    public void deleteImageList(Long portfolioIdx, List<Long> imageIdxList) {
+        String filePath = "/portfolio/" + portfolioIdx;
+        imageIdxList.forEach(imageIdx -> deleteImage(imageIdx, filePath));
+    }
+
+    // Todo : 이미지 수정 로직 추가
     
-    
-    // Todo : 포트폴리오의 이미지 제거
-    public void removeImages() {
-        // 이미지 삭제 동작 - AWS S3 연동
+    /**
+     * AWS S3에 이미지 추가하기
+     */
+    private PortfolioImage addNewImage(MultipartFile file, String filePath, boolean isThumbnail) throws IOException {
+        String s3Url = s3Service.uploadFile(file, filePath);
+        return PortfolioImage.builder()
+                .imageUrl(s3Url)
+                .s3Key(extractKeyFromUrl(s3Url))
+                .isThumbnail(isThumbnail)
+                .createdAt(ZonedDateTime.now())
+                .expireAt(ZonedDateTime.now().plusMonths(1))
+                .build();
+    }
+
+    /**
+     * AWS S3에 이미지 리스트 추가하기
+     */
+    private List<PortfolioImage> addNewImageList(List<MultipartFile> files, String filePath) {
+        return files.stream()
+                .filter(file -> !file.isEmpty())
+                .map(file -> {
+                    try {
+                        return addNewImage(file, filePath, false);
+                    } catch (Exception e) {
+                        // Todo : custom error 추가
+                        throw new RuntimeException("이미지 업로드 실패: " + file.getOriginalFilename());
+                    }
+                })
+                .toList();
+    }
+
+    private void deleteImage(Long imageIdx, String filePath) {
+        PortfolioImage image = portfolioImageRepository.findById(imageIdx).orElse(null);
+        if (image == null) return;
+        s3Service.deleteFile(fullFilePath(filePath, image.getS3Key()));
+        portfolioImageRepository.deleteById(imageIdx);
     }
 
     private PortfolioImageDto imageToDto(PortfolioImage image) {
@@ -41,8 +113,17 @@ public class PortfolioImageService {
                 .portfolioIdx(image.getPortfolio().getPortfolioIdx())
                 .imageUrl(image.getImageUrl())
                 .isThumbnail(image.getIsThumbnail())
-                .createdAt(image.getCreatedAt())
-                .expireAt(image.getExpireAt())
                 .build();
+    }
+
+    /**
+     * URL에서 S3Key값 추출하기
+     */
+    private String extractKeyFromUrl(String url) {
+        return url.substring(url.lastIndexOf("/") + 1);
+    }
+    
+    private String fullFilePath(String filePath, String fileName) {
+        return filePath + "/" + URLDecoder.decode(fileName);
     }
 }

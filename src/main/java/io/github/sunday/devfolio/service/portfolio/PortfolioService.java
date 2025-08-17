@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -147,7 +148,10 @@ public class PortfolioService {
         portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
 
         // 이미지 파일을 저장한다
-        // portfolioImageService.addNewImages();
+        // Todo : 에러 핸들링
+        try {
+            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto);
+        } catch (IOException e) {}
 
         return newPortfolio.getPortfolioIdx();
     }

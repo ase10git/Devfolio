@@ -11,8 +11,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Utilities;
 import software.amazon.awssdk.services.s3.model.*;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -46,17 +46,16 @@ public class S3Service {
     /**
      * 파일 업로드
      */
-    public String uploadFile(MultipartFile file, String filePath) throws IOException {
-        String fileName = generateFileName(filePath, file.getOriginalFilename());
+    public String uploadFile(MultipartFile file, String fileFullPath) throws IOException {
 
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(fileName)
+                .key(fileFullPath)
                 .contentType(file.getContentType())
                 .build();
 
         s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
-        return getFileUrl(fileName);
+        return getFileUrl(fileFullPath);
     }
 
     /**
@@ -82,13 +81,5 @@ public class S3Service {
                 .build();
 
         s3Client.deleteObject(request);
-    }
-
-    /**
-     * 파일 이름 설정하기
-     * UUID 적용
-     */
-    private String generateFileName(String filePath, String originalFilename) {
-        return filePath + "/" + UUID.randomUUID().toString() + "-" + originalFilename;
     }
 }

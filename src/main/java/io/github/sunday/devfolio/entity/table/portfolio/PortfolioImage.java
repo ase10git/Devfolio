@@ -54,6 +54,16 @@ public class PortfolioImage {
     private String imageUrl;
 
     /**
+     * 이미지의 S3Key(AWS S3)
+     */
+    @Column(
+            length = 512,
+            name = "s3_key",
+            nullable = false
+    )
+    private String s3Key;
+
+    /**
      * 이미지의 썸네일 여부
      */
     @Column(name = "is_thumbnail")
