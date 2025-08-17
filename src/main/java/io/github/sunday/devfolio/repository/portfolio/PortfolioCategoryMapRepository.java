@@ -19,5 +19,5 @@ public interface PortfolioCategoryMapRepository extends JpaRepository<PortfolioC
     /**
      * 포트폴리오 매핑 관계 제거
      */
-    void deleteByPortfolioAndPortfolioCategory_CategoryIdx(Portfolio portfolio, Long categoryIdx);
+    void deleteByPortfolioAndCategory_CategoryIdx(Portfolio portfolio, Long categoryIdx);
 }

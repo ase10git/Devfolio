@@ -90,7 +90,7 @@ public class PortfolioCategoryService {
         portfolioCategoryIdxList
                 .forEach(idx ->
                     portfolioCategoryMapRepository
-                            .deleteByPortfolioAndPortfolioCategory_CategoryIdx(portfolio, idx)
+                            .deleteByPortfolioAndCategory_CategoryIdx(portfolio, idx)
                 );
     }
 }
