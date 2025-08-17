@@ -22,6 +22,7 @@
                 <span>*은 필수 입력 항목입니다.</span>
             </div>
             <form th:action="@{/portfolio/new}" method="post" id="write-form"
+                  enctype="multipart/form-data"
                   th:object="${writeDto}">
                 <div class="input-group">
                     <label for="title" class="group-label">
@@ -31,6 +32,9 @@
                     <input type="text" id="title" th:field="*{title}"
                     placeholder="포트폴리오 제목을 작성해주세요"
                     maxlength="200" required>
+                    <div th:if="${#fields.hasErrors('title')}" class="error-box">
+                        <span th:errors="*{title}" class="form-error"></span>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="start-date" class="group-label">
@@ -39,6 +43,12 @@
                     <input type="date" id="start-date" th:field="*{startDate}">
                     <span>-</span>
                     <input type="date" id="end-date" th:field="*{endDate}">
+                    <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
+                        <span th:errors="*{startDate}" class="form-error"></span>
+                    </div>
+                    <div th:if="${#fields.hasErrors('endDate')}" class="error-box">
+                        <span th:errors="*{endDate}" class="form-error"></span>
+                    </div>
                 </div>
                 <div class="input-group category-input-group">
                     <div class="group-label">
@@ -49,13 +59,16 @@
                         <ul class="category-list">
                             <li th:each="category : ${categories}">
                                 <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
-                                       th:field="*{categories}" th:value="${category.categoryIdx}"
-                                       required>
+                                       th:field="*{categories}" th:value="${category.categoryIdx}">
                                 <label th:for="'category ' + ${category.categoryIdx}"
                                        th:text="${category.nameKo}">카테고리 이름</label>
                             </li>
                         </ul>
                         <span>카테고리는 중복 선택할 수 있습니다.</span>
+                        <span class="form-error category"></span>
+                        <div th:if="${#fields.hasErrors('categories')}" class="error-box">
+                            <span th:errors="*{categories}" class="form-error"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="input-group image-input-group">
@@ -66,11 +79,14 @@
                     <input type="file" id="thumbnail" accept="image/*" th:field="*{thumbnail}">
                     <div class="image-preview">
                         <div class="preview-box">
-                            <img alt="업로드한 이미지 미리보기">
+                            <img id="preview-image" alt="업로드한 이미지 미리보기">
                             <button type="button" class="img-remove-button">
                                 <img th:src="@{/assets/icon/x-lg.svg}" alt="취소 버튼">
                             </button>
                         </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('thumbnail')}" class="error-box">
+                        <span th:errors="*{thumbnail}" class="form-error"></span>
                     </div>
                 </div>
                 <div class="input-group textarea-input-group">
@@ -84,11 +100,12 @@
                             id="editor-container"
                         >
                             <div class="editor-container__editor">
-                                <textarea id="editor" th:field="*{description}"
-                                          required
-                                ></textarea>
+                                <textarea id="editor" th:field="*{description}"></textarea>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('description')}" class="error-box">
+                        <span th:errors="*{description}" class="form-error"></span>
                     </div>
                 </div>
                 <div class="button-wrap">
@@ -144,6 +161,6 @@
     }
 }
 </script>
-<script type="module" th:src="@{/js/portfolio/portfolio-write-ckeditor5.js}"></script>
+<script type="module" th:src="@{/js/portfolio/portfolio-write.js}"></script>
 </body>
 </html>

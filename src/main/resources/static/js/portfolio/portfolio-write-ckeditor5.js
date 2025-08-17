@@ -2,7 +2,9 @@
 import { editorConfig } from 'ckeditor5Config';
 import { ClassicEditor } from 'ckeditor5';
 
-// CKEditor 초기화 함수
+/**
+ * CKEditor 초기화 함수
+ */
 function initializeEditor() {
     // 초기값 설정
     editorConfig['initialData'] = '<p>Hello</p>';
@@ -16,4 +18,4 @@ function initializeEditor() {
         });
 }
 
-initializeEditor();
+export default initializeEditor;
