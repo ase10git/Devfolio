@@ -6,6 +6,7 @@ import initializeEditor from "./portfolio-write-ckeditor5.js";
 function validateForm() {
     const form = document.getElementById("write-form");
     form.addEventListener("submit", (event) => {
+        validDate(event);
         validateCategory(event);
         validImageCount(event);
     });
@@ -17,9 +18,9 @@ function validateForm() {
 function validateCategory(event) {
     const categories = document.querySelectorAll(".category-list input[type='checkbox']");
     const checkedCategories = Array.from(categories).filter(category => category.checked);
+    const formError = document.getElementsByClassName("form-error category")[0];
     if (checkedCategories.length === 0) {
         event.preventDefault();
-        const formError = document.getElementsByClassName("form-error category")[0];
         formError.classList.add("visible");
         formError.textContent = '카테고리를 선택해주세요';
     }
@@ -31,10 +32,25 @@ function validateCategory(event) {
 function validImageCount(event) {
     const imageList = document.querySelector("#image-list-box");
     const images = imageList.querySelectorAll("input");
-    const error = document.getElementsByClassName("form-error editor")[0];
+    const formError = document.getElementsByClassName("form-error editor")[0];
     if (images.length > 50) {
         event.preventDefault();
-        error.textContent = "이미지는 최대 50개까지만 첨부할 수 있습니다";
+        formError.classList.add("visible");
+        formError.textContent = "이미지는 최대 50개까지만 첨부할 수 있습니다";
+    }
+}
+
+/**
+ * 날짜 검증
+ */
+function validDate(event) {
+    const startDate = document.getElementById("start-date").value;
+    const endDate = document.getElementById("end-date").value;
+    const formError = document.getElementsByClassName("form-error date")[0];
+    if (startDate > endDate) {
+        event.preventDefault();
+        formError.classList.add("visible");
+        formError.textContent = "프로젝트 기간이 잘못되었습니다.";
     }
 }
 

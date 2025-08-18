@@ -45,9 +45,11 @@
                     <input type="date" id="end-date" th:field="*{endDate}">
                     <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
                         <span th:errors="*{startDate}" class="form-error"></span>
-                    </div>
-                    <div th:if="${#fields.hasErrors('endDate')}" class="error-box">
                         <span th:errors="*{endDate}" class="form-error"></span>
+
+                    </div>
+                    <div>
+                        <span class="form-error date"></span>
                     </div>
                 </div>
                 <div class="input-group category-input-group">
