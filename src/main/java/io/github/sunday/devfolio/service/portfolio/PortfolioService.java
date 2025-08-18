@@ -152,7 +152,9 @@ public class PortfolioService {
         // Todo : 에러 핸들링
         try {
             portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return newPortfolio.getPortfolioIdx();
     }

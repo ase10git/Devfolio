@@ -44,29 +44,34 @@ public class PortfolioImageService {
      */
     public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto, Long userIdx) throws Exception {
         String filePath = userIdx + "/portfolio/" + portfolio.getPortfolioIdx();
-        PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
+
+        MultipartFile thumbnailFile = writeRequestDto.getThumbnail();
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            PortfolioImage thumbnailImage = addNewImage(thumbnailFile, filePath, true);
+            // DB에 이미지 추가
+            thumbnailImage.setPortfolio(portfolio);
+            portfolioImageRepository.save(thumbnailImage);
+        }
+
         List<String> imageList = writeRequestDto.getImages();
-
-        // DB에 이미지 추가
-        savePortfolioImage(portfolio, thumbnailImage);
-        imageList.forEach(image -> {
-            PortfolioImage imageInEditor = PortfolioImage.builder()
-                    .imageUrl(image)
-                    .s3Key(extractKeyFromUrl(image))
-                    .isThumbnail(false)
-                    .createdAt(ZonedDateTime.now())
-                    .expireAt(ZonedDateTime.now().plusMonths(1))
-                    .build();
-            savePortfolioImage(portfolio, imageInEditor);
-        });
-    }
-
-    /**
-     * DB에 포트폴리오 Entity 저장하기
-     */
-    private void savePortfolioImage(Portfolio portfolio, PortfolioImage image) {
-        image.setPortfolio(portfolio);
-        portfolioImageRepository.save(image);
+        if (imageList != null && !imageList.isEmpty()) {
+            imageList.forEach(imageUrl -> {
+                try {
+                    PortfolioImage imageInEditor = PortfolioImage.builder()
+                            .portfolio(portfolio)
+                            .imageUrl(imageUrl)
+                            .s3Key(extractKeyFromUrl(imageUrl))
+                            .isThumbnail(false)
+                            .createdAt(ZonedDateTime.now())
+                            .expireAt(ZonedDateTime.now().plusMonths(1))
+                            .build();
+                    portfolioImageRepository.save(imageInEditor);
+                    s3Service.updateObjectTags(imageInEditor.getS3Key(), "lifecycle", "");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     /**
@@ -94,23 +99,6 @@ public class PortfolioImageService {
                 .createdAt(ZonedDateTime.now())
                 .expireAt(ZonedDateTime.now().plusMonths(1))
                 .build();
-    }
-
-    /**
-     * AWS S3에 이미지 리스트 추가하기
-     */
-    private List<PortfolioImage> addNewImageList(List<MultipartFile> files, String filePath) {
-        return files.stream()
-                .filter(file -> !file.isEmpty())
-                .map(file -> {
-                    try {
-                        return addNewImage(file, filePath, false);
-                    } catch (Exception e) {
-                        // Todo : custom error 추가
-                        throw new RuntimeException("이미지 업로드 실패: " + file.getOriginalFilename());
-                    }
-                })
-                .toList();
     }
 
     private void deleteImage(Long imageIdx, String filePath) {

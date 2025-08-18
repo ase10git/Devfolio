@@ -13,6 +13,8 @@ import software.amazon.awssdk.services.s3.S3Utilities;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Amazon AWS S3 파일 관리를 위한 서비스
@@ -81,6 +83,43 @@ public class S3Service {
                 .build();
 
         s3Client.deleteObject(request);
+    }
+
+    public void updateObjectTags(String fileName, String newTagKey, String newTagValue) {
+        // 객체의 현재 태그 가져오기
+        GetObjectTaggingRequest getTaggingRequest = GetObjectTaggingRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+        GetObjectTaggingResponse getTaggingResponse = s3Client.getObjectTagging(getTaggingRequest);
+
+        // 기존 태그 목록 가져오기
+        List<Tag> tags = new ArrayList<>(getTaggingResponse.tagSet());
+
+        // 새로운 태그 추가 또는 기존 태그 업데이트
+        boolean tagUpdated = false;
+        for (Tag tag : tags) {
+            if (tag.key().equals(newTagKey)) {
+                tags.remove(tag);
+                tags.add(Tag.builder().key(newTagKey).value(newTagValue).build());
+                tagUpdated = true;
+                break;
+            }
+        }
+        if (!tagUpdated) {
+            tags.add(Tag.builder().key(newTagKey).value(newTagValue).build());
+        }
+
+        // 새로운 태그 세트로 객체 태그 업데이트
+        PutObjectTaggingRequest putTaggingRequest = PutObjectTaggingRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .tagging(Tagging.builder().tagSet(tags).build())
+                .build();
+
+        // 응답 로그 출력
+        PutObjectTaggingResponse response = s3Client.putObjectTagging(putTaggingRequest);
     }
 
 }
