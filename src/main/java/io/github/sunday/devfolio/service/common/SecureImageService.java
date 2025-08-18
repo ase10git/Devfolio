@@ -2,8 +2,10 @@ package io.github.sunday.devfolio.service.common;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
 import io.github.sunday.devfolio.dto.common.MultipartImage;
+import io.github.sunday.devfolio.enums.ImageTarget;
 import io.github.sunday.devfolio.exception.common.ImageUploadException;
 import io.github.sunday.devfolio.exception.common.ImageValidationException;
+import io.github.sunday.devfolio.exception.common.IncorrectImageTargetException;
 import lombok.RequiredArgsConstructor;
 import marvin.image.MarvinImage;
 import org.apache.commons.io.FilenameUtils;
@@ -42,10 +44,18 @@ public class SecureImageService {
     private final Tika tika = new Tika();
     private final S3Service s3Service;
 
+    public ImageUploadResult uploadTempImage(MultipartFile file, String target, Long userIdx) throws Exception {
+        String targetPath = ImageTarget.fromFieldName(target).getTargetName();
+        if (targetPath == null) throw new IncorrectImageTargetException("incorrect image target path name");
+        String filePath = userIdx + "/" + targetPath;
+
+        return uploadImage(file, filePath, true);
+    }
+
     /**
      * AWS S3에 파일 검증 후 이미지 파일 업로드
      */
-    public ImageUploadResult uploadImage(MultipartFile file, String filePath) throws ImageUploadException {
+    public ImageUploadResult uploadImage(MultipartFile file, String filePath, boolean isTemp) throws ImageUploadException {
         try {
             // 파일 검증
             validateFile(file);
@@ -60,7 +70,7 @@ public class SecureImageService {
             // S3 업로드
             String fileFullPath = String.format("%s/%s", filePath, safeFileName);
 
-            String imageUrl = s3Service.uploadFile(resizedImage, fileFullPath);
+            String imageUrl = s3Service.uploadFile(resizedImage, fileFullPath, isTemp);
 
             return ImageUploadResult.builder()
                     .originalFileName(file.getOriginalFilename())

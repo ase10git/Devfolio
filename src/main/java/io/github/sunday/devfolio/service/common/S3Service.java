@@ -45,12 +45,13 @@ public class S3Service {
     /**
      * 파일 업로드
      */
-    public String uploadFile(MultipartFile file, String fileFullPath) throws IOException {
+    public String uploadFile(MultipartFile file, String fileFullPath, boolean isTemp) throws IOException {
         String contentType = "image/" + FilenameUtils.getExtension(fileFullPath);
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileFullPath)
                 .contentType(contentType)
+                .tagging(isTemp ? "lifecycle=TEMP" : null)
                 .build();
 
         s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
@@ -81,4 +82,5 @@ public class S3Service {
 
         s3Client.deleteObject(request);
     }
+
 }

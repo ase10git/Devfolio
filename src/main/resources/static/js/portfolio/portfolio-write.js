@@ -1,24 +1,6 @@
 import initializeEditor from "./portfolio-write-ckeditor5.js";
 
 /**
- * 에디터 이미지 src를 input에 추가
- */
-// Todo : 로직 수정
-function addImageSrcToBody() {
-    const imageListBox = document.getElementById("image-list-box");
-    const editor = document.querySelector(".ck-content")[0];
-    const images = editor.querySelectorAll("img");
-
-    images.forEach(el => {
-        const input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "images");
-        input.setAttribute("value", el.src);
-        imageListBox.appendChild(input);
-    });
-}
-
-/**
  * form 검증
  */
 function validateForm() {
@@ -26,7 +8,6 @@ function validateForm() {
     form.addEventListener("submit", (event) => {
         validateCategory(event);
         validImageCount(event);
-        addImageSrcToBody();
     });
 }
 
@@ -47,10 +28,9 @@ function validateCategory(event) {
 /**
  * CKEditor 이미지 개수 제한
  */
-// Todo : 로직 수정
 function validImageCount(event) {
-    const editor = document.querySelector(".ck-content")[0];
-    const images = editor.querySelectorAll("img");
+    const imageList = document.querySelector("#image-list-box");
+    const images = imageList.querySelectorAll("input");
     const error = document.getElementsByClassName("form-error editor")[0];
     if (images.length > 50) {
         event.preventDefault();

@@ -151,7 +151,7 @@ public class PortfolioService {
         // 이미지 파일 저장
         // Todo : 에러 핸들링
         try {
-            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto);
+            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
         } catch (Exception e) {}
 
         return newPortfolio.getPortfolioIdx();

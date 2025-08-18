@@ -307,12 +307,12 @@ export const editorConfig = {
 		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
 	},
 	translations: [translations],
-	ckfinder: {
-		uploadUrl: '',
-		// Todo : Cookie 포함
-		// withCredentials: true
-		options: {
-			resourceType: 'Images'
-		}
-	}
+	 ckfinder: {
+	 	uploadUrl: '',
+	 	// Todo : Cookie 포함
+	 	// withCredentials: true
+	 	options: {
+	 		resourceType: 'Images'
+	 	}
+	 }
 };

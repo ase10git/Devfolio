@@ -10,10 +10,58 @@ function initializeEditor() {
     editorConfig['initialData'] = '<p>Hello</p>';
     // Placeholder 설정
     editorConfig['placeholder'] = '내용을 입력해주세요';
-    editorConfig['ckfinder'] = { uploadUrl: '/image/upload' };
+    editorConfig['ckfinder'] = { uploadUrl: '/image/upload?target=portfolio' };
     // 에디터 적용
     ClassicEditor
         .create(document.getElementById("editor"), editorConfig)
+        .then(editor => {
+            // 이미지 업로드 후 input 추가
+            const imageUploadEditing = editor.plugins.get('ImageUploadEditing');
+        
+            imageUploadEditing.on('uploadComplete', (evt, { data, imageElement }) => {
+                editor.model.change(writer => {
+                    writer.setAttribute('data-uploaded', 'true', imageElement);
+                });
+        
+                const viewImg = editor.editing.mapper.toViewElement(imageElement);
+                const domImg = editor.editing.view.domConverter.mapViewToDom(viewImg);
+
+                if (domImg) {
+                    const container = document.getElementById('image-list-box');
+                    if (container) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'images';
+                        input.value = data.default;
+                        container.appendChild(input);
+                    }
+                }
+            });
+
+            // 에디터에 등록한 이미지 제거 시 input 제거
+            const model = editor.model;
+            model.document.registerPostFixer(writer => {
+                const changes = model.document.differ.getChanges();
+                let handled = false;
+
+                for (const change of changes) {
+                    if (change.type === 'remove' && change.name === 'imageBlock') {
+                        handled = true;
+
+                        const removedImageSrc = change.attributes.get('src');
+                        const container = document.getElementById('image-list-box');
+                        if (container) {
+                            const input = container.querySelector(`input[name="images"][value="${removedImageSrc}"]`);
+                            if (input) input.remove();
+                        }
+                        handled = false;
+                        break;
+                    }
+                }
+
+                return handled;
+            });
+        })
         .catch(error => {
             console.error('CKEditor 초기화 중 오류 발생:', error);
         });

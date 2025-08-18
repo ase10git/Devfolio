@@ -41,14 +41,13 @@ public class PortfolioImageService {
      * 포트폴리오 이미지 추가
      * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드
      */
-    public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto) throws Exception {
-        String filePath = "portfolio/" + portfolio.getPortfolioIdx();
+    public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto, Long userIdx) throws Exception {
+        String filePath = userIdx + "/portfolio/" + portfolio.getPortfolioIdx();
         PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
-        // Todo : 이미지 이동 처리
         List<String> imageList = writeRequestDto.getImages();
-        imageList.forEach(image -> System.out.println(image));
 
         // DB에 이미지 추가
+        // Todo : Image Entity 추가가 안되는 에러 수정
         savePortfolioImage(portfolio, thumbnailImage);
         //imageList.forEach(image -> savePortfolioImage(portfolio, image));
     }
@@ -77,7 +76,7 @@ public class PortfolioImageService {
      */
     // Todo : 예외 처리 로직 추가
     private PortfolioImage addNewImage(MultipartFile file, String filePath, boolean isThumbnail) throws ImageUploadException{
-        ImageUploadResult uploadResult = secureImageService.uploadImage(file, filePath);
+        ImageUploadResult uploadResult = secureImageService.uploadImage(file, filePath, false);
 
         return PortfolioImage.builder()
                 .imageUrl(uploadResult.getImageUrl())
