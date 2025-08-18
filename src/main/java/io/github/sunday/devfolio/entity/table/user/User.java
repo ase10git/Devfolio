@@ -3,8 +3,6 @@ package io.github.sunday.devfolio.entity.table.user;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,6 +38,7 @@ public class User {
     /**
      * OAuth 제공자 이름 (예: GOOGLE, LOCAL)
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "oauth_provider", length = 50)
     private AuthProvider oauthProvider = AuthProvider.LOCAL;
 

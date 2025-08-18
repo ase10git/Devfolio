@@ -27,6 +27,12 @@ spring:
       mail.smtp.starttls.enable: ${MAIL_SMTP_STARTTLS_ENABLE}
 
 app:
+  jwt:
+    issuer: DevFolio
+    access-ttl-ms: 1800000  # 30m
+    refresh-ttl-ms: 1209600000 # 14d
+    secret: ${JWT_SECRET}     # HS256 서명키 (32바이트 이상 권장)
+    refresh-pepper: ${REFRESH_TOKEN_PEPPER} # RT 해시용 HMAC 키
   name: ${APP_NAME:DevFolio}
   version: ${APP_VERSION:0.0.0}
 

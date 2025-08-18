@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Main Page</title>
+</head>
+<body>
+<h1>메인 페이지</h1>
+
+<p>여기는 메인 페이지 입니다.</p>
+<div th:if="${loginId != null}">
+  <p>로그인 아이디: <span th:text="${loginId}"></span></p>
+  <p>이메일: <span th:text="${email}"></span></p>
+  <p>닉네임: <span th:text="${nickname}"></span></p>
+</div>
+
+<div th:if="${loginId == null}">
+  <p>로그인하지 않은 상태입니다.</p>
+</div>
+
+<form th:action="@{/login}" method="get" class="button-form">
+  <button type="submit" class="loginBtn">로그인</button>
+</form>
+
+<form th:action="@{/logout}" method="post" class="button-form">
+  <button type="submit" class="loginBtn">로그아웃</button>
+</form>
+</body>
+</html>
