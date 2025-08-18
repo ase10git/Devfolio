@@ -45,7 +45,8 @@ public class PortfolioImageService {
         String filePath = "portfolio/" + portfolio.getPortfolioIdx();
         PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
         // Todo : 이미지 이동 처리
-        //List<PortfolioImage> imageList = addNewImageList(writeRequestDto.getImages(), filePath);
+        List<String> imageList = writeRequestDto.getImages();
+        imageList.forEach(image -> System.out.println(image));
 
         // DB에 이미지 추가
         savePortfolioImage(portfolio, thumbnailImage);

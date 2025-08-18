@@ -94,6 +94,9 @@
                         <span>상세 설명</span>
                         <span class="required-mark">*</span>
                     </label>
+                    <div class="error-box">
+                        <span class="form-error editor"></span>
+                    </div>
                     <div class="main-container">
                         <div
                             class="editor-container editor-container_classic-editor editor-container_include-style editor-container_include-fullscreen"
@@ -103,6 +106,7 @@
                                 <textarea id="editor" th:field="*{description}"></textarea>
                             </div>
                         </div>
+                        <div id="image-list-box"></div>
                     </div>
                     <div th:if="${#fields.hasErrors('description')}" class="error-box">
                         <span th:errors="*{description}" class="form-error"></span>
