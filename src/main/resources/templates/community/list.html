@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>커뮤니티</title>
+    <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
+    <link rel="stylesheet" th:href="@{/css/community/community_list.css}">
+</head>
+<body>
+<div class="page-wrapper">
+    <!-- 실제 헤더가 여기에 위치합니다 -->
+
+    <header class="page-header">
+        <h1>커뮤니티</h1>
+        <p>커뮤니티에서 스터디 그룹을 모집하거나 질의응답을 통해 다른 개발자와 소통하세요</p>
+    </header>
+
+    <main class="community-main">
+        <aside class="category-sidebar">
+            <h2>커뮤니티 카테고리</h2>
+            <ul>
+                <li><a href="#" class="active">스터디 그룹 모집</a></li>
+                <li><a href="#">질문 & 답변</a></li>
+                <li><a href="#">자유 게시판</a></li>
+            </ul>
+        </aside>
+
+        <section class="content-area">
+            <!-- 1. 검색창 -->
+            <div class="search-bar">
+                <select name="category"><option value="all">카테고리</option></select>
+                <input type="text" placeholder="검색">
+                <button type="button" class="search-btn"><img th:src="@{/assets/icon/search.svg}" alt="검색 아이콘"/></button>
+            </div>
+
+            <!-- 2. 정렬 탭과 글쓰기 버튼 -->
+            <div class="actions-and-sort">
+                <div class="sort-tabs">
+                    <a href="#" class="active">최신순</a>
+                    <a href="#">댓글순</a>
+                    <a href="#">조회수순</a>
+                    <a href="#">좋아요순</a>
+                </div>
+                <a th:href="@{/community/new}" class="btn-primary">새 게시글 작성</a>
+            </div>
+
+            <!-- 3. 게시글 목록 -->
+            <div class="post-list-container">
+                <div th:if="${postPage.isEmpty()}" class="no-posts">
+                    <p>등록된 게시글이 없습니다.</p>
+                </div>
+                <div th:unless="${postPage.isEmpty()}" class="post-list">
+                    <article class="post-item" th:each="post : ${postPage.content}">
+                        <div class="post-item-main">
+                            <span class="tag" th:classappend="${post.status == 'ACTIVE'} ? 'recruiting' : 'completed'"
+                                  th:text="${post.status == 'ACTIVE'} ? '모집중' : '모집완료'"></span>
+                            <h3 class="post-title"><a th:href="@{/community/{id}(id=${post.postIdx})}" th:text="${post.title}"></a></h3>
+                            <p class="post-category"
+                               th:text="${post.category.name() == 'study' ? '스터디 그룹 모집' :
+                                         (post.category.name() == 'question' ? '질문&답변' : '자유 게시판')}">
+                            </p><p class="post-snippet" th:text="${#strings.abbreviate(post.content, 150)}"></p>
+                        </div>
+                        <div class="post-item-meta">
+                            <div class="author-info">
+                                <img th:src="${post.authorProfileImg != null ? post.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필">
+                                <span th:text="${post.authorNickname}"></span>
+                                <span class="timestamp" th:text="' • ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div class="post-stats">
+                                <span><img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘" /><span th:text="${post.views}"></span></span>
+                                <span><img th:src="@{/assets/icon/heart-fill.svg}" alt="하트 아이콘" /><span th:text="${post.likeCount}"></span></span>
+                                <span><img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘" /><span th:text="${post.commentCount}"></span></span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 페이징 -->
+            <nav th:if="${postPage.totalPages > 1}" class="pagination">
+                <ul>
+                    <li th:classappend="${postPage.first} ? 'disabled' : ''">
+                        <a th:href="@{/community(page=0)}">«</a>
+                    </li>
+                    <li th:classappend="${!postPage.hasPrevious()} ? 'disabled' : ''">
+                        <a th:href="@{/community(page=postPage.number-1)}">‹</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, postPage.totalPages - 1)}"
+                        th:if="${pageNum >= postPage.number - 2 and pageNum <= postPage.number + 2}">
+                        <a th:href="@{/community(page=${pageNum})}" th:text="${pageNum + 1}"
+                           th:classappend="${pageNum == postPage.number} ? 'active' : ''"></a>
+                    </li>
+                    <li th:classappend="${!postPage.hasNext()} ? 'disabled' : ''">
+                        <a th:href="@{/community(page=${postPage.number+1})}">›</a>
+                    </li>
+                    <li th:classappend="${postPage.last} ? 'disabled' : ''">
+                        <a th:href="@{/community(page=postPage.totalPages-1)}">»</a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+    </main>
+</div>
+</body>
+</html>
