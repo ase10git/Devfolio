@@ -106,7 +106,12 @@ public class Portfolio {
     /**
      * 검색을 위한 tsvector
      */
-    @Column(name = "search_vector", columnDefinition = "tsvector")
+    @Column(
+            name = "search_vector",
+            columnDefinition = "tsvector",
+            insertable = false,
+            updatable = false
+    )
     private String searchVector;
 
     @ManyToOne

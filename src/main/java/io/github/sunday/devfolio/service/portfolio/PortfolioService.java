@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -136,8 +135,7 @@ public class PortfolioService {
      * 포트폴리오 데이터, 포트폴리오 카테고리, 썸네일 이미지, 포트폴리오 이미지 저장
      */
     public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) {
-        // 요청을 받는다
-        // 사용자 정보를 가져온다
+        // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
         if (user == null) {
             return null;
@@ -145,13 +143,12 @@ public class PortfolioService {
 
         Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
 
-        // 데이터를 저장한다
-        // id값을 반한다
+        // 포트폴리오 데이터 저장
         Portfolio newPortfolio = portfolioRepository.save(portfolio);
-        // 포트폴리오 카테고리를 저장한다.
+        // 포트폴리오 카테고리를 저장
         portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
 
-        // 이미지 파일을 저장한다
+        // 이미지 파일 저장
         // Todo : 에러 핸들링
         try {
             portfolioImageService.addPortfolioImage(portfolio, writeRequestDto);

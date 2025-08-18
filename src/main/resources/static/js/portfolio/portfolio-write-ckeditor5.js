@@ -10,6 +10,7 @@ function initializeEditor() {
     editorConfig['initialData'] = '<p>Hello</p>';
     // Placeholder 설정
     editorConfig['placeholder'] = '내용을 입력해주세요';
+    editorConfig['ckfinder'] = { uploadUrl: '/image/upload' };
     // 에디터 적용
     ClassicEditor
         .create(document.getElementById("editor"), editorConfig)

@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -43,13 +42,14 @@ public class PortfolioImageService {
      * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드
      */
     public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto) throws Exception {
-        String filePath = "/portfolio/" + portfolio.getPortfolioIdx();
+        String filePath = "portfolio/" + portfolio.getPortfolioIdx();
         PortfolioImage thumbnailImage = addNewImage(writeRequestDto.getThumbnail(), filePath, true);
-        List<PortfolioImage> imageList = addNewImageList(writeRequestDto.getImages(), filePath);
+        // Todo : 이미지 이동 처리
+        //List<PortfolioImage> imageList = addNewImageList(writeRequestDto.getImages(), filePath);
 
         // DB에 이미지 추가
         savePortfolioImage(portfolio, thumbnailImage);
-        imageList.forEach(image -> savePortfolioImage(portfolio, image));
+        //imageList.forEach(image -> savePortfolioImage(portfolio, image));
     }
 
     /**

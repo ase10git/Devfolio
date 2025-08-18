@@ -40,7 +40,6 @@ import {
 	List,
 	ListProperties,
 	Markdown,
-	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
 	SpecialCharacters,
@@ -59,7 +58,9 @@ import {
 	TableToolbar,
 	TextTransformation,
 	TodoList,
-	Underline
+	Underline,
+	CKFinder,
+	CKFinderUploadAdapter
 } from 'ckeditor5';
 
 import translations from 'ckeditor5/translations/ko.js';
@@ -85,7 +86,6 @@ export const editorConfig = {
 			'specialCharacters',
 			'link',
 			'insertImage',
-			'mediaEmbed',
 			'insertTable',
 			'blockQuote',
 			'codeBlock',
@@ -135,7 +135,6 @@ export const editorConfig = {
 		List,
 		ListProperties,
 		Markdown,
-		MediaEmbed,
 		Paragraph,
 		PasteFromOffice,
 		SpecialCharacters,
@@ -154,7 +153,9 @@ export const editorConfig = {
 		TableToolbar,
 		TextTransformation,
 		TodoList,
-		Underline
+		Underline,
+		CKFinder,
+		CKFinderUploadAdapter
 	],
 	fullscreen: {
 		onEnterCallback: container =>
@@ -305,5 +306,13 @@ export const editorConfig = {
 	table: {
 		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
 	},
-	translations: [translations]
+	translations: [translations],
+	ckfinder: {
+		uploadUrl: '',
+		// Todo : Cookie 포함
+		// withCredentials: true
+		options: {
+			resourceType: 'Images'
+		}
+	}
 };

@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.service.common;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -11,8 +12,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Utilities;
 import software.amazon.awssdk.services.s3.model.*;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.IOException;
 
 /**
@@ -46,7 +45,7 @@ public class S3Service {
     /**
      * 파일 업로드
      */
-    public String uploadFile(BufferedImage bufferedImage, String fileFullPath) throws IOException {
+    public String uploadFile(MultipartFile file, String fileFullPath) throws IOException {
         String contentType = "image/" + FilenameUtils.getExtension(fileFullPath);
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -54,8 +53,7 @@ public class S3Service {
                 .contentType(contentType)
                 .build();
 
-        byte[] imageBytes = ((DataBufferByte)bufferedImage.getData().getDataBuffer()).getData();
-        s3Client.putObject(request, RequestBody.fromBytes(imageBytes));
+        s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
         return getFileUrl(fileFullPath);
     }
 

@@ -36,7 +36,7 @@ public class PortfolioController {
     /**
      * 포트폴리오 검색 요청이 들어올 때 DTO 내의 String에서 script를 제거
      */
-    @InitBinder("requestDto")
+    @InitBinder("searchRequestDto")
     public void initBinder(WebDataBinder binder) {
         // keyword와 category의 sanitize 수행
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
@@ -65,12 +65,30 @@ public class PortfolioController {
     }
 
     /**
+     * 포트폴리오 작성 요청이 들어올 때 DTO 내의 String에서 script를 제거
+     */
+    @InitBinder({"writeRequestDto", "editRequestDto"})
+    public void initBinderToWrite(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
+            @Override
+            public void setAsText(String text) {
+                if (text != null) {
+                    String safeText = Jsoup.clean(text, Safelist.basic());
+                    super.setAsText(safeText.trim());
+                } else {
+                    super.setValue(null);
+                }
+            }
+        });
+    }
+
+    /**
      * 포트폴리오 메인 페이지 출력
      * 포트폴리오 검색, 핫한 포트폴리오 제공
      */
     @GetMapping()
     public String list(
-            @Valid @ModelAttribute PortfolioSearchRequestDto requestDto,
+            @Valid @ModelAttribute("searchRequestDto") PortfolioSearchRequestDto requestDto,
             BindingResult bindingResult,
             Model model
     ) {
@@ -136,7 +154,7 @@ public class PortfolioController {
     // Todo : 전역 에러 처리 설정 필요
     @PostMapping("/new")
     public String write(
-            @ModelAttribute PortfolioWriteRequestDto writeDto,
+            @ModelAttribute("writeRequestDto") PortfolioWriteRequestDto writeDto,
             BindingResult bindingResult,
             Model model
             ) {

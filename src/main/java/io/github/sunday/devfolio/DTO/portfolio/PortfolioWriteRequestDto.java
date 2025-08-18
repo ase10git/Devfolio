@@ -54,15 +54,13 @@ public class PortfolioWriteRequestDto {
     /**
      * 포트폴리오 썸네일 이미지
      */
-    // Todo : 파일 확장자 검증 로직 필요
     private MultipartFile thumbnail;
 
     /**
      * 포트폴리오 이미지
      */
-    // Todo : 파일 확장자 검증 로직 필요
     @Size(max = 50, message = "이미지는 최대 50까지 업로드할 수 있습니다.")
-    private List<MultipartFile> images;
+    private List<String> images;
 
     /**
      * 프로젝트 날짜 검증

@@ -1,19 +1,21 @@
 package io.github.sunday.devfolio.service.common;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
+import io.github.sunday.devfolio.dto.common.MultipartImage;
 import io.github.sunday.devfolio.exception.common.ImageUploadException;
 import io.github.sunday.devfolio.exception.common.ImageValidationException;
 import lombok.RequiredArgsConstructor;
+import marvin.image.MarvinImage;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
+import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -50,9 +52,10 @@ public class SecureImageService {
 
             // 안전한 파일명 생성
             String safeFileName = generateSafeFileName(file.getOriginalFilename());
+            String fileFormatName = file.getContentType().substring(file.getContentType().lastIndexOf("/") + 1);
 
             // 이미지 리사이징
-            BufferedImage resizedImage = resizeImage(file.getInputStream());
+            MultipartFile resizedImage = resizeImage(file, fileFormatName);
 
             // S3 업로드
             String fileFullPath = String.format("%s/%s", filePath, safeFileName);
@@ -134,15 +137,15 @@ public class SecureImageService {
     /**
      * 이미지 크기 조정
      */
-    private BufferedImage resizeImage(InputStream inputStream) throws IOException {
-        BufferedImage originalImage = ImageIO.read(inputStream);
+    private MultipartFile resizeImage(MultipartFile file, String extensionName) throws IOException {
+        BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
         // 최대 너비/높이 설정
         int maxDimension = 1920;
 
         if (originalImage.getWidth() <= maxDimension &&
                 originalImage.getHeight() <= maxDimension) {
-            return originalImage;
+            return file;
         }
 
         // 비율 유지하며 리사이징
@@ -154,14 +157,21 @@ public class SecureImageService {
         int newWidth = (int) (originalImage.getWidth() * scale);
         int newHeight = (int) (originalImage.getHeight() * scale);
 
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = resizedImage.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-        g2d.dispose();
+        MarvinImage marvinImage = new MarvinImage(originalImage);
 
-        return resizedImage;
+        Scale imageScale = new Scale();
+        imageScale.load();
+        imageScale.setAttribute("newWidth", newWidth);
+        imageScale.setAttribute("newHeight", newHeight);
+        imageScale.process(marvinImage.clone(), marvinImage, null, null, false);
+
+        BufferedImage resizedImage = marvinImage.getBufferedImageNoAlpha();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, extensionName, baos);
+        baos.flush();
+
+        return MultipartImage.builder()
+                .bytes(baos.toByteArray())
+                .build();
     }
 }
