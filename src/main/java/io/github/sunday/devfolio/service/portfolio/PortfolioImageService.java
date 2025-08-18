@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.net.URLDecoder;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -47,9 +48,17 @@ public class PortfolioImageService {
         List<String> imageList = writeRequestDto.getImages();
 
         // DB에 이미지 추가
-        // Todo : Image Entity 추가가 안되는 에러 수정
         savePortfolioImage(portfolio, thumbnailImage);
-        //imageList.forEach(image -> savePortfolioImage(portfolio, image));
+        imageList.forEach(image -> {
+            PortfolioImage imageInEditor = PortfolioImage.builder()
+                    .imageUrl(image)
+                    .s3Key(extractKeyFromUrl(image))
+                    .isThumbnail(false)
+                    .createdAt(ZonedDateTime.now())
+                    .expireAt(ZonedDateTime.now().plusMonths(1))
+                    .build();
+            savePortfolioImage(portfolio, imageInEditor);
+        });
     }
 
     /**
@@ -122,5 +131,15 @@ public class PortfolioImageService {
 
     private String fullFilePath(String filePath, String fileName) {
         return filePath + "/" + URLDecoder.decode(fileName);
+    }
+
+    private String extractKeyFromUrl(String url) {
+        try {
+            URI uri = new URI(url);
+            String path = uri.getPath();
+            return path.startsWith("/") ? path.substring(1) : path;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("잘못된 URL 형식입니다.", e);
+        }
     }
 }
