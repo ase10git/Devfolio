@@ -37,12 +37,4 @@ public class CookieUtil {
                 .map(Cookie::getValue)
                 .findFirst();
     }
-
-    public String expireCookie(String name) {
-        return ResponseCookie.from(name, "")
-                .httpOnly(true).secure(false)  // 로컬에서는 secure(false)
-                .path("/")
-                .maxAge(0)
-                .build().toString();
-    }
 }

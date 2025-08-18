@@ -18,8 +18,9 @@ public class RefreshToken {
     @Column(name = "token_idx")
     private Long tokenIdx;
 
-    @Column(name = "user_idx", nullable = false)
-    private Long userIdx;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_idx", nullable = false, foreignKey = @ForeignKey(name = "fk_user"))
+    private User user;
 
     @Column(name = "token_id", nullable = false, columnDefinition = "uuid")
     private UUID tokenId;

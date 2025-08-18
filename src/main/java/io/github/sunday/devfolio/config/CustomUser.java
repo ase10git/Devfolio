@@ -14,15 +14,13 @@ public class CustomUser implements UserDetails {
     private Long userIdx;
     private String loginId;
     private String oauthProvider;
-    private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
     // 필드 기반 생성자
-    public CustomUser(Long userIdx, String loginId, String oauthProvider, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUser(Long userIdx, String loginId, String oauthProvider, Collection<? extends GrantedAuthority> authorities) {
         this.userIdx = userIdx;
         this.loginId = loginId;
         this.oauthProvider = oauthProvider;
-        this.password = password;
         this.authorities = authorities;
     }
 
@@ -33,7 +31,7 @@ public class CustomUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password; // JWT 기반이므로 비밀번호는 필요 없음
+        return null; // JWT 기반이므로 비밀번호는 필요 없음
     }
 
     @Override

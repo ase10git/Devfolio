@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getUserIdx(),              // idx
                 user.getLoginId(),              // loginId
                 user.getOauthProvider().name(), // oauthProvider
-                user.getPassword(),             // password
                 Collections.emptyList()         // authorities
         );
     }

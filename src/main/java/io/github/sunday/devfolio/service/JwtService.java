@@ -77,12 +77,11 @@ public class JwtService {
         Long userIdx = Long.parseLong(claims.getSubject());
         String loginId = claims.get("loginId", String.class);
         String oauthProvider = claims.get("oauthProvider", String.class);
-        String password = claims.get("password", String.class);
 
         // 관리자 기능은 구현하지 않아서 권한 목록(authorities)은 ROLE_USER로 하드코딩
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new CustomUser(userIdx, loginId, oauthProvider, password, authorities);
+        return new CustomUser(userIdx, loginId, oauthProvider, authorities);
     }
 
     /**

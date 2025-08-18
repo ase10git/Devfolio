@@ -7,6 +7,7 @@ import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.service.JwtService;
 import io.github.sunday.devfolio.service.RefreshTokenService;
 import io.github.sunday.devfolio.util.CookieUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestParam String loginId,
-                                   @RequestParam String password,
-                                   HttpServletResponse res) {
+                        @RequestParam String password,
+                        HttpServletResponse res) {
         // 1. DB에서 사용자 조회
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
@@ -96,21 +97,43 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("X-Token-Id") UUID tokenId,
+    public String logout(@RequestHeader("X-Token-Id") UUID tokenId,
                                     @AuthenticationPrincipal CustomUser principal,
                                     HttpServletResponse res) {
         // RefreshToken DB 삭제
         rtService.verifyAndDelete(principal.getUserIdx(), tokenId, "");
 
-        // 쿠키 만료
-        res.addHeader(HttpHeaders.SET_COOKIE, cookies.expireCookie("AT"));
-        res.addHeader(HttpHeaders.SET_COOKIE, cookies.expireCookie("RT"));
+        // 쿠키 만료 (javax.servlet.http.Cookie 사용)
+        Cookie atCookie = new Cookie("AT", null);
+        atCookie.setPath("/");          // 로그인 시 쿠키 path와 동일
+        atCookie.setHttpOnly(true);
+        atCookie.setSecure(false);      // 로컬 개발 환경에서는 false
+        atCookie.setMaxAge(0);          // 즉시 만료
+        res.addCookie(atCookie);
 
-        return ResponseEntity.ok(Map.of("message", "logout success"));
+        Cookie rtCookie = new Cookie("RT", null);
+        rtCookie.setPath("/");          // 로그인 시 쿠키 path와 동일
+        rtCookie.setHttpOnly(true);
+        rtCookie.setSecure(false);      // 로컬 개발 환경에서는 false
+        rtCookie.setMaxAge(0);          // 즉시 만료
+        res.addCookie(rtCookie);
+
+        // SecurityContext 초기화
+        SecurityContextHolder.clearContext();
+
+        return "redirect:/main";
     }
 
     @GetMapping("/main")
-    public String mainPage() {
-        return "main"; // main.html 렌더링
+    public String mainPage(Model model, @AuthenticationPrincipal CustomUser customUser) {
+        if (customUser != null) {
+            User user = userRepository.findById(customUser.getUserIdx()).orElse(null);
+            if (user != null) {
+                model.addAttribute("loginId", user.getLoginId());
+                model.addAttribute("email", user.getEmail());
+                model.addAttribute("nickname", user.getNickname());
+            }
+        }
+        return "main";
     }
 }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -49,6 +51,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // ✅ 로그 찍기
+            log.info("✅ JWT 인증 성공: userIdx={}, loginId={}", user.getUserIdx(), user.getLoginId());
+        } else {
+            log.info("❌ JWT 토큰 없음 또는 검증 실패");
         }
 
         // 3. 필터 체인 계속 실행

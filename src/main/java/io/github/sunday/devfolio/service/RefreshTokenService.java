@@ -2,7 +2,9 @@ package io.github.sunday.devfolio.service;
 
 import io.github.sunday.devfolio.config.AppProps;
 import io.github.sunday.devfolio.entity.table.user.RefreshToken;
+import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.RefreshTokenRepository;
+import io.github.sunday.devfolio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import java.util.Base64;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository repo;
+    private final UserRepository userRepository;
     private final AppProps props; // secret, ttl, pepper
 
     /**
@@ -54,8 +57,12 @@ public class RefreshTokenService {
     @Transactional
     public UUID store(Long userIdx, String rtRaw) {
         UUID tokenId = UUID.randomUUID();
+
+        // userIdx로 User 엔티티 조회
+        User user = userRepository.getReferenceById(userIdx);
+
         RefreshToken entity = RefreshToken.builder()
-                .userIdx(userIdx)
+                .user(user)
                 .tokenId(tokenId)
                 .tokenHash(hash(rtRaw))
                 .expiresAt(ZonedDateTime.now().plus(props.getJwt().getRefreshTtlMs(), ChronoUnit.MILLIS))
@@ -70,7 +77,7 @@ public class RefreshTokenService {
      */
     @Transactional
     public boolean verifyAndDelete(Long userIdx, UUID tokenId, String rtRaw) {
-        Optional<RefreshToken> opt = repo.findByUserIdxAndTokenId(userIdx, tokenId);
+        Optional<RefreshToken> opt = repo.findByUser_UserIdxAndTokenId(userIdx, tokenId);
         if (opt.isEmpty()) return false;
 
         RefreshToken token = opt.get();
@@ -98,7 +105,6 @@ public class RefreshTokenService {
      */
     @Transactional(readOnly = true)
     public Optional<Long> getUserIdxByTokenId(UUID tokenId) {
-        return repo.findByTokenId(tokenId)
-                .map(RefreshToken::getUserIdx);
+        return repo.findUserIdxByTokenId(tokenId);
     }
 }
