@@ -1,0 +1,120 @@
+/* static/css/community/community_detail.css */
+
+.post-detail-container, .comment-section {
+    width: 80%;
+    max-width: 960px;
+    margin: 2rem auto;
+}
+
+.post-header {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #6c757d;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.post-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    min-height: 200px; /* 내용이 적어도 최소 높이 유지 */
+    margin-bottom: 3rem;
+}
+
+.post-interactions, .post-actions {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-like {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-like.liked {
+    background-color: #ffe3e3;
+    border-color: #ffc2c2;
+    color: #d90429;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.comment-form button {
+    float: right;
+    padding: 0.5rem 1.25rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-list {
+    margin-top: 2rem;
+    clear: both;
+}
+
+.comment-item {
+    padding: 1rem 0;
+    border-top: 1px solid #e9ecef;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-img-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.comment-date {
+    font-size: 0.85rem;
+    color: #868e96;
+}
+
+.replies {
+    margin-left: 3rem;
+    border-left: 2px solid #e9ecef;
+    padding-left: 1rem;
+}

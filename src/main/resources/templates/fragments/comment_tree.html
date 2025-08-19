@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- 댓글 목록을 재귀적으로 렌더링하는 프래그먼트 -->
+    <div th:fragment="commentTree(comments)" class="comment-list">
+        <div th:each="comment : ${comments}" class="comment-item">
+            <div class="comment-author">
+                <img th:src="${comment.authorProfileImg}" alt="프로필" class="profile-img-small">
+                <strong th:text="${comment.authorNickname}"></strong>
+                <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+            </div>
+            <div class="comment-content" th:text="${comment.content}">
+                댓글 내용입니다.
+            </div>
+            <!-- 대댓글 버튼 (추후 구현) -->
+
+            <!-- 자식 댓글이 있으면 재귀적으로 프래그먼트 호출 -->
+            <div th:if="${not #lists.isEmpty(comment.children)}" class="replies">
+                <div th:replace="~{this :: commentTree(comments=${comment.children})}"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

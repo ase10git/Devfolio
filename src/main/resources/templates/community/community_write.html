@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${isEditMode} ? '게시글 수정' : '게시글 작성'"></title>
+  <!-- CKEditor 5 CDN -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/translations/ko.js"></script>
+  <!-- CSS Links -->
+  <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
+  <link rel="stylesheet" th:href="@{/css/community/community_write.css}">
+</head>
+<body>
+<div class="page-wrapper">
+  <main class="form-main-container">
+    <form th:action="${isEditMode} ? @{/community/{id}/edit(id=${postRequest.postIdx})} : @{/community/new}"
+          th:object="${postRequest}" method="post" id="post-form" class="post-form"
+          th:data-is-edit-mode="${isEditMode}">
+
+      <h1>게시글 작성하기</h1>
+
+      <div class="form-group">
+        <label for="title">제목</label>
+        <div class="input-wrapper">
+          <input type="text" id="title" th:field="*{title}" placeholder="게시글 제목을 작성해주세요">
+          <small class="help-text" id="title-help">제목을 입력해주세요.</small>
+        </div>
+      </div>
+
+      <div class="form-group-row">
+        <div class="form-group">
+          <label for="category">카테고리</label>
+          <div class="input-wrapper">
+            <select id="category" th:field="*{category}">
+              <option value="">카테고리 선택</option>
+              <option th:each="cat : ${T(io.github.sunday.devfolio.entity.table.community.Category).values()}"
+                      th:value="${cat}"
+                      th:text="${cat.name() == 'study' ? '스터디 그룹 모집' :
+                  (cat.name() == 'question' ? '질문&답변' : '자유 게시판')}">
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="status-group"
+             th:style="${postRequest.category != T(io.github.sunday.devfolio.entity.table.community.Category).study ? 'display:none;' : ''}">
+          <label for="status">상태</label>
+          <div class="input-wrapper">
+            <select id="status" th:field="*{status}">
+              <option value="ACTIVE">모집중</option>
+              <option value="INACTIVE">모집완료</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group editor-group">
+        <label for="editor" class="sr-only">내용</label>
+        <div class="input-wrapper full-width">
+          <textarea id="editor" th:field="*{content}"></textarea>
+          <small class="help-text" id="content-help">내용을 입력해주세요.</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" th:text="${isEditMode} ? '수정' : '작성'"></button>
+        <a th:href="@{/community}" class="btn-cancel">취소</a>
+      </div>
+    </form>
+  </main>
+</div>
+<script th:src="@{/js/community/community_write.js}"></script>
+
+</body>
+</html>
