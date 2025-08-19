@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -53,11 +54,33 @@ public class PortfolioImage {
     private String imageUrl;
 
     /**
+     * 이미지의 S3Key(AWS S3)
+     */
+    @Column(
+            length = 512,
+            name = "s3_key",
+            nullable = false
+    )
+    private String s3Key;
+
+    /**
      * 이미지의 썸네일 여부
      */
     @Column(name = "is_thumbnail")
     @ColumnDefault("false")
     private Boolean isThumbnail;
+
+    /**
+     * 생성일
+     */
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+
+    /**
+     * 만료일
+     */
+    @Column(name = "expire_at")
+    private ZonedDateTime expireAt;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

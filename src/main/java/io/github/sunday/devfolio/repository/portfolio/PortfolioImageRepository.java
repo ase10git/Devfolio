@@ -4,6 +4,7 @@ import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,9 @@ public interface PortfolioImageRepository extends JpaRepository<PortfolioImage, 
      * 썸네일 여부를 확인하는 컬럼이 True인 이미지를 선택
      */
     Optional<PortfolioImage> findByPortfolio_PortfolioIdxAndIsThumbnailTrue(Long portfolioIdx);
+
+    /**
+     * 포트폴리오의 모든 이미지 찾기
+     */
+    List<PortfolioImage> findAllByPortfolio_PortfolioIdx(Long portfolioIdx);
 }

@@ -1,16 +1,12 @@
 package io.github.sunday.devfolio.service.portfolio;
 
-import io.github.sunday.devfolio.dto.portfolio.PortfolioPageRequestDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioLikeListDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.*;
+import io.github.sunday.devfolio.entity.table.portfolio.*;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.dto.user.WriterDto;
-import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
-import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
-import io.github.sunday.devfolio.entity.table.portfolio.PortfolioLike;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.portfolio.*;
+import io.github.sunday.devfolio.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,10 +27,12 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final PortfolioQueryDslRepository portfolioQueryDslRepository;
-    private final PortfolioCategoryMapRepository portfolioCategoryMapRepository;
-    private final PortfolioCommentRepository portfolioCommentRepository;
     private final PortfolioImageRepository portfolioImageRepository;
     private final PortfolioLikeRepository portfolioLikeRepository;
+    private final PortfolioImageService portfolioImageService;
+    private final PortfolioCategoryService portfolioCategoryService;
+    private final PortfolioCommentService portfolioCommentService;
+    private final UserServiceImpl userService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
@@ -90,11 +88,76 @@ public class PortfolioService {
         return userPortfoliosToListDto(results);
     }
 
-    // Todo : 포트폴리오 상세보기 기능 추가
+    /**
+     * 포트폴리오 상세 정보 가져오기
+     * 포트폴리오 정보, 작성자 정보, 카테고리 정보, 댓글 정보
+     */
+    public PortfolioDetailDto getPortfolioById(Long portfolioIdx) {
+        // 포트폴리오 정보 가져오기
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow();
+        // 포트폴리오 작성자 정보 가져오기
+        User user = userService.findByUserIdx(portfolio.getUser().getUserIdx());
+        WriterDto writerDto = userToWriterDto(user);
 
+        // Todo : 작성자 없을 때 예외처리 추가
+        if (user == null) {
+            System.out.println("포트폴리오 작성자 없음");
+        }
+        // 포트폴리오 카테고리 가져오기
+        List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
 
-    // Todo : 포트폴리오 작성 기능 추가
+        // 포트폴리오 이미지 가져오기
+        List<PortfolioImageDto> imageList = portfolioImageService.getPortfolioImages(portfolioIdx);
 
+        // 포트폴리오 댓글 가져오기
+        List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
+
+        return PortfolioDetailDto.builder()
+                .portfolioIdx(portfolioIdx)
+                .title(portfolio.getTitle())
+                .startDate(portfolio.getStartDate())
+                .endDate(portfolio.getEndDate())
+                .description(portfolio.getDescription())
+                .views(portfolio.getViews())
+                .likeCount(portfolio.getLikeCount())
+                .commentCount(portfolio.getCommentCount())
+                .createdAt(portfolio.getCreatedAt())
+                .updatedAt(portfolio.getUpdatedAt())
+                .images(imageList)
+                .writer(writerDto)
+                .categories(categories)
+                .comments(comments)
+                .build();
+    }
+
+    /**
+     * 포트폴리오 저장
+     * 포트폴리오 데이터, 포트폴리오 카테고리, 썸네일 이미지, 포트폴리오 이미지 저장
+     */
+    public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) {
+        // 사용자 검색
+        User user = userService.findByUserIdx(userIdx);
+        if (user == null) {
+            return null;
+        }
+
+        Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
+
+        // 포트폴리오 데이터 저장
+        Portfolio newPortfolio = portfolioRepository.save(portfolio);
+        // 포트폴리오 카테고리를 저장
+        portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
+
+        // 이미지 파일 저장
+        // Todo : 에러 핸들링
+        try {
+            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newPortfolio.getPortfolioIdx();
+    }
 
     // Todo : 포트폴리오 수정 기능 추가
 
@@ -183,5 +246,20 @@ public class PortfolioService {
                             .likedAt(portfolioLike.getLikedAt().format(formatter))
                             .build();
                 }).toList();
+    }
+
+    private Portfolio writeDtoToPortfolio(PortfolioWriteRequestDto writeRequestDto, User user) {
+        return Portfolio.builder()
+                .title(writeRequestDto.getTitle())
+                .startDate(writeRequestDto.getStartDate())
+                .endDate(writeRequestDto.getEndDate())
+                .description(writeRequestDto.getDescription())
+                .views(0)
+                .likeCount(0)
+                .commentCount(0)
+                .createdAt(ZonedDateTime.now())
+                .updatedAt(ZonedDateTime.now())
+                .user(user)
+                .build();
     }
 }

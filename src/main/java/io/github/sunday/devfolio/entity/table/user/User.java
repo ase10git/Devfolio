@@ -3,8 +3,6 @@ package io.github.sunday.devfolio.entity.table.user;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**

@@ -1,7 +1,6 @@
 package io.github.sunday.devfolio.repository.portfolio;
 
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
-import io.github.sunday.devfolio.entity.table.portfolio.PortfolioCategory;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioCategoryMap;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,4 +16,8 @@ public interface PortfolioCategoryMapRepository extends JpaRepository<PortfolioC
      */
     List<PortfolioCategoryMap> findAllByPortfolio(Portfolio portfolio);
 
+    /**
+     * 포트폴리오 매핑 관계 제거
+     */
+    void deleteByPortfolioAndCategory_CategoryIdx(Portfolio portfolio, Long categoryIdx);
 }
