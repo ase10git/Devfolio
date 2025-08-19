@@ -32,7 +32,7 @@ public class CommunityController {
                             Model model) {
         Page<PostListResponse> postPage = communityService.getPosts(pageable);
         model.addAttribute("postPage", postPage);
-        return "community/list";
+        return "community_list";
     }
 
     /**
@@ -49,7 +49,7 @@ public class CommunityController {
         PostDetailResponse post = communityService.getPost(postId, user); // user 정보 전달
         model.addAttribute("post", post);
         model.addAttribute("commentRequest", new CommentCreateRequest());
-        return "community/detail";
+        return "community_detail";
     }
 
     /**
@@ -61,7 +61,7 @@ public class CommunityController {
     @GetMapping("/new")
     public String createPostForm(Model model) {
         model.addAttribute("postRequest", new PostCreateRequest());
-        return "community/write";
+        return "community_write";
     }
 
 //    /**
@@ -114,7 +114,7 @@ public class CommunityController {
 
         model.addAttribute("postRequest", requestDto);
         model.addAttribute("isEditMode", true);
-        return "community/write";
+        return "community_write";
     }
 
     /**
