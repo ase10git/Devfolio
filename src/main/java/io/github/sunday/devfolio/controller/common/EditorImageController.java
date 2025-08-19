@@ -1,8 +1,6 @@
 package io.github.sunday.devfolio.controller.common;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
-import io.github.sunday.devfolio.enums.ImageTarget;
-import io.github.sunday.devfolio.exception.common.IncorrectImageTargetException;
 import io.github.sunday.devfolio.service.common.SecureImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

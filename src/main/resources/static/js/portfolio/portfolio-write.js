@@ -1,4 +1,5 @@
 import initializeEditor from "./portfolio-write-ckeditor5.js";
+import templateData from "./data/write-template.json" with { type: "json" };
 
 /**
  * form 검증
@@ -95,10 +96,79 @@ function removePreviewImage(removeButton, preview, input) {
 }
 
 /**
+ * 포트폴리오 템플릿 추가 함수
+ */
+function addTemplate() {
+    const templateList = document.getElementsByClassName("template-list")[0];
+    const customTemplateLi = templateList.children[0];
+    templateData.forEach((data, index) => {
+        const elLi = document.createElement("li");
+        const inputGroup = document.createElement("div");
+        inputGroup.classList.add("radio-input-group");
+        
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.id = `template-${data.idx}`;
+        radio.name = "template";
+        radio.value = data.idx;
+        
+        const label = document.createElement("label");
+        label.htmlFor = `template-${data.idx}`;
+        label.textContent = `템플릿 ${data.idx+1}`;
+
+        inputGroup.appendChild(radio);
+        inputGroup.appendChild(label);
+        elLi.appendChild(inputGroup);
+
+        const templateDesc = document.createElement("span");
+        templateDesc.textContent = data.description;
+        elLi.appendChild(templateDesc);
+
+        templateList.insertBefore(elLi, customTemplateLi);
+    });
+    addTemplateEvent();
+
+    function addTemplateEvent() {
+        const radios = document.querySelectorAll('input[name="template"]');
+        radios.forEach(radio => {
+            radio.addEventListener("change", () => {
+                if (radio.checked) {
+                    const key = radio.value;
+                    const data = templateData[key];
+                    const headings = data.headings;
+                    addHeadingsToEditor(headings);
+                }
+            });
+        });
+    }
+
+    function addHeadingsToEditor(headings) {
+        
+        if (window.editor) {
+            const editor = window.editor;
+    
+            editor.model.change(writer => {
+                const insertPosition = editor.model.document.selection.getLastPosition();
+                console.log(insertPosition)
+
+                headings.forEach(heading => {
+                    const tagElement = writer.createElement(heading.tagType);
+                    writer.insertText(heading.value, tagElement);
+                    writer.append(tagElement, insertPosition);
+                });
+            });
+        } else {
+            setTimeout(() => addHeadingsToEditor(headings), 100);
+        }
+    }
+}
+
+/**
  * DOMContentLoaded 이벤트 리스너
  */
 document.addEventListener("DOMContentLoaded", () => {
     initializeEditor();
     validateForm();
     previewImage();
+    addTemplate();
 });

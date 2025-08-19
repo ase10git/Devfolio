@@ -258,7 +258,6 @@ export const editorConfig = {
 			reversed: true
 		}
 	},
-	placeholder: '내용을 입력해주세요',
 	style: {
 		definitions: [
 			{
