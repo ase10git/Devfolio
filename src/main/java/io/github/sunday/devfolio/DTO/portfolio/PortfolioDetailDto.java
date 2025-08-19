@@ -31,22 +31,17 @@ public class PortfolioDetailDto {
     /**
      * 프로젝트 시작일
      */
-    private LocalDate startDate;
+    private String startDate;
 
     /**
      * 프로젝트 종료일
      */
-    private LocalDate endDate;
+    private String endDate;
 
     /**
      * 포트폴리오 내용
      */
     private String description;
-
-    /**
-     * 포트폴리오 내용의 목차
-     */
-    private String descriptionIndex;
 
     /**
      * 포트폴리오 조회수
@@ -66,17 +61,17 @@ public class PortfolioDetailDto {
     /**
      * 포트폴리오 생성일시
      */
-    private ZonedDateTime createdAt;
+    private String createdAt;
 
     /**
      * 포트폴리오 수정일시
      */
-    private ZonedDateTime updatedAt;
+    private String updatedAt;
 
     /**
-     * 포트폴리오 이미지
+     * 포트폴리오 썸네일 이미지
      */
-    private List<PortfolioImageDto> images;
+    private String thumbnailUrl;
 
     /**
      * 작성자 정보

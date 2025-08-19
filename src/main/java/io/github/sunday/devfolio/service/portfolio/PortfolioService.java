@@ -5,6 +5,8 @@ import io.github.sunday.devfolio.entity.table.portfolio.*;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.exception.portfolio.NoWriterFoundException;
+import io.github.sunday.devfolio.exception.portfolio.PortfolioNotFoundException;
 import io.github.sunday.devfolio.repository.portfolio.*;
 import io.github.sunday.devfolio.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,8 @@ public class PortfolioService {
     private final PortfolioCategoryService portfolioCategoryService;
     private final PortfolioCommentService portfolioCommentService;
     private final UserServiceImpl userService;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter dateTimeformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * 포트폴리오 검색 및 조회
@@ -92,38 +95,46 @@ public class PortfolioService {
      * 포트폴리오 상세 정보 가져오기
      * 포트폴리오 정보, 작성자 정보, 카테고리 정보, 댓글 정보
      */
-    public PortfolioDetailDto getPortfolioById(Long portfolioIdx) {
+    public PortfolioDetailDto getPortfolioById(Long portfolioIdx) throws Exception {
         // 포트폴리오 정보 가져오기
-        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow();
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow(
+                () -> new PortfolioNotFoundException("포트폴리오가 존재하지 않습니다.")
+        );
+
         // 포트폴리오 작성자 정보 가져오기
         User user = userService.findByUserIdx(portfolio.getUser().getUserIdx());
+        if (user == null) {
+            throw new NoWriterFoundException("작성자가 존재하지 않습니다");
+        }
         WriterDto writerDto = userToWriterDto(user);
 
-        // Todo : 작성자 없을 때 예외처리 추가
-        if (user == null) {
-            System.out.println("포트폴리오 작성자 없음");
-        }
         // 포트폴리오 카테고리 가져오기
         List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
 
         // 포트폴리오 이미지 가져오기
-        List<PortfolioImageDto> imageList = portfolioImageService.getPortfolioImages(portfolioIdx);
+        PortfolioImage thumbnail = portfolioImageService.getPortfolioThumbnail(portfolioIdx);
+        String thumbnailUrl = thumbnail != null ? thumbnail.getImageUrl() : null;
 
         // 포트폴리오 댓글 가져오기
         List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
 
+        String startDate = portfolio.getStartDate() != null ? portfolio.getStartDate().format(dateFormatter) : null;
+        String endDate = portfolio.getEndDate() != null ? portfolio.getEndDate().format(dateFormatter) : null;
+        String createdAt = portfolio.getCreatedAt() != null ? portfolio.getCreatedAt().format(dateTimeformatter) : null;
+        String updatedAt = portfolio.getUpdatedAt() != null ? portfolio.getUpdatedAt().format(dateTimeformatter) : null;
+
         return PortfolioDetailDto.builder()
                 .portfolioIdx(portfolioIdx)
                 .title(portfolio.getTitle())
-                .startDate(portfolio.getStartDate())
-                .endDate(portfolio.getEndDate())
+                .startDate(startDate)
+                .endDate(endDate)
                 .description(portfolio.getDescription())
                 .views(portfolio.getViews())
                 .likeCount(portfolio.getLikeCount())
                 .commentCount(portfolio.getCommentCount())
-                .createdAt(portfolio.getCreatedAt())
-                .updatedAt(portfolio.getUpdatedAt())
-                .images(imageList)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .thumbnailUrl(thumbnailUrl)
                 .writer(writerDto)
                 .categories(categories)
                 .comments(comments)
@@ -137,6 +148,7 @@ public class PortfolioService {
     public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) {
         // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
+        // Todo : 사용자 없을 때의 에러 처리
         if (user == null) {
             return null;
         }
@@ -194,17 +206,17 @@ public class PortfolioService {
                 .build();
     }
 
-    private PortfolioListDto portfolioToListDto(Portfolio portfolio, PortfolioImage image, WriterDto writerDto) {
+    private PortfolioListDto portfolioToListDto(Portfolio portfolio, PortfolioImage image, WriterDto writerDto, List<PortfolioCategoryDto> categories) {
         return PortfolioListDto.builder()
                 .portfolioIdx(portfolio.getPortfolioIdx())
                 .title(portfolio.getTitle())
-                .description(portfolio.getDescription())
                 .views(portfolio.getViews())
                 .likeCount(portfolio.getLikeCount())
-                .updatedAt(portfolio.getUpdatedAt().format(formatter))
+                .updatedAt(portfolio.getUpdatedAt().format(dateTimeformatter))
                 .commentCount(portfolio.getCommentCount())
                 .imageUrl(image != null ? image.getImageUrl() : "")
                 .writer(writerDto)
+                .categories(categories)
                 .build();
     }
 
@@ -214,7 +226,8 @@ public class PortfolioService {
                     WriterDto writerDto = userToWriterDto(portfolio.getUser());
                     PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
                             .orElse(null);
-                    return portfolioToListDto(portfolio, image, writerDto);
+                    List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
+                    return portfolioToListDto(portfolio, image, writerDto, categories);
                 }).toList();
     }
 
@@ -229,7 +242,8 @@ public class PortfolioService {
                 .map(portfolio -> {
                     PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
                             .orElse(null);
-                    return portfolioToListDto(portfolio, image, writerDto);
+                    List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
+                    return portfolioToListDto(portfolio, image, writerDto, categories);
                 }).toList();
     }
 
@@ -240,10 +254,10 @@ public class PortfolioService {
                     WriterDto writerDto = userToWriterDto(portfolio.getUser());
                     PortfolioImage image = portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx())
                             .orElse(null);
-
+                    List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
                     return PortfolioLikeListDto.builder()
-                            .portfolioListDto(portfolioToListDto(portfolio, image, writerDto))
-                            .likedAt(portfolioLike.getLikedAt().format(formatter))
+                            .portfolioListDto(portfolioToListDto(portfolio, image, writerDto, categories))
+                            .likedAt(portfolioLike.getLikedAt().format(dateTimeformatter))
                             .build();
                 }).toList();
     }

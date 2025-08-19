@@ -6,7 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" th:href="@{/css/common/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio.css}">
     <!-- Todo: 병합 후 styles.css로 통합 -->
@@ -52,7 +51,10 @@
                                 <div class="portfolio-meta">
                                 <span th:text="${hotPortfolio.title}"
                                       class="hot-portfolio-title">포트폴리오 제목</span>
-                                    <p th:text="${hotPortfolio.description}">포트폴리오 내용이 들어가는 위치. 포트폴리에 대한 간략한 설명만 표시합니다.</p>
+                                    <div class="category-box">
+                                        <span th:each="category : ${hotPortfolio.categories}"
+                                              th:text="${category.nameKo}">카테고리 이름</span>
+                                    </div>
                                 </div>
                                 <div th:replace="~{fragments/portfolio_fragments :: stats (${hotPortfolio})}"></div>
                             </div>

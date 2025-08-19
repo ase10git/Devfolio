@@ -1,7 +1,6 @@
 package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioImageDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
@@ -29,13 +28,10 @@ public class PortfolioImageService {
     private final S3Service s3Service;
 
     /**
-     * 포트폴리오의 모든 이미지 조회
+     * 포트폴리오의 썸네일 이미지 조회
      */
-    public List<PortfolioImageDto> getPortfolioImages(Long portfolioIdx) {
-        return portfolioImageRepository.findAllByPortfolio_PortfolioIdx(portfolioIdx)
-                .stream()
-                .map(this::imageToDto)
-                .toList();
+    public PortfolioImage getPortfolioThumbnail(Long portfolioIdx) {
+        return portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolioIdx).orElse(null);
     }
 
     /**
@@ -106,15 +102,6 @@ public class PortfolioImageService {
         if (image == null) return;
         s3Service.deleteFile(fullFilePath(filePath, image.getS3Key()));
         portfolioImageRepository.deleteById(imageIdx);
-    }
-
-    private PortfolioImageDto imageToDto(PortfolioImage image) {
-        return PortfolioImageDto.builder()
-                .imageIdx(image.getImageIdx())
-                .portfolioIdx(image.getPortfolio().getPortfolioIdx())
-                .imageUrl(image.getImageUrl())
-                .isThumbnail(image.getIsThumbnail())
-                .build();
     }
 
     private String fullFilePath(String filePath, String fileName) {

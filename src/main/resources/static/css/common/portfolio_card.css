@@ -84,13 +84,21 @@
     font-size: 20px;
 }
 
-.portfolio-link .portfolio-description {
-    -webkit-line-clamp: 5; 
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+.portfolio-link .category-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-box span {
+    padding: 3px 5px;
+    border-radius: var(--box-radius-8);
+    background-color: #CFE8FF;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 /* stats */

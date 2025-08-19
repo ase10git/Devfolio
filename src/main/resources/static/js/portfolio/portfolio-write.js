@@ -134,10 +134,10 @@ function addTemplate() {
             radio.addEventListener("change", () => {
                 if (radio.checked) {
                     const key = radio.value;
-                    const data = templateData[key];
-                    const headings = data.headings;
                     if (key <= 2) {
                         // 만들어둔 템플릿 추가
+                        const data = templateData[key];
+                        const headings = data.headings;
                         addHeadingsToEditor(headings);
                     } else if (key === 4) {
                         // Todo: AI 추천 템플릿 추가
@@ -160,8 +160,9 @@ function addTemplate() {
                 const position = writer.createPositionAfter(lastChild);
 
                 // 템플릿으로 지정한 heading 추가
-                headings.forEach(heading => {
+                headings.forEach((heading, index) => {
                     const tagElement = writer.createElement(heading.tagType);
+                    writer.setAttribute("id", `heading-${index}`, tagElement);
                     writer.insertText(heading.value, tagElement);
                     writer.append(tagElement, position);
                 });

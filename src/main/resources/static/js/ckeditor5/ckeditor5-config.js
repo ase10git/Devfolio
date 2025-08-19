@@ -17,6 +17,7 @@ import {
 	CodeBlock,
 	Essentials,
 	FindAndReplace,
+	Font,
 	Fullscreen,
 	GeneralHtmlSupport,
 	Heading,
@@ -39,7 +40,7 @@ import {
 	LinkImage,
 	List,
 	ListProperties,
-	Markdown,
+	//Markdown,
 	Paragraph,
 	PasteFromOffice,
 	SpecialCharacters,
@@ -79,6 +80,10 @@ export const editorConfig = {
 			'heading',
 			'style',
 			'|',
+			'fontSize', 
+			'fontFamily', 
+			'fontColor', 
+			'fontBackgroundColor',
 			'bold',
 			'italic',
 			'underline',
@@ -112,6 +117,7 @@ export const editorConfig = {
 		CodeBlock,
 		Essentials,
 		FindAndReplace,
+		Font,
 		Fullscreen,
 		GeneralHtmlSupport,
 		Heading,
@@ -134,7 +140,7 @@ export const editorConfig = {
 		LinkImage,
 		List,
 		ListProperties,
-		Markdown,
+		//Markdown,
 		Paragraph,
 		PasteFromOffice,
 		SpecialCharacters,
@@ -173,12 +179,6 @@ export const editorConfig = {
 				model: 'paragraph',
 				title: 'Paragraph',
 				class: 'ck-heading_paragraph'
-			},
-			{
-				model: 'heading1',
-				view: 'h1',
-				title: 'Heading 1',
-				class: 'ck-heading_heading1'
 			},
 			{
 				model: 'heading2',
@@ -306,12 +306,12 @@ export const editorConfig = {
 		contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
 	},
 	translations: [translations],
-	 ckfinder: {
-	 	uploadUrl: '',
-	 	// Todo : Cookie 포함
-	 	// withCredentials: true
-	 	options: {
-	 		resourceType: 'Images'
-	 	}
-	 }
+	ckfinder: {
+		uploadUrl: '',
+		// Todo : Cookie 포함
+		// withCredentials: true
+		options: {
+			resourceType: 'Images'
+		}
+	}
 };

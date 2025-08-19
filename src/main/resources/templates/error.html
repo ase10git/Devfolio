@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>에러 페이지</title>
+</head>
+<body>
+<header></header>
+<section>
+    <p>에러가 발생했습니다</p>
+    <p th:if="error" th:text="${error}"></p>
+    <a href="/main">홈으로 돌아가기</a>
+</section>
+<footer></footer>
+</body>
+</html>

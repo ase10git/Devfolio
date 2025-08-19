@@ -21,7 +21,7 @@ import java.util.Map;
 public class EditorImageController {
     private final SecureImageService secureImageService;
 
-    @PostMapping("/image/upload")
+    @PostMapping("/api/image/upload")
     public ResponseEntity<Map<String, Object>> imageUpload(
             @RequestParam String target,
             MultipartRequest request
