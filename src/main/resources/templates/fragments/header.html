@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<header th:fragment="header">
+    <div class="fixed-header">
+        <div class="header-left">
+            <a href="/main" class="mainBtn">
+                <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="devfolio-logo-img" />
+            </a>
+        </div>
+
+        <div class="header-right">
+            <span>
+            <th:block th:if="${session.loginUserIdx == null}">
+              <form th:action="@{/login}" method="get" class="button-form">
+                <button type="submit" class="loginBtn">로그인</button>
+              </form>
+            </th:block>
+
+            <th:block th:if="${session.loginUserIdx != null}">
+              <form th:action="@{/users/{id}(id=${session.loginUserIdx})}" method="get" class="button-form">
+                <button type="submit" class="myPageBtn">My Page</button>
+              </form>
+
+              <form th:action="@{/logout}" method="post" class="button-form">
+                <button type="submit" class="loginBtn">로그아웃</button>
+              </form>
+            </th:block>
+          </span>
+        </div>
+    </div>
+</header>
+</body>
+</html>
