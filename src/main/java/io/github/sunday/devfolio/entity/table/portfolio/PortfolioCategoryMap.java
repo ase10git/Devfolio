@@ -56,7 +56,7 @@ public class PortfolioCategoryMap {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_idx", nullable = false)
-    private PortfolioCategory categories;
+    private PortfolioCategory category;
 
     /**
      * 객체의 동등성 비교를 위한 equals 메서드

@@ -27,15 +27,8 @@ public class EmailVerification {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx", updatable = false, nullable = false)
-    private Long idx;
-
-    /**
-     * 인증을 요청한 사용자 (users 테이블과 다대일 관계)
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    private User user;
+    @Column(name = "verification_idx", updatable = false, nullable = false)
+    private Long verificationIdx;
 
     /**
      * 인증 대상 이메일 주소
@@ -46,8 +39,8 @@ public class EmailVerification {
     /**
      * 인증 코드 (6자리 숫자)
      */
-    @Column(name = "code", nullable = false, length = 6)
-    private String code;
+    @Column(name = "verification_code", nullable = false, length = 6)
+    private String verificationCode;
 
     /**
      * 인증 코드의 만료 시간 (기본: 생성 후 5분)
@@ -83,7 +76,7 @@ public class EmailVerification {
         if (o == null || getClass() != o.getClass()) return false;
 
         EmailVerification that = (EmailVerification) o;
-        return Objects.equals(idx, that.idx);
+        return Objects.equals(verificationIdx, that.verificationIdx);
     }
 
     /**
@@ -93,6 +86,6 @@ public class EmailVerification {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(idx);
+        return Objects.hash(verificationIdx);
     }
 }

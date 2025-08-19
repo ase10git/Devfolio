@@ -1,4 +1,6 @@
-// carousel
+/**
+ * 포트폴리오 메인 페이지의 캐러셀 슬라이드
+ */
 let currentIndex = 0;
 
 function updateCarousel() {
