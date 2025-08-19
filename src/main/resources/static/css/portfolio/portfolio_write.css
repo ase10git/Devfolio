@@ -322,6 +322,7 @@ main {
     border-radius: var(--box-radius-15);
     background-color: white;
     gap: 20px;
+    z-index: 20;
 }
 
 .template-list {
@@ -348,6 +349,8 @@ main {
 }
 
 .template-list span {
+    width: 100%;
+    display: inline-block;
     font-size: 14px;
     color: #2F2F2F;
 }

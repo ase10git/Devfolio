@@ -136,7 +136,12 @@ function addTemplate() {
                     const key = radio.value;
                     const data = templateData[key];
                     const headings = data.headings;
-                    addHeadingsToEditor(headings);
+                    if (key <= 2) {
+                        // 만들어둔 템플릿 추가
+                        addHeadingsToEditor(headings);
+                    } else if (key === 4) {
+                        // Todo: AI 추천 템플릿 추가
+                    }
                 }
             });
         });
@@ -146,15 +151,19 @@ function addTemplate() {
         
         if (window.editor) {
             const editor = window.editor;
-    
-            editor.model.change(writer => {
-                const insertPosition = editor.model.document.selection.getLastPosition();
-                console.log(insertPosition)
 
+            editor.model.change(writer => {
+                // 에디터 요소 중 마지막 요소 위치 가져오기
+                const root = editor.model.document.getRoot();
+                const children = Array.from(root.getChildren());
+                const lastChild = children[children.length - 1];
+                const position = writer.createPositionAfter(lastChild);
+
+                // 템플릿으로 지정한 heading 추가
                 headings.forEach(heading => {
                     const tagElement = writer.createElement(heading.tagType);
                     writer.insertText(heading.value, tagElement);
-                    writer.append(tagElement, insertPosition);
+                    writer.append(tagElement, position);
                 });
             });
         } else {
