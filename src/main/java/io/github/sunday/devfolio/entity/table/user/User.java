@@ -40,8 +40,12 @@ public class User {
     /**
      * OAuth 제공자 이름 (예: GOOGLE, LOCAL)
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "oauth_provider", length = 50)
     private AuthProvider oauthProvider = AuthProvider.LOCAL;
+
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
 
     /**
      * 이메일 주소 (고유, 필수)
@@ -139,5 +143,13 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(userIdx, loginId, email);
+    }
+
+    public User(String email, String nickname, String password, String providerId, AuthProvider oauthProvider) {
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.providerId = providerId;
+        this.oauthProvider = oauthProvider;
     }
 }

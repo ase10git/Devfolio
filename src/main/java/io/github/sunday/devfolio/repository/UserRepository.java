@@ -37,6 +37,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findByLoginId(String loginId);
 
+    Optional<User> findByEmail(String email);
+
     /**
      * 사용자 식별자(userIdx)를 통해 사용자 정보를 조회합니다.
      *

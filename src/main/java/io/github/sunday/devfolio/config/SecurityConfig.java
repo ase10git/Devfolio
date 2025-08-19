@@ -2,14 +2,45 @@ package io.github.sunday.devfolio.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Spring Security 관련 설정을 정의하는 클래스입니다.
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio", "/css/**", "/js/**", "/assets/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("loginId")
+                        .defaultSuccessUrl("/main", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/main")
+                        .permitAll()
+                )
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/oauth2/success", true)
+                )
+                .csrf(csrf -> csrf.disable());
+
+        return http.build();
+    }
 
     /**
      * 비밀번호 암호화를 위한 BCryptPasswordEncoder 빈 등록.
