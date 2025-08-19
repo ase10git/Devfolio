@@ -24,31 +24,20 @@ public class OAuth2Controller {
         String name = oauthUser.getAttribute("name");
         String providerId = oauthUser.getAttribute("sub");
 
-        User user = userService.findByEmail(email);
-
-        // 동일한 이메일을 사용하는 다른 OAuth2 로그인 막기
-        if (user != null && (user.getProviderId() == null || !user.getProviderId().equals(providerId))) {
+        // 이미 해당 이메일로 가입된 사용자가 있으면 로그인 차단
+        User existingUser = userService.findByEmail(email);
+        if (existingUser != null) {
             return "redirect:/login?error=email";
         }
 
-        if (user == null) {
-            String nickname = null;
+        // 닉네임 자동 생성
+        String nickname = userService.generateValidNickname(name);
 
-            //닉네임 중복 검사
-            boolean isDuplicate = userService.isNicknameDuplicate(name);
+        // 아이디 자동 생성
+        String generatedId = userService.generateUserId(email);
 
-            //닉네임 유효성 검사
-            boolean isValid = userService.isValidNickname(name);
-
-            if (!isDuplicate && isValid) {
-                nickname = name;
-            } else {
-                nickname = null;
-            }
-
-            user = new User(email, nickname, null, providerId, AuthProvider.GOOGLE);
-            userService.saveUser(user);
-        }
+        User newUser = new User(generatedId, email, nickname, null, providerId, AuthProvider.GOOGLE);
+        userService.saveUser(newUser);
 
         return "redirect:/main";
     }
