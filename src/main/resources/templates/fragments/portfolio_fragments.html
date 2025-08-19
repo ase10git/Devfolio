@@ -23,10 +23,10 @@
           <p class="portfolio-title" th:text="${portfolio.title}">
             포트폴리오 제목
           </p>
-          <p class="portfolio-description" th:text="${portfolio.description}">
-            포트폴리오 내용에 관한 영역이며, 포트폴리오 설명 중 요약 부분에
-            해당하는 내용만 표시합니다.
-          </p>
+          <div class="category-box">
+            <span th:each="category : ${portfolio.categories}"
+                  th:text="${category.nameKo}">카테고리 이름</span>
+          </div>
         </div>
         <div th:replace="~{this::stats (${portfolio})}"></div>
       </div>

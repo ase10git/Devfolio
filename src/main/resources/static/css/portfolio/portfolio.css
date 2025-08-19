@@ -92,9 +92,26 @@ main {
     align-items: flex-start;
     gap: 10px;
     position: absolute;
-    bottom: 30px; bott: 0;
+    bottom: 30px; bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
+}
+
+.category-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-box span {
+    padding: 3px 5px;
+    border-radius: var(--box-radius-8);
+    background-color: #CFE8FF;
+    color: black;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .carousel .writer-meta {

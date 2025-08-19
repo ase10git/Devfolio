@@ -1,10 +1,9 @@
 package io.github.sunday.devfolio.controller.portfolio;
 
-import io.github.sunday.devfolio.dto.portfolio.PortfolioCategoryDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
-import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
+import io.github.sunday.devfolio.dto.portfolio.*;
 import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.exception.portfolio.NoWriterFoundException;
+import io.github.sunday.devfolio.exception.portfolio.PortfolioNotFoundException;
 import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import jakarta.validation.Valid;
@@ -73,7 +72,7 @@ public class PortfolioController {
             @Override
             public void setAsText(String text) {
                 if (text != null) {
-                    String safeText = Jsoup.clean(text, Safelist.basic());
+                    String safeText = Jsoup.clean(text, Safelist.relaxed());
                     super.setAsText(safeText.trim());
                 } else {
                     super.setValue(null);
@@ -131,7 +130,15 @@ public class PortfolioController {
             @PathVariable Long id,
             Model model
     ) {
-        return "portfolio/portfolio_detail";
+        // Todo : 전역 에러 처리 필요
+        try {
+            PortfolioDetailDto detailDto = portfolioService.getPortfolioById(id);
+            model.addAttribute("portfolio", detailDto);
+            return "portfolio/portfolio_detail";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 
     /**

@@ -6,7 +6,7 @@ import { ClassicEditor } from 'ckeditor5';
  * CKEditor 초기화 함수
  */
 function initializeEditor() {
-    editorConfig['ckfinder'] = { uploadUrl: '/image/upload?target=portfolio' };
+    editorConfig['ckfinder'] = { uploadUrl: '/api/image/upload?target=portfolio' };
     // 에디터 적용
     ClassicEditor
         .create(document.getElementById("editor"), editorConfig)

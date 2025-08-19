@@ -3,6 +3,8 @@ package io.github.sunday.devfolio.dto.portfolio;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * 포트폴리오의 정보를 응답으로 전송하는 DTO
  * 포트폴리오의 기본 정보, 카테고리, 작성자, 통계 정보
@@ -23,11 +25,6 @@ public class PortfolioListDto {
      * 포트폴리오 제목
      */
     private String title;
-
-    /**
-     * 포트폴리오 내용
-     */
-    private String description;
 
     /**
      * 포트폴리오 조회수
@@ -58,4 +55,9 @@ public class PortfolioListDto {
      * 작성자 정보
      */
     private WriterDto writer;
+
+    /**
+     * 포트폴리오 카테고리
+     */
+    private List<PortfolioCategoryDto> categories;
 }
