@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>메인 페이지</title>
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
 </head>
 <body>
-<span>
-            <th:block th:if="${session.loginUserIdx == null}">
-              <form th:action="@{/login}" method="get" class="button-form">
-                <button type="submit" class="loginBtn">로그인</button>
-              </form>
-            </th:block>
-            <th:block th:if="${session.loginUserIdx != null}">
-              <form th:action="@{/logout}" method="post" class="button-form">
-                <button type="submit" class="loginBtn">로그아웃</button>
-              </form>
-            </th:block>
-          </span>
+<div th:replace="~{fragments/header :: header}"></div>
+
+  <span>
+    <th:block th:if="${session.loginUserIdx == null}">
+      <form th:action="@{/login}" method="get" class="button-form">
+        <button type="submit" class="loginBtn">로그인</button>
+      </form>
+    </th:block>
+    <th:block th:if="${session.loginUserIdx != null}">
+      <form th:action="@{/logout}" method="post" class="button-form">
+        <button type="submit" class="loginBtn">로그아웃</button>
+      </form>
+    </th:block>
+  </span>
 
 <footer class="footer">
   <div class="footerBox">
