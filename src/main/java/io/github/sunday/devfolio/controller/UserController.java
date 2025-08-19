@@ -80,7 +80,7 @@ public class UserController {
         }
 
         // 닉네임 유효성 검사
-        if (!dto.getNickname().isBlank() && !userService.isValidNickname(dto.getNickname())) {
+        if (!userService.isValidNickname(dto.getNickname())) {
             model.addAttribute("error", "닉네임은 한글/영문/숫자를 사용한 4~12자만 가능합니다.");
             return "signup";
         }

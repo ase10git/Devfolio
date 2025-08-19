@@ -70,6 +70,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByNickname(nickname);
     }
 
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     /**
      * 로그인 아이디 유효성 검사.
      * 영문 또는 숫자로 이루어진 6~20자만 허용합니다.
@@ -133,5 +138,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId).orElse(null);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

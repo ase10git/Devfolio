@@ -46,7 +46,7 @@ public class PortfolioQueryDslRepository {
         NumberTemplate<Float> rank = buildTsQueryCondition(portfolio, booleanBuilder, keyword);
         // 정렬 순서 설정
         OrderSpecifier<?>[] orderSpecifiers = buildOrderSpecifier(searchRequestDto, rank, QPortfolio.portfolio);
-        
+
         // 필터링 조건 업데이트
         buildCategoryCondition(portfolio, portfolioCategoryMap, booleanBuilder, filterCategoryIdx);
 
