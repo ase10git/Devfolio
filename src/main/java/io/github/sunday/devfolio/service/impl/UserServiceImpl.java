@@ -6,6 +6,9 @@ import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.regex.Pattern;
 
 /**
@@ -143,5 +146,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public String generateValidNickname(String baseName) {
+        if (!isValidNickname(baseName)) {
+            baseName = "user"; // 유효하지 않으면 기본값
+        }
+
+        String nickname = baseName;
+        int suffix = 1;
+
+        while (isNicknameDuplicate(nickname)) {
+            nickname = baseName + suffix;
+            suffix++;
+        }
+
+        return nickname;
+    }
+
+    @Override
+    public String generateUserId(String email) {
+        String emailPrefix = email.split("@")[0];
+        long timestamp = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+
+        // 자동으로 아이디 생성 (1970-01-01 00:00:00 UTC 부터 현재 시각까지 흐른 초 + 이메일의 @ 전까지)
+        String baseId = timestamp + emailPrefix;
+        String loginId = baseId;
+
+        int suffix = 1;
+        // 중복 검사 → 중복이면 숫자를 붙여서 반복
+        while (userRepository.existsByLoginId(loginId)) {
+            loginId = baseId + suffix;
+            suffix++;
+        }
+
+        return loginId;
     }
 }

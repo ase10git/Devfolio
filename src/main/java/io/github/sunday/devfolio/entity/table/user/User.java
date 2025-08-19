@@ -143,7 +143,8 @@ public class User {
         return Objects.hash(userIdx, loginId, email);
     }
 
-    public User(String email, String nickname, String password, String providerId, AuthProvider oauthProvider) {
+    public User(String loginId,String email, String nickname, String password, String providerId, AuthProvider oauthProvider) {
+        this.loginId = loginId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;

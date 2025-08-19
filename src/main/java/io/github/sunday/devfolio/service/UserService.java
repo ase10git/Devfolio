@@ -13,4 +13,6 @@ public interface UserService {
     void saveUser(User user);
     User findByLoginId(String loginId);
     User findByEmail(String email);
+    String generateValidNickname(String baseName);
+    String generateUserId(String email);
 }
