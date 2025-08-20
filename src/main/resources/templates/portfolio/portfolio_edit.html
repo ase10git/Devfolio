@@ -75,6 +75,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="remove-button-box">
+                    <input
+                            id="thumbnail-remove"
+                            type="checkbox"
+                            th:field="*{removeFlag}"
+                    >
+                    <label for="thumbnail-remove">썸네일 제거하기</label>
+                </div>
                 <div class="input-group image-input-group">
                     <label for="thumbnail" class="image-label">
                         <img th:src="@{/assets/icon/image.svg}" alt="이미지 아이콘">
@@ -120,7 +128,7 @@
                             <th:block th:if="*{images}">
                                 <input type="hidden"
                                        th:each="imageUrl : *{images}"
-                                       th:field="*{images}" th:value="${imageUrl}">
+                                       name="images" th:value="${imageUrl}">
                             </th:block>
                         </div>
                     </div>

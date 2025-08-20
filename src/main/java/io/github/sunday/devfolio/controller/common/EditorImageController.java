@@ -34,7 +34,6 @@ public class EditorImageController {
             ImageUploadResult uploadResult = secureImageService.uploadTempImage(image, target, userIdx);
             responseData.put("uploaded", true);
             responseData.put("url", uploadResult.getImageUrl());
-            responseData.put("s3key", uploadResult.getS3Key());
         } catch (Exception e) {
             responseData.put("error", "image upload failed");
             return ResponseEntity.badRequest().body(responseData);

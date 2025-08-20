@@ -77,15 +77,6 @@ public class PortfolioImageService {
     }
 
     /**
-     * 포트폴리오 이미지 제거
-     * DB Entity와 AWS S3의 파일 제거
-     */
-    public void deleteImageList(Long portfolioIdx, List<Long> imageIdxList) {
-        String filePath = "/portfolio/" + portfolioIdx;
-        imageIdxList.forEach(imageIdx -> deleteImage(imageIdx, filePath));
-    }
-
-    /**
      * 포트폴리오 이미지 수정
      */
     @Transactional
@@ -96,7 +87,7 @@ public class PortfolioImageService {
 
         // 썸네일 제거 동작
         if (editRequestDto.isRemoveFlag() && originalThumbnail != null) {
-            deleteImage(originalThumbnail.getImageIdx(), filePath);
+            deleteImage(originalThumbnail.getImageIdx());
         }
 
         // 썸네일 이미지 추가
@@ -112,22 +103,28 @@ public class PortfolioImageService {
         List<String> imageList = editRequestDto.getImages();
 
         // 기존 목록 조회
-        List<PortfolioImage> originalImageList = getPortfolioImages(portfolio.getPortfolioIdx());
+        List<PortfolioImage> originalImageList = getPortfolioImages(portfolio.getPortfolioIdx()).stream()
+                .filter(image -> !image.getIsThumbnail())
+                .toList();
         List<String> originalUrlList = originalImageList.stream()
                 .filter(image -> !image.getIsThumbnail())
                 .map(image -> image.getImageUrl())
                 .toList();
 
-        if (imageList != null && !imageList.isEmpty()) {
-            // 기존 이미지 목록에서 이미지 제거
-            if (!originalImageList.isEmpty()) {
+        // 기존 이미지 목록에서 이미지 제거
+        if (!originalImageList.isEmpty()) {
+            if (imageList == null || imageList.isEmpty()) {
                 originalImageList.stream()
-                        .filter(image -> !image.getIsThumbnail())
-                        .filter(image -> !imageList.contains(image.getImageUrl()))
-                        .map(image -> image.getImageIdx())
-                        .forEach(imageIdx -> deleteImage(imageIdx, filePath));
+                        .forEach(image -> deleteImage(image.getImageIdx()));
+            } else {
+                originalImageList.stream()
+                        .filter(image -> imageList.stream()
+                                .noneMatch(requestUrl -> extractKeyFromUrl(requestUrl).equals(image.getS3Key())))
+                        .forEach(image -> deleteImage(image.getImageIdx()));
             }
+        }
 
+        if (imageList != null && !imageList.isEmpty()) {
             // 새 이미지 목록 추가
             imageList
                     .stream()
@@ -167,10 +164,10 @@ public class PortfolioImageService {
                 .build();
     }
 
-    private void deleteImage(Long imageIdx, String filePath) {
+    private void deleteImage(Long imageIdx) {
         PortfolioImage image = portfolioImageRepository.findById(imageIdx).orElse(null);
         if (image == null) return;
-        s3Service.deleteFile(fullFilePath(filePath, image.getS3Key()));
+        s3Service.deleteFile(image.getS3Key());
         portfolioImageRepository.deleteById(imageIdx);
     }
 

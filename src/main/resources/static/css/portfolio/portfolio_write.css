@@ -402,3 +402,27 @@ main {
     font-size: 14px;
     color: #2F2F2F;
 }
+
+/* 수정 페이지에만 적용 */
+/* thumbnail remove */
+.remove-button-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+#thumbnail-remove {
+    scale: 1.2;
+    cursor: pointer;
+}
+
+.remove-button-box label {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#thumbnail-remove:checked ~ label {
+    color: red;
+}
