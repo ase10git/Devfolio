@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로필</title>
+    <link rel="stylesheet" th:href="@{/css/profilepage/profile.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script>
+        // 간단 모달 토글
+        function openVerifyModal(){ document.getElementById('verifyModal').style.display='block'; }
+        function closeVerifyModal(){ document.getElementById('verifyModal').style.display='none'; }
+        window.addEventListener('DOMContentLoaded', () => {
+          const hasError = new URLSearchParams(location.search).get('verifyError');
+          if(hasError){ openVerifyModal(); }
+        });
+    </script>
+</head>
+<body class="min-h-screen bg-gray-100 flex">
+
+<!-- 사이드바 -->
+<aside class="w-64 bg-white p-6 space-y-6 shadow">
+    <div class="flex flex-col items-center">
+        <a th:href="@{|/profile/${user.userId}|}">
+            <img th:src="${user.profileImg}" alt="프로필" class="w-24 h-24 rounded-full object-cover">
+        </a>
+        <h2 class="mt-4 text-xl font-bold">
+            <a th:text="${user.nickname}" th:href="@{|/profile/${user.userId}|}">닉네임</a>
+        </h2>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+        <a th:href="@{|/profile/${user.userId}?tab=following|}" class="text-center hover:bg-gray-100 rounded py-2">
+            <div th:text="${user.followingCount}">0</div>
+            <div>팔로잉</div>
+        </a>
+        <a th:href="@{|/profile/${user.userId}?tab=followers|}" class="text-center hover:bg-gray-100 rounded py-2">
+            <div th:text="${user.followerCount}">0</div>
+            <div>팔로워</div>
+        </a>
+    </div>
+
+    <nav class="space-y-1">
+        <a th:href="@{|/profile/${user.userId}?tab=resume|}"
+           th:classappend="${tab=='resume'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">이력서</a>
+        <a th:href="@{|/profile/${user.userId}?tab=portfolio|}"
+           th:classappend="${tab=='portfolio'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">포트폴리오</a>
+        <a th:href="@{|/profile/${user.userId}?tab=posts|}"
+           th:classappend="${tab=='posts'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">게시글</a>
+        <a th:if="${isSelf}"
+           th:href="@{|/profile/${user.userId}?tab=likes|}"
+           th:classappend="${tab=='likes'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">좋아요</a>
+        <a th:href="@{|/profile/${user.userId}?tab=following|}"
+           th:classappend="${tab=='following'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">팔로잉</a>
+        <a th:href="@{|/profile/${user.userId}?tab=followers|}"
+           th:classappend="${tab=='followers'} ? ' bg-blue-100' : ''"
+           class="block px-4 py-2 rounded hover:bg-gray-100">팔로워</a>
+    </nav>
+</aside>
+
+<!-- 메인 -->
+<main class="flex-1 p-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold capitalize" th:text="${tab}">resume</h1>
+
+        <div>
+            <button th:if="${isSelf}" class="px-4 py-2 bg-blue-600 text-white rounded"
+                    type="button" onclick="openVerifyModal()">프로필 수정</button>
+
+            <form th:if="${!isSelf}" th:action="@{|/profile/${user.userId}/follow|}" method="post" class="inline">
+                <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                <input type="hidden" name="tab" th:value="${tab}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        th:class="'px-4 py-2 rounded ' + (${isFollowing} ? 'bg-gray-300' : 'bg-blue-600 text-white')"
+                        th:text="${isFollowing} ? '언팔로우' : '팔로우'">팔로우</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 사용자 정보 -->
+    <section class="bg-white p-6 rounded shadow mb-6 grid grid-cols-2 gap-4 text-sm">
+        <div>
+            <p><strong>이메일:</strong> <span th:text="${user.email}">user@example.com</span></p>
+            <p><strong>GitHub:</strong>
+                <a th:href="${user.githubUrl}" target="_blank" class="text-blue-600" th:text="${user.githubUrl}">github</a>
+            </p>
+            <p><strong>Blog:</strong>
+                <a th:href="${user.blogUrl}" target="_blank" class="text-blue-600" th:text="${user.blogUrl}">blog</a>
+            </p>
+        </div>
+        <div>
+            <p><strong>소속:</strong> <span th:text="${user.affiliation}">회사/학교</span></p>
+        </div>
+    </section>
+
+    <!-- 컨텐츠 -->
+    <section class="bg-white p-6 rounded shadow">
+
+        <!-- 이력서 -->
+        <div th:if="${tab=='resume'}">
+            <div th:if="${#lists.isEmpty(resumes)}" class="text-gray-500">작성한 이력서가 없습니다.</div>
+            <div th:each="res : ${resumes}" class="border-b py-4">
+                <h3 class="font-semibold" th:text="${#strings.abbreviate(res.content, 60)}">이력서</h3>
+                <p class="text-sm text-gray-500" th:text="${#temporals.format(res.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
+            </div>
+        </div>
+
+        <!-- 포트폴리오 -->
+        <div th:if="${tab=='portfolio'}">
+            <div th:if="${#lists.isEmpty(portfolios)}" class="text-gray-500">작성한 포트폴리오가 없습니다.</div>
+            <div th:each="pf : ${portfolios}" class="border-b py-4 flex items-center justify-between">
+                <div class="mr-4">
+                    <h3 class="font-semibold">
+                        <a th:text="${pf.title}" th:href="@{|/portfolio/${pf.portfolioIdx}|}">포트폴리오 제목</a>
+                    </h3>
+                    <p class="text-sm text-gray-500" th:text="${#temporals.format(pf.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
+                </div>
+                <form th:action="@{|/profile/portfolios/${pf.portfolioIdx}/like|}" method="post" class="inline">
+                    <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                    <input type="hidden" name="tab" value="portfolio"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="px-3 py-1 rounded border"
+                            th:text="${likedPortfolioIds.contains(pf.portfolioIdx)} ? '좋아요 취소' : '좋아요'">좋아요</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 게시글 -->
+        <div th:if="${tab=='posts'}">
+            <div th:if="${#lists.isEmpty(posts)}" class="text-gray-500">작성한 게시글이 없습니다.</div>
+            <div th:each="p : ${posts}" class="border-b py-4 flex items-center justify-between">
+                <div class="mr-4">
+                    <h3 class="font-semibold">
+                        <a th:text="${p.title}" th:href="@{|/posts/${p.postIdx}|}">게시글 제목</a>
+                    </h3>
+                    <p class="text-sm text-gray-500" th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
+                </div>
+                <form th:action="@{|/profile/posts/${p.postIdx}/like|}" method="post" class="inline">
+                    <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                    <input type="hidden" name="tab" value="posts"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="px-3 py-1 rounded border"
+                            th:text="${likedPostIds.contains(p.postIdx)} ? '좋아요 취소' : '좋아요'">좋아요</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 좋아요(본인만) -->
+        <div th:if="${tab=='likes'}">
+            <div th:if="${!isSelf}" class="text-red-600">본인만 접근할 수 있습니다.</div>
+
+            <div th:if="${isSelf}">
+                <h3 class="font-semibold mb-2">좋아요한 포트폴리오</h3>
+                <div th:if="${#lists.isEmpty(likesPortfolios)}" class="text-gray-500 mb-4">좋아요한 포트폴리오가 없습니다.</div>
+                <div th:each="pf : ${likesPortfolios}" class="border-b py-3 flex items-center justify-between">
+                    <a th:href="@{|/profile/${pf.user.userIdx}|}" class="mr-4 text-gray-600" th:text="${pf.user.nickname}">작성자</a>
+                    <span class="mr-auto" th:text="${pf.title}">제목</span>
+                    <form th:action="@{|/profile/portfolios/${pf.portfolioIdx}/like|}" method="post" class="inline">
+                        <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                        <input type="hidden" name="tab" value="likes"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="px-3 py-1 rounded border">좋아요 취소</button>
+                    </form>
+                </div>
+
+                <h3 class="font-semibold mt-6 mb-2">좋아요한 게시글</h3>
+                <div th:if="${#lists.isEmpty(likesPosts)}" class="text-gray-500">좋아요한 게시글이 없습니다.</div>
+                <div th:each="p : ${likesPosts}" class="border-b py-3 flex items-center justify-between">
+                    <a th:href="@{|/profile/${p.user.userIdx}|}" class="mr-4 text-gray-600" th:text="${p.user.nickname}">작성자</a>
+                    <span class="mr-auto" th:text="${p.title}">제목</span>
+                    <form th:action="@{|/profile/posts/${p.postIdx}/like|}" method="post" class="inline">
+                        <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                        <input type="hidden" name="tab" value="likes"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="px-3 py-1 rounded border">좋아요 취소</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 팔로잉 목록 -->
+        <div th:if="${tab=='following'}">
+            <div th:if="${#lists.isEmpty(following)}" class="text-gray-500">팔로잉한 사용자가 없습니다.</div>
+            <div th:each="u : ${following}" class="border-b py-3 flex items-center justify-between">
+                <a th:href="@{|/profile/${u.userIdx}|}" class="flex items-center">
+                    <img th:src="${u.profileImg}" class="w-8 h-8 rounded-full object-cover mr-3" alt="">
+                    <span th:text="${u.nickname}">닉네임</span>
+                </a>
+                <div th:if="${isSelf && u.userIdx != user.userId}">
+                    <form th:action="@{|/profile/${u.userIdx}/follow|}" method="post" class="inline">
+                        <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                        <input type="hidden" name="tab" value="following"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="px-3 py-1 rounded border"
+                                th:text="${myFollowingIds.contains(u.userIdx)} ? '언팔로우' : '팔로우'">팔로우</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 팔로워 목록 -->
+        <div th:if="${tab=='followers'}">
+            <div th:if="${#lists.isEmpty(followers)}" class="text-gray-500">팔로워가 없습니다.</div>
+            <div th:each="u : ${followers}" class="border-b py-3 flex items-center justify-between">
+                <a th:href="@{|/profile/${u.userIdx}|}" class="flex items-center">
+                    <img th:src="${u.profileImg}" class="w-8 h-8 rounded-full object-cover mr-3" alt="">
+                    <span th:text="${u.nickname}">닉네임</span>
+                </a>
+                <div th:if="${isSelf && u.userIdx != user.userId}">
+                    <form th:action="@{|/profile/${u.userIdx}/follow|}" method="post" class="inline">
+                        <input type="hidden" name="ownerUserId" th:value="${user.userId}"/>
+                        <input type="hidden" name="tab" value="followers"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="px-3 py-1 rounded border"
+                                th:text="${myFollowingIds.contains(u.userIdx)} ? '언팔로우' : '팔로우'">팔로우</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- 비밀번호 검증 모달 -->
+<div id="verifyModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35);">
+    <div style="max-width:420px; margin:10% auto; background:#fff; border-radius:12px; padding:1.5rem;">
+        <h3 class="text-xl font-bold mb-2">비밀번호 확인</h3>
+        <p class="text-gray-600 mb-3">프로필 수정을 위해 비밀번호를 입력해 주세요.</p>
+        <form th:action="@{/profile/verify}" method="post">
+            <input type="password" name="password" class="border rounded w-full px-3 py-2" placeholder="비밀번호"/>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <p th:if="${verifyError}" class="text-red-600 mt-2">비밀번호를 잘못 입력하셨습니다.</p>
+            <div class="flex justify-between mt-4">
+                <button type="button" class="btn" onclick="closeVerifyModal()">취소</button>
+                <button type="submit" class="btn btn--primary">확인</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

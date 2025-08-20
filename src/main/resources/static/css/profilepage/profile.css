@@ -1,0 +1,177 @@
+/* =========================
+   Devfolio Profile – base
+   ========================= */
+:root{
+  --bg: #f3f4f6;          /* gray-100 */
+  --bg-soft: #f5f5f5;     /* hover */
+  --card: #ffffff;
+  --text: #111827;        /* gray-900 */
+  --muted: #6b7280;       /* gray-500 */
+  --muted-2: #4b5563;     /* gray-600 */
+  --primary: #2563eb;     /* blue-600 */
+  --primary-100: #dbeafe; /* blue-100 */
+  --border: #e5e7eb;
+  --shadow: 0 8px 24px rgba(0,0,0,.06);
+  --radius: 12px;
+  --radius-full: 9999px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+}
+
+/* A 링크 */
+a{
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover{ text-decoration: underline; }
+
+/* =========================
+   Layout helpers (subset of Tailwind-like)
+   ========================= */
+.flex{ display:flex; }
+.flex-1{ flex:1 1 auto; }
+.flex-col{ flex-direction: column; }
+.items-center{ align-items: center; }
+.justify-between{ justify-content: space-between; }
+.justify-around{ justify-content: space-around; }
+
+.grid{ display: grid; }
+.grid-cols-2{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gap-4{ gap: 1rem; }
+
+.min-h-screen{ min-height: 100vh; }
+.w-64{ width: 16rem; }
+.w-24{ width: 6rem; } .h-24{ height: 6rem; }
+
+.p-6{ padding: 1.5rem; }
+.p-8{ padding: 2rem; }
+.px-4{ padding-left: 1rem; padding-right: 1rem; }
+.px-3{ padding-left: .75rem; padding-right: .75rem; }
+.py-1{ padding-top: .25rem; padding-bottom: .25rem; }
+.py-2{ padding-top: .5rem; padding-bottom: .5rem; }
+.py-4{ padding-top: 1rem; padding-bottom: 1rem; }
+.mb-6{ margin-bottom: 1.5rem; }
+.mt-4{ margin-top: 1rem; }
+.mt-6{ margin-top: 1.5rem; }
+.mr-4{ margin-right: 1rem; }
+.mb-2{ margin-bottom: .5rem; }
+
+.space-y-1 > * + *{ margin-top: .25rem; }
+.space-y-6 > * + *{ margin-top: 1.5rem; }
+
+.bg-white{ background: var(--card); }
+.bg-gray-100{ background: var(--bg); }
+.bg-blue-600{ background: var(--primary); }
+.bg-blue-100{ background: var(--primary-100); }
+
+.text-white{ color: #fff; }
+.text-sm{ font-size: 0.875rem; }
+.text-xl{ font-size: 1.25rem; }
+.text-2xl{ font-size: 1.5rem; }
+.font-bold{ font-weight: 700; }
+.capitalize{ text-transform: capitalize; }
+.text-gray-500{ color: var(--muted); }
+.text-gray-600{ color: var(--muted-2); }
+.text-red-600{ color: #dc2626; }
+
+.rounded{ border-radius: var(--radius); }
+.rounded-full{ border-radius: var(--radius-full); }
+
+.shadow{ box-shadow: var(--shadow); }
+
+.border{ border: 1px solid var(--border); }
+.border-b{ border-bottom: 1px solid var(--border); }
+
+.object-cover{ object-fit: cover; }
+
+/* “hover:bg-gray-100” 같은 클래스명도 동작하도록 */
+.hover\:bg-gray-100:hover{ background: var(--bg-soft); }
+
+/* 버튼 기본 스타일 (유틸 클래스와 함께 조합) */
+button{
+  font: inherit;
+  cursor: pointer;
+  border: none;
+}
+button.rounded{ border: 1px solid transparent; }
+button.bg-blue-600:hover{ filter: brightness(0.95); }
+
+/* =========================
+   Page specific
+   ========================= */
+
+/* 사이드 카드 느낌 */
+aside.w-64{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* 사이드바 내부 정보 라벨 스타일(스크린샷 느낌) */
+.badge{
+  display: inline-block;
+  padding: .35rem .6rem;
+  background: #e9eef8;
+  color: #3b4a6b;
+  border-radius: 9999px;
+  font-size: .75rem;
+}
+
+/* 탭 링크 */
+nav a{
+  display: block;
+  color: var(--text);
+  border-radius: var(--radius);
+}
+nav a:hover{ background: var(--bg-soft); }
+
+/* 메인 카드(섹션) */
+section.bg-white{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* 리스트(이력/포폴/게시글) 라인 */
+.border-b.py-4{ border-color: var(--border); }
+
+/* 아이콘과 타이틀 라인(섹션 헤더 느낌) */
+.section-title{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  padding-bottom: .75rem;
+  border-bottom: 2px solid #111827;
+}
+
+/* 상단 헤더(페이지 타이틀 옆 버튼 영역 맞춤) */
+h1.text-2xl{
+  letter-spacing: .2px;
+}
+
+/* 좋아요/팔로우 버튼 */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.5rem 1rem; border-radius: var(--radius); border:1px solid var(--border);
+  background:#fff; color: var(--text);
+}
+.btn--primary{ background: var(--primary); color:#fff; border-color: transparent; }
+.btn--muted{ background:#f3f4f6; }
+.btn:hover{ filter: brightness(0.98); }
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 1024px){
+  body.flex{ flex-direction: column; }
+  aside.w-64{ width: 100%; }
+  main.p-8{ padding: 1rem; }
+  .grid.grid-cols-2{ grid-template-columns: 1fr; }
+}
