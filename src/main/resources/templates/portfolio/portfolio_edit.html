@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio_write.css}">
-    <title th:text="${editDto.writeDto.title} + ' 편집 | DevFolio'">포트폴리오 편집 | DevFolio</title>
+    <title th:text="${editDto.title} + ' 편집 | DevFolio'">포트폴리오 편집 | DevFolio</title>
 </head>
 <body>
 <header></header>
@@ -20,33 +20,34 @@
                 <h1>포트폴리오 편집하기</h1>
                 <span>*은 필수 입력 항목입니다.</span>
             </div>
-            <form th:action="@{/portfolio/{id}/edit/(id=${editDto.portfolioIdx})}"
+            <form th:action="@{/portfolio/{id}/edit(id=${editDto.portfolioIdx})}"
                   method="post" id="write-form"
                   enctype="multipart/form-data"
                   th:object="${editDto}">
+                <input type="hidden" th:field="*{portfolioIdx}">
                 <div class="input-group">
                     <label for="title" class="group-label">
                         <span>제목</span>
                         <span class="required-mark">*</span>
                     </label>
-                    <input type="text" id="title" th:field="*{writeDto.title}"
+                    <input type="text" id="title" th:field="*{title}"
                            maxlength="200" required>
-                    <div th:if="${#fields.hasErrors('writeDto.title')}" class="error-box">
-                        <span th:errors="*{writeDto.title}" class="form-error"></span>
+                    <div th:if="${#fields.hasErrors('title')}" class="error-box">
+                        <span th:errors="*{title}" class="form-error"></span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="start-date" class="group-label">
                         <span>프로젝트 기간</span>
                     </label>
-                    <input type="date" id="start-date" th:field="*{writeDto.startDate}">
+                    <input type="date" id="start-date" th:field="*{startDate}">
                     <span>-</span>
-                    <input type="date" id="end-date" th:field="*{writeDto.endDate}">
-                    <div th:if="${#fields.hasErrors('writeDto.startDate')}" class="error-box">
-                        <span th:errors="*{writeDto.startDate}" class="form-error"></span>
+                    <input type="date" id="end-date" th:field="*{endDate}">
+                    <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
+                        <span th:errors="*{startDate}" class="form-error"></span>
                     </div>
-                    <div th:if="${#fields.hasErrors('writeDto.endDate')}" class="error-box">
-                        <span th:errors="*{writeDto.endDate}" class="form-error"></span>
+                    <div th:if="${#fields.hasErrors('endDate')}" class="error-box">
+                        <span th:errors="*{endDate}" class="form-error"></span>
                     </div>
                     <div>
                         <span class="form-error date"></span>
@@ -61,7 +62,7 @@
                         <ul class="category-list">
                             <li th:each="category : ${categoryList}">
                                 <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
-                                       th:field="*{writeDto.categories}" th:value="${category.categoryIdx}"
+                                       th:field="*{categories}" th:value="${category.categoryIdx}"
                                 >
                                 <label th:for="'category ' + ${category.categoryIdx}"
                                        th:text="${category.nameKo}">카테고리 이름</label>
@@ -69,8 +70,8 @@
                         </ul>
                         <span>카테고리는 중복 선택할 수 있습니다.</span>
                         <span class="form-error category"></span>
-                        <div th:if="${#fields.hasErrors('writeDto.categories')}" class="error-box">
-                            <span th:errors="*{writeDto.categories}" class="form-error"></span>
+                        <div th:if="${#fields.hasErrors('categories')}" class="error-box">
+                            <span th:errors="*{categories}" class="form-error"></span>
                         </div>
                     </div>
                 </div>
@@ -79,12 +80,11 @@
                         <img th:src="@{/assets/icon/image.svg}" alt="이미지 아이콘">
                         <span>포트폴리오의 썸네일을 추가해주세요</span>
                     </label>
-                    <input type="file" id="thumbnail" accept="image/*" th:field="*{writeDto.thumbnail}">
+                    <input type="file" id="thumbnail" accept="image/*" th:field="*{thumbnail}">
                     <div class="image-preview">
-                        <div class="original-image-box">
+                        <div class="original-image-box" th:unless="${editDto.thumbnailUrl == null or #strings.isEmpty(editDto.thumbnailUrl)}">
                             <img
                                 id="original-image"
-                                th:if="*{thumbnailUrl}"
                                 th:src="${editDto.thumbnailUrl}"
                                 alt="원본 이미지">
                         </div>
@@ -95,8 +95,8 @@
                             </button>
                         </div>
                     </div>
-                    <div th:if="${#fields.hasErrors('writeDto.thumbnail')}" class="error-box">
-                        <span th:errors="*{writeDto.thumbnail}" class="form-error"></span>
+                    <div th:if="${#fields.hasErrors('thumbnail')}" class="error-box">
+                        <span th:errors="*{thumbnail}" class="form-error"></span>
                     </div>
                 </div>
                 <div class="input-group textarea-input-group">
@@ -113,19 +113,19 @@
                             id="editor-container"
                         >
                             <div class="editor-container__editor">
-                                <textarea id="editor" th:field="*{writeDto.description}"></textarea>
+                                <textarea id="editor" th:field="*{description}"></textarea>
                             </div>
                         </div>
                         <div id="image-list-box">
-                            <th:block th:if="*{writeDto.images}"
-                                      th:each="imageUrl : *{writeDto.images}"
-                            >
-                                <input type="hidden" th:field="*{writeDto.images}" th:value="${imageUrl}">
+                            <th:block th:if="*{images}">
+                                <input type="hidden"
+                                       th:each="imageUrl : *{images}"
+                                       th:field="*{images}" th:value="${imageUrl}">
                             </th:block>
                         </div>
                     </div>
-                    <div th:if="${#fields.hasErrors('writeDto.description')}" class="error-box">
-                        <span th:errors="*{writeDto.description}" class="form-error"></span>
+                    <div th:if="${#fields.hasErrors('description')}" class="error-box">
+                        <span th:errors="*{description}" class="form-error"></span>
                     </div>
                 </div>
                 <div class="button-wrap">

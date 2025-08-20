@@ -215,12 +215,12 @@ public class PortfolioController {
             if (bindingResult.hasErrors()) {
                 model.addAttribute("editDto", editRequestDto);
                 model.addAttribute("categoryList", categoryList);
-                return "portfolio/portfolio_write";
+                return "redirect:/portfolio/" + id + "/edit";
             }
             // Todo : 로그인한 사용자 정보 전달
             Long testUserIdx = 1L;
-            Long portfolioIdx = portfolioService.editPortfolio(editRequestDto, testUserIdx);
-            return "portfolio/portfolio_detail/" + portfolioIdx;
+            Long portfolioIdx = portfolioService.editPortfolio(editRequestDto, id, testUserIdx);
+            return "redirect:/portfolio/" + portfolioIdx;
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";

@@ -173,21 +173,14 @@ public class PortfolioService {
                 .map(image->image.getImageUrl())
                 .toList();
 
-        System.out.println(portfolio.getStartDate());
-        System.out.println(portfolio.getEndDate());
-
-        PortfolioWriteRequestDto writeRequestDto = PortfolioWriteRequestDto.builder()
+        return PortfolioEditRequestDto.builder()
+                .portfolioIdx(portfolioIdx)
                 .title(portfolio.getTitle())
                 .startDate(portfolio.getStartDate())
                 .endDate(portfolio.getEndDate())
                 .description(portfolio.getDescription())
                 .categories(categoryIdxList)
                 .images(imageUrlList)
-                .build();
-
-        return PortfolioEditRequestDto.builder()
-                .portfolioIdx(portfolioIdx)
-                .writeDto(writeRequestDto)
                 .thumbnailUrl(thumbnailUrl)
                 .build();
     }
@@ -225,30 +218,46 @@ public class PortfolioService {
     /**
      * 포트폴리오 수정
      */
-    public Long editPortfolio(PortfolioEditRequestDto editRequestDto, Long userIdx) {
+    public Long editPortfolio(PortfolioEditRequestDto editRequestDto, Long portfolioIdx, Long userIdx) throws Exception {
+        try {
         // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
+
         // Todo : 사용자 없을 때의 에러 처리
         if (user == null) {
             return null;
         }
-        PortfolioWriteRequestDto writeRequestDto = editRequestDto.getWriteDto();
-        Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
+        // Todo : 포트폴리오가 없을 때 에러 처리
+        Portfolio original = portfolioRepository.findById(portfolioIdx).orElse(null);
+        if (original == null) {
+            return null;
+        }
+        
+        // Todo : 포트폴리오 idx와 dto내의 idx가 다를 때 에러 처리
+            System.out.println(editRequestDto.getPortfolioIdx());
+            System.out.println(portfolioIdx);
+        if (!portfolioIdx.equals(editRequestDto.getPortfolioIdx())) {
+            return null;
+        }
+        
+        // 수정 DTO를 portfolio에 반영
+        Portfolio portfolio = editDtoToPortfolio(editRequestDto, original);
 
         // 포트폴리오 데이터 저장
-        Portfolio newPortfolio = portfolioRepository.save(portfolio);
-        // 포트폴리오 카테고리를 저장
-        portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
+        Portfolio edittedPortfolio = portfolioRepository.save(portfolio);
+
+        // 포트폴리오 카테고리를 수정
+        portfolioCategoryService.editPortfolioCategoryMap(edittedPortfolio, editRequestDto.getCategories());
 
         // 이미지 파일 저장
         // Todo : 에러 핸들링
-        try {
-            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
+
+            portfolioImageService.editPortfolioImage(edittedPortfolio, editRequestDto, userIdx);
+            return portfolio.getPortfolioIdx();
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return newPortfolio.getPortfolioIdx();
     }
 
     // Todo : 포트폴리오 삭제 기능 추가
@@ -352,5 +361,15 @@ public class PortfolioService {
                 .updatedAt(ZonedDateTime.now())
                 .user(user)
                 .build();
+    }
+
+    private Portfolio editDtoToPortfolio(PortfolioEditRequestDto editRequestDto, Portfolio portfolio) {
+        portfolio.setTitle(editRequestDto.getTitle());
+        portfolio.setStartDate(editRequestDto.getStartDate());
+        portfolio.setEndDate(editRequestDto.getEndDate());
+        portfolio.setDescription(editRequestDto.getDescription());
+        portfolio.setUpdatedAt(ZonedDateTime.now());
+
+        return portfolio;
     }
 }

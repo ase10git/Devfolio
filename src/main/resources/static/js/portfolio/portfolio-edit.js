@@ -3,7 +3,9 @@
  */
 function setEditorData() {
     const editor = window.editor;
-    editor.setData(document.getElementById("editor").value);
+    if (editor) {
+        editor.setData(document.getElementById("editor").value);
+    }
 }
 
 /**

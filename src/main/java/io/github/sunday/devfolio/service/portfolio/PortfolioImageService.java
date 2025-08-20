@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioEditRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
@@ -10,6 +11,7 @@ import io.github.sunday.devfolio.service.common.S3Service;
 import io.github.sunday.devfolio.service.common.SecureImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
@@ -83,8 +85,72 @@ public class PortfolioImageService {
         imageIdxList.forEach(imageIdx -> deleteImage(imageIdx, filePath));
     }
 
-    // Todo : 이미지 수정 로직 추가
-    
+    /**
+     * 포트폴리오 이미지 수정
+     */
+    @Transactional
+    public void editPortfolioImage(Portfolio portfolio, PortfolioEditRequestDto editRequestDto, Long userIdx) throws Exception {
+        String filePath = userIdx + "/portfolio/" + portfolio.getPortfolioIdx();
+        PortfolioImage originalThumbnail = portfolioImageRepository
+                .findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx()).orElse(null);
+
+        // 썸네일 제거 동작
+        if (editRequestDto.isRemoveFlag() && originalThumbnail != null) {
+            deleteImage(originalThumbnail.getImageIdx(), filePath);
+        }
+
+        // 썸네일 이미지 추가
+        MultipartFile thumbnailFile = editRequestDto.getThumbnail();
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            PortfolioImage thumbnailImage = addNewImage(thumbnailFile, filePath, true);
+            // DB에 이미지 추가
+            thumbnailImage.setPortfolio(portfolio);
+            portfolioImageRepository.save(thumbnailImage);
+        }
+
+        // 요청으로 온 이미지 목록
+        List<String> imageList = editRequestDto.getImages();
+
+        // 기존 목록 조회
+        List<PortfolioImage> originalImageList = getPortfolioImages(portfolio.getPortfolioIdx());
+        List<String> originalUrlList = originalImageList.stream()
+                .filter(image -> !image.getIsThumbnail())
+                .map(image -> image.getImageUrl())
+                .toList();
+
+        if (imageList != null && !imageList.isEmpty()) {
+            // 기존 이미지 목록에서 이미지 제거
+            if (!originalImageList.isEmpty()) {
+                originalImageList.stream()
+                        .filter(image -> !image.getIsThumbnail())
+                        .filter(image -> !imageList.contains(image.getImageUrl()))
+                        .map(image -> image.getImageIdx())
+                        .forEach(imageIdx -> deleteImage(imageIdx, filePath));
+            }
+
+            // 새 이미지 목록 추가
+            imageList
+                    .stream()
+                    .filter(imageUrl -> !originalUrlList.contains(imageUrl))
+                    .forEach(imageUrl -> {
+                    try {
+                        PortfolioImage imageInEditor = PortfolioImage.builder()
+                                .portfolio(portfolio)
+                                .imageUrl(imageUrl)
+                                .s3Key(extractKeyFromUrl(imageUrl))
+                                .isThumbnail(false)
+                                .createdAt(ZonedDateTime.now())
+                                .expireAt(ZonedDateTime.now().plusMonths(1))
+                                .build();
+                        portfolioImageRepository.save(imageInEditor);
+                        s3Service.updateObjectTags(imageInEditor.getS3Key(), "lifecycle", "");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            });
+        }
+    }
+
     /**
      * AWS S3에 이미지 추가하기
      */

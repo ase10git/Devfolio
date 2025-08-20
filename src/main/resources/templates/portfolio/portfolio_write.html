@@ -41,7 +41,7 @@
                     </label>
                     <input type="date" id="start-date" th:field="*{startDate}">
                     <span>-</span>
-                    <input type="date" id="end-date" th:field="*{endDate}">
+                    <label for="end-date"></label><input type="date" id="end-date" th:field="*{endDate}">
                     <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
                         <span th:errors="*{startDate}" class="form-error"></span>
                     </div>
