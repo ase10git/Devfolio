@@ -161,7 +161,7 @@ public class PortfolioController {
     // Todo : 전역 에러 처리 설정 필요
     @PostMapping("/new")
     public String write(
-            @ModelAttribute("writeRequestDto") PortfolioWriteRequestDto writeDto,
+            @Valid @ModelAttribute("writeRequestDto") PortfolioWriteRequestDto writeDto,
             BindingResult bindingResult,
             Model model
             ) {
@@ -205,7 +205,7 @@ public class PortfolioController {
     @PostMapping("/{id}/edit")
     public String edit(
             @PathVariable Long id,
-            @ModelAttribute("editRequestDto") PortfolioEditRequestDto editRequestDto,
+            @Valid @ModelAttribute("editRequestDto") PortfolioEditRequestDto editRequestDto,
             BindingResult bindingResult,
             Model model
     ) {
