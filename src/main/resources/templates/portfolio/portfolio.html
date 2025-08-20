@@ -41,7 +41,8 @@
                             <div class="item-description">
                                 <div class="writer-meta">
                                     <div class="writer-profile">
-                                        <img th:src="${hotPortfolio.writer.profileImg}" th:alt="${hotPortfolio.writer.nickname}">
+                                        <img th:src="${hotPortfolio.writer.profileImg == null or #strings.isEmpty(hotPortfolio.writer.profileImg)} ? @{/assets/icon/person-fill.svg} : ${hotPortfolio.writer.profileImg}"
+                                             th:alt="${hotPortfolio.writer.nickname}">
                                     </div>
                                     <div class="writer-info">
                                         <span th:text="${hotPortfolio.writer.nickname}">작성자 닉네임</span>
