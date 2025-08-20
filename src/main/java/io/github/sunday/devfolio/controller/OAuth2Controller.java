@@ -24,16 +24,23 @@ public class OAuth2Controller {
         String name = oauthUser.getAttribute("name");
         String providerId = oauthUser.getAttribute("sub");
 
-        // 이미 해당 이메일로 가입된 사용자가 있으면 로그인 차단
+        // 이메일로 기존 사용자 조회
         User existingUser = userService.findByEmail(email);
+
         if (existingUser != null) {
-            return "redirect:/login?error=email";
+            if (existingUser.getOauthProvider() == null) {
+                // 기존 로컬 회원이면 소셜 로그인 차단
+                return "redirect:/login?error=email";
+            } else {
+                // 기존 소셜 회원이면 로그인 처리
+                return "redirect:/main";
+            }
         }
 
-        // 닉네임 자동 생성
+        // 신규 소셜 회원이면 닉네임 자동 생성
         String nickname = userService.generateValidNickname(name);
 
-        // 아이디 자동 생성
+        // 신규 소셜 회원이면 아이디 자동 생성
         String generatedId = userService.generateUserId(email);
 
         User newUser = new User(generatedId, email, nickname, null, providerId, AuthProvider.GOOGLE);

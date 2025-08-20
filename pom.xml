@@ -122,6 +122,11 @@
 			<type>pom</type>
 		</dependency>
 		<dependency>
+			<groupId>com.github.downgoon</groupId>
+			<artifactId>MarvinPlugins</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
 			<version>0.25.1</version>
@@ -160,7 +165,6 @@
 						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.38</version>
 						</exclude>
 					</excludes>
 				</configuration>
