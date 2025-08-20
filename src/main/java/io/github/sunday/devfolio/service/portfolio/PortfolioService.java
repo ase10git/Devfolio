@@ -260,7 +260,37 @@ public class PortfolioService {
         }
     }
 
-    // Todo : 포트폴리오 삭제 기능 추가
+    /**
+     * 포트폴리오 삭제
+     */
+    public void deletePortfolio(Long portfolioIdx, Long userIdx) throws Exception {
+        // 사용자 검증
+        User user = userService.findByUserIdx(userIdx);
+
+        // Todo : 사용자 없을 때의 에러 처리
+        if (user == null) {
+            throw new Exception("사용자가 존재하지 않습니다");
+        }
+
+        // 포트폴리오 검색
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElse(null);
+        if (portfolio == null) return;
+
+        // 포트폴리오 주인과 사용자 비교
+        if (!user.getUserIdx().equals(portfolio.getUser().getUserIdx())) {
+            throw new Exception("접근이 차단되었습니다");
+        }
+
+        try {
+            // S3 이미지 제거
+            portfolioImageService.deleteImages(portfolioIdx);
+
+            // 포트폴리오 제거
+            portfolioRepository.deleteById(portfolioIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 요청 DTO 정보로 정렬 기준 설정

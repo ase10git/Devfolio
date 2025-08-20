@@ -16,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.beans.PropertyEditorSupport;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,5 +77,27 @@ public class PortfolioRestController {
 
         List<PortfolioListDto> list = portfolioService.search(requestDto);
         return ResponseEntity.ok().body(list);
+    }
+
+
+    /**
+     * 포트폴리오 제거
+     */
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<?> delete(
+            @PathVariable Long id
+    ) {
+        Map<String, Object> responseData = new HashMap<>();
+        try {
+            // Todo : 로그인한 사용자 정보 전달
+            Long testUserIdx = 1L;
+            portfolioService.deletePortfolio(id, testUserIdx);
+
+            responseData.put("message", "성공적으로 제거했습니다.");
+            return ResponseEntity.ok().body(responseData);
+        } catch (Exception e) {
+            responseData.put("message", "포트폴리오 제거에 실패했습니다.");
+            return ResponseEntity.internalServerError().body(responseData);
+        }
     }
 }

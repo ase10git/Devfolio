@@ -21,7 +21,7 @@
                     <!-- Todo: 글 작성자에게만 표시하기 -->
                     <div class="option-box">
                         <a th:href="@{/portfolio/{id}/edit(id=${portfolio.portfolioIdx})}">수정</a>
-                        <button type="button">삭제</button>
+                        <button type="button" id="delete-button" th:data-id="*{portfolioIdx}">삭제</button>
                     </div>
                 </div>
                 <div class="portfolio-meta">
@@ -98,5 +98,6 @@
     </div>
 </main>
 <footer></footer>
+<script type="module" th:src="@{/js/portfolio/portfolio-detail.js}"></script>
 </body>
 </html>

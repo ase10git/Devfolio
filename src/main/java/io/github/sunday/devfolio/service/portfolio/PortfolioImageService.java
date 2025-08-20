@@ -44,6 +44,7 @@ public class PortfolioImageService {
      * 포트폴리오 이미지 추가
      * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드
      */
+    @Transactional
     public void addPortfolioImage(Portfolio portfolio, PortfolioWriteRequestDto writeRequestDto, Long userIdx) throws Exception {
         String filePath = userIdx + "/portfolio/" + portfolio.getPortfolioIdx();
 
@@ -164,15 +165,22 @@ public class PortfolioImageService {
                 .build();
     }
 
+    /**
+     * 포트폴리오의 이미지 모두 제거
+     */
+    public void deleteImages(Long portfolioIdx) {
+        List<PortfolioImage> images = getPortfolioImages(portfolioIdx);
+        if (images != null && !images.isEmpty()) {
+            images.forEach(image -> deleteImage(image.getImageIdx()));
+        }
+    }
+
+    @Transactional
     private void deleteImage(Long imageIdx) {
         PortfolioImage image = portfolioImageRepository.findById(imageIdx).orElse(null);
         if (image == null) return;
         s3Service.deleteFile(image.getS3Key());
         portfolioImageRepository.deleteById(imageIdx);
-    }
-
-    private String fullFilePath(String filePath, String fileName) {
-        return filePath + "/" + URLDecoder.decode(fileName);
     }
 
     private String extractKeyFromUrl(String url) {
