@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.controller.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
+import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
@@ -67,6 +69,7 @@ public class PortfolioRestController {
     @GetMapping("/list")
     public ResponseEntity<?> list(
             @Valid @ModelAttribute PortfolioSearchRequestDto requestDto,
+            @AuthenticationPrincipal User user,
             BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
@@ -85,13 +88,13 @@ public class PortfolioRestController {
      */
     @PostMapping("/{id}/delete")
     public ResponseEntity<?> delete(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
     ) {
         Map<String, Object> responseData = new HashMap<>();
         try {
-            // Todo : 로그인한 사용자 정보 전달
-            Long testUserIdx = 1L;
-            portfolioService.deletePortfolio(id, testUserIdx);
+            Long userIdx = user.getUserIdx();
+            portfolioService.deletePortfolio(id, userIdx);
 
             responseData.put("message", "성공적으로 제거했습니다.");
             return ResponseEntity.ok().body(responseData);

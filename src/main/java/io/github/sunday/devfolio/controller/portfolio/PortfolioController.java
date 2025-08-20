@@ -1,9 +1,8 @@
 package io.github.sunday.devfolio.controller.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.*;
+import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.enums.PortfolioSort;
-import io.github.sunday.devfolio.exception.portfolio.NoWriterFoundException;
-import io.github.sunday.devfolio.exception.portfolio.PortfolioNotFoundException;
 import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import jakarta.validation.Valid;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -89,6 +89,7 @@ public class PortfolioController {
     public String list(
             @Valid @ModelAttribute("searchRequestDto") PortfolioSearchRequestDto requestDto,
             BindingResult bindingResult,
+            @AuthenticationPrincipal User user,
             Model model
     ) {
         List<String> errorMessages = new ArrayList<>();
@@ -128,12 +129,17 @@ public class PortfolioController {
     @GetMapping("/{id}")
     public String detail(
             @PathVariable Long id,
+            @AuthenticationPrincipal User user,
             Model model
     ) {
         // Todo : 전역 에러 처리 필요
         try {
             PortfolioDetailDto detailDto = portfolioService.getPortfolioById(id);
             model.addAttribute("portfolio", detailDto);
+
+            if (user != null && detailDto.getWriter().getUserIdx().equals(user.getUserIdx())) {
+                model.addAttribute("isWriter", true);
+            }
             return "portfolio/portfolio_detail";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -145,9 +151,7 @@ public class PortfolioController {
      * 포트폴리오 작성 페이지 출력
      */
     @GetMapping("/new")
-    public String writePage(
-            Model model
-    ) {
+    public String writePage(Model model) {
         PortfolioWriteRequestDto writeDto = new PortfolioWriteRequestDto();
         List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
         model.addAttribute("writeDto", writeDto);
@@ -163,6 +167,7 @@ public class PortfolioController {
     public String write(
             @Valid @ModelAttribute("writeRequestDto") PortfolioWriteRequestDto writeDto,
             BindingResult bindingResult,
+            @AuthenticationPrincipal User user,
             Model model
             ) {
 
@@ -172,10 +177,15 @@ public class PortfolioController {
             model.addAttribute("categories", categories);
             return "portfolio/portfolio_write";
         }
-        // Todo : 로그인한 사용자 정보 전달
-        Long testUserIdx = 1L;
-        Long portfolioIdx = portfolioService.addNewPortfolio(writeDto, testUserIdx);
-        return "redirect:/portfolio_detail/" + portfolioIdx;
+
+        try {
+            Long portfolioIdx = portfolioService.addNewPortfolio(writeDto, user.getUserIdx());
+            return "redirect:/portfolio_detail/" + portfolioIdx;
+        } catch (Exception e) {
+            model.addAttribute("error", "포트폴리오 추가에 실패했습니다");
+            e.printStackTrace();
+            return "error";
+        }
     }
 
     /**
@@ -184,12 +194,13 @@ public class PortfolioController {
     @GetMapping("/{id}/edit")
     public String editPage(
             @PathVariable Long id,
+            @AuthenticationPrincipal User user,
             Model model
     ) {
         List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
         // Todo : 전역 에러 처리 필요
         try {
-            PortfolioEditRequestDto editRequestDto = portfolioService.buildEditDto(id);
+            PortfolioEditRequestDto editRequestDto = portfolioService.buildEditDto(id, user.getUserIdx());
             model.addAttribute("editDto", editRequestDto);
             model.addAttribute("categoryList", categoryList);
             return "portfolio/portfolio_edit";
@@ -207,6 +218,7 @@ public class PortfolioController {
             @PathVariable Long id,
             @Valid @ModelAttribute("editRequestDto") PortfolioEditRequestDto editRequestDto,
             BindingResult bindingResult,
+            @AuthenticationPrincipal User user,
             Model model
     ) {
         List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
@@ -217,9 +229,7 @@ public class PortfolioController {
                 model.addAttribute("categoryList", categoryList);
                 return "redirect:/portfolio/" + id + "/edit";
             }
-            // Todo : 로그인한 사용자 정보 전달
-            Long testUserIdx = 1L;
-            Long portfolioIdx = portfolioService.editPortfolio(editRequestDto, id, testUserIdx);
+            Long portfolioIdx = portfolioService.editPortfolio(editRequestDto, id, user.getUserIdx());
             return "redirect:/portfolio/" + portfolioIdx;
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

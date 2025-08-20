@@ -39,14 +39,12 @@ public class PortfolioEditRequestDto {
     /**
      * 프로젝트 시작일
      */
-    @DateValid
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
 
     /**
      * 프로젝트 종료일
      */
-    @DateValid
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 
