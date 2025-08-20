@@ -23,7 +23,7 @@ public class LoginUserInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
 
         // 이미 세션에 저장된 경우 스킵
-        if (session.getAttribute("loginUserId") != null) {
+        if (session.getAttribute("loginUserIdx") != null) {
             return true;
         }
 
@@ -44,9 +44,6 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 
             if (user != null) {
                 session.setAttribute("loginUserIdx", user.getUserIdx());
-                session.setAttribute("loginId", user.getLoginId());
-                session.setAttribute("loginNickname", user.getNickname());
-                session.setAttribute("loginEmail", user.getEmail());
             }
         }
 
