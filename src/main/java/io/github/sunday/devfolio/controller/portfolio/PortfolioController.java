@@ -146,9 +146,9 @@ public class PortfolioController {
      */
     @GetMapping("/new")
     public String writePage(
-            @ModelAttribute PortfolioWriteRequestDto writeDto,
             Model model
     ) {
+        PortfolioWriteRequestDto writeDto = new PortfolioWriteRequestDto();
         List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
         model.addAttribute("writeDto", writeDto);
         model.addAttribute("categories", categoryList);
@@ -186,7 +186,17 @@ public class PortfolioController {
             @PathVariable Long id,
             Model model
     ) {
-        return "portfolio/portfolio_edit";
+        List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
+        // Todo : 전역 에러 처리 필요
+        try {
+            PortfolioEditRequestDto editRequestDto = portfolioService.buildEditDto(id);
+            model.addAttribute("editDto", editRequestDto);
+            model.addAttribute("categoryList", categoryList);
+            return "portfolio/portfolio_edit";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 
     /**
@@ -195,8 +205,25 @@ public class PortfolioController {
     @PostMapping("/{id}/edit")
     public String edit(
             @PathVariable Long id,
+            @ModelAttribute("editRequestDto") PortfolioEditRequestDto editRequestDto,
+            BindingResult bindingResult,
             Model model
     ) {
-        return "portfolio/portfolio_edit";
+        List<PortfolioCategoryDto> categoryList = portfolioCategoryService.getCachedCategories();
+
+        try {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("editDto", editRequestDto);
+                model.addAttribute("categoryList", categoryList);
+                return "portfolio/portfolio_write";
+            }
+            // Todo : 로그인한 사용자 정보 전달
+            Long testUserIdx = 1L;
+            Long portfolioIdx = portfolioService.editPortfolio(editRequestDto, testUserIdx);
+            return "portfolio/portfolio_detail/" + portfolioIdx;
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 }

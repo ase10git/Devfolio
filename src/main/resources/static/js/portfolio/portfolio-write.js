@@ -59,23 +59,30 @@ function validDate(event) {
  * 이미지 미리보기 및 삭제 동작
  */
 function previewImage() {
+    const imageLabel = document.getElementsByClassName("image-label")[0];
     const preview = document.getElementById("preview-image");
     const thumbnailInput = document.getElementById("thumbnail");
     const imgRemoveButton = document.querySelector(".img-remove-button");
 
     thumbnailInput.addEventListener("change", () => {
         const file = thumbnailInput.files[0];
-        if (file) addPreviewImage(preview, file, imgRemoveButton);
+        if (file) addPreviewImage(preview, file, imgRemoveButton, imageLabel);
     });
-    removePreviewImage(imgRemoveButton, preview, thumbnailInput);
+    removePreviewImage(imgRemoveButton, preview, thumbnailInput, imageLabel);
 }
 
 /**
  * 이미지 미리보기
  */
-function addPreviewImage(preview, file, removeButton) {
+function addPreviewImage(preview, file, removeButton, imageLabel) {
     preview.classList.add("visible");
     removeButton.classList.add("visible");
+    imageLabel.classList.add("hidden");
+
+    // 수정 페이지에서 원본 이미지 숨기기
+    const originalImage = document.getElementById("original-image");
+    if (originalImage != null) originalImage.classList.add("hidden");
+
     const reader = new FileReader();
     reader.onload = function (event) {
         preview.src = event.target.result;
@@ -86,12 +93,17 @@ function addPreviewImage(preview, file, removeButton) {
 /**
  * 이미지 미리보기 제거
  */
-function removePreviewImage(removeButton, preview, input) {
+function removePreviewImage(removeButton, preview, input, imageLabel) {
     removeButton.addEventListener("click", () => {
+        imageLabel.classList.remove("hidden");
         preview.src = "#";
         preview.classList.remove("visible");
         input.value = "";
         removeButton.classList.remove("visible");
+
+        // 수정 페이지에서 원본 이미지 표시하기
+        const originalImage = document.getElementById("original-image");
+        if (originalImage != null) originalImage.classList.remove("hidden");
     });
 }
 
@@ -174,6 +186,17 @@ function addTemplate() {
 }
 
 /**
+ * 템플릿 토글 이벤트 리스너
+ */
+function addTemplateToggleEvent() {
+    const templateBox = document.getElementsByClassName("select-content")[0];
+    const toggleButton = document.getElementsByClassName("select-toggle-button")[0];
+    toggleButton.addEventListener("click", () => {
+        templateBox.classList.toggle("visible");
+    });
+}
+
+/**
  * DOMContentLoaded 이벤트 리스너
  */
 document.addEventListener("DOMContentLoaded", () => {
@@ -181,4 +204,5 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
     previewImage();
     addTemplate();
+    addTemplateToggleEvent();
 });

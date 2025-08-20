@@ -34,6 +34,10 @@ public class PortfolioImageService {
         return portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolioIdx).orElse(null);
     }
 
+    public List<PortfolioImage> getPortfolioImages(Long portfolioIdx) {
+        return portfolioImageRepository.findAllByPortfolio_PortfolioIdx(portfolioIdx);
+    }
+
     /**
      * 포트폴리오 이미지 추가
      * DB에 Entity 추가 및 AWS S3에 이미지 파일 업로드

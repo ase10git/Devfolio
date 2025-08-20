@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -142,6 +143,56 @@ public class PortfolioService {
     }
 
     /**
+     * 포트폴리오 수정용 DTO 생성하기
+     */
+    public PortfolioEditRequestDto buildEditDto(Long portfolioIdx) throws Exception {
+        // 포트폴리오 정보 가져오기
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow(
+                () -> new PortfolioNotFoundException("포트폴리오가 존재하지 않습니다.")
+        );
+
+        // 포트폴리오 작성자 정보 가져오기
+        User user = userService.findByUserIdx(portfolio.getUser().getUserIdx());
+        if (user == null) {
+            throw new NoWriterFoundException("작성자가 존재하지 않습니다");
+        }
+
+        // 포트폴리오 카테고리 가져오기
+        List<PortfolioCategoryDto> categories = portfolioCategoryService.getCategoriesByPortfolio(portfolio);
+        List<Long> categoryIdxList = categories.stream().map(category -> category.getCategoryIdx()).toList();
+
+        // 포트폴리오 이미지 가져오기
+        List<PortfolioImage> images = portfolioImageService.getPortfolioImages(portfolioIdx);
+        PortfolioImage thumbnail = images.stream()
+                .filter(image -> image.getIsThumbnail()).findAny().orElse(null);
+        String thumbnailUrl = "";
+        if (thumbnail != null) thumbnailUrl = thumbnail.getImageUrl();
+
+        List<String> imageUrlList = images.stream()
+                .filter(image -> !image.getIsThumbnail())
+                .map(image->image.getImageUrl())
+                .toList();
+
+        System.out.println(portfolio.getStartDate());
+        System.out.println(portfolio.getEndDate());
+
+        PortfolioWriteRequestDto writeRequestDto = PortfolioWriteRequestDto.builder()
+                .title(portfolio.getTitle())
+                .startDate(portfolio.getStartDate())
+                .endDate(portfolio.getEndDate())
+                .description(portfolio.getDescription())
+                .categories(categoryIdxList)
+                .images(imageUrlList)
+                .build();
+
+        return PortfolioEditRequestDto.builder()
+                .portfolioIdx(portfolioIdx)
+                .writeDto(writeRequestDto)
+                .thumbnailUrl(thumbnailUrl)
+                .build();
+    }
+
+    /**
      * 포트폴리오 저장
      * 포트폴리오 데이터, 포트폴리오 카테고리, 썸네일 이미지, 포트폴리오 이미지 저장
      */
@@ -171,8 +222,34 @@ public class PortfolioService {
         return newPortfolio.getPortfolioIdx();
     }
 
-    // Todo : 포트폴리오 수정 기능 추가
+    /**
+     * 포트폴리오 수정
+     */
+    public Long editPortfolio(PortfolioEditRequestDto editRequestDto, Long userIdx) {
+        // 사용자 검색
+        User user = userService.findByUserIdx(userIdx);
+        // Todo : 사용자 없을 때의 에러 처리
+        if (user == null) {
+            return null;
+        }
+        PortfolioWriteRequestDto writeRequestDto = editRequestDto.getWriteDto();
+        Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
 
+        // 포트폴리오 데이터 저장
+        Portfolio newPortfolio = portfolioRepository.save(portfolio);
+        // 포트폴리오 카테고리를 저장
+        portfolioCategoryService.addPortfolioCategoryMap(newPortfolio, writeRequestDto.getCategories());
+
+        // 이미지 파일 저장
+        // Todo : 에러 핸들링
+        try {
+            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newPortfolio.getPortfolioIdx();
+    }
 
     // Todo : 포트폴리오 삭제 기능 추가
 
