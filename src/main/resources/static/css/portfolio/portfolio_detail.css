@@ -182,22 +182,35 @@ main {
     align-items: center;
 }
 
-.like-btn-wrap button{
+#like-button {
     padding: 5px 8px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
     border-radius: var(--box-radius-10);
     font-size: 16px;
     cursor: pointer;
     background-color: #3A5BA0;
-    color: white;
 }
 
-.like-btn-wrap button:hover {
+#like-button:hover {
     opacity: 0.8;
 }
 
-/* Todo : js interaction*/
-.like-btn-wrap button.hidden{
+#like-button .like-image-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#like-button .like-image-box img {
+    width: 24px;
+    height: 24px;
+}
+
+#like-button .like-image.hidden {
     display: none;
 }
 

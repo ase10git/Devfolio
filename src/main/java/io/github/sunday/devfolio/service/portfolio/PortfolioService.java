@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -117,7 +118,8 @@ public class PortfolioService {
         String thumbnailUrl = thumbnail != null ? thumbnail.getImageUrl() : null;
 
         // 포트폴리오 댓글 가져오기
-        List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
+        // 시간 상 구현하지 못한 기능
+        //List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
 
         String startDate = portfolio.getStartDate() != null ? portfolio.getStartDate().format(dateFormatter) : null;
         String endDate = portfolio.getEndDate() != null ? portfolio.getEndDate().format(dateFormatter) : null;
@@ -138,7 +140,6 @@ public class PortfolioService {
                 .thumbnailUrl(thumbnailUrl)
                 .writer(writerDto)
                 .categories(categories)
-                .comments(comments)
                 .build();
     }
 
@@ -194,6 +195,7 @@ public class PortfolioService {
      * 포트폴리오 저장
      * 포트폴리오 데이터, 포트폴리오 카테고리, 썸네일 이미지, 포트폴리오 이미지 저장
      */
+    @Transactional
     public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) throws Exception{
         // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
@@ -219,6 +221,7 @@ public class PortfolioService {
     /**
      * 포트폴리오 수정
      */
+    @Transactional
     public Long editPortfolio(PortfolioEditRequestDto editRequestDto, Long portfolioIdx, Long userIdx) throws Exception {
         try {
         // 사용자 검색

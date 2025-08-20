@@ -4,6 +4,7 @@ import io.github.sunday.devfolio.dto.portfolio.*;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
+import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 public class PortfolioController {
     private final PortfolioService portfolioService;
     private final PortfolioCategoryService portfolioCategoryService;
+    private final PortfolioLikeService portfolioLikeService;
 
     /**
      * 포트폴리오 검색 요청이 들어올 때 DTO 내의 String에서 script를 제거
@@ -137,8 +139,14 @@ public class PortfolioController {
             PortfolioDetailDto detailDto = portfolioService.getPortfolioById(id);
             model.addAttribute("portfolio", detailDto);
 
-            if (user != null && detailDto.getWriter().getUserIdx().equals(user.getUserIdx())) {
-                model.addAttribute("isWriter", true);
+            if (user != null) {
+                Long userIdx = user.getUserIdx();
+                if (detailDto.getWriter().getUserIdx().equals(userIdx)) {
+                    model.addAttribute("isWriter", true);
+                } else {
+                    model.addAttribute("liked",
+                            portfolioLikeService.userLikedPortfolio(userIdx, id));
+                }
             }
             return "portfolio/portfolio_detail";
         } catch (Exception e) {

@@ -4,6 +4,7 @@ import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PortfolioRestController {
     private final PortfolioService portfolioService;
+    private final PortfolioLikeService portfolioLikeService;
 
     /**
      * 포트폴리오 검색 요청이 들어올 때 DTO 내의 String에서 script를 제거
@@ -68,8 +70,7 @@ public class PortfolioRestController {
      */
     @GetMapping("/list")
     public ResponseEntity<?> list(
-            @Valid @ModelAttribute PortfolioSearchRequestDto requestDto,
-            @AuthenticationPrincipal User user,
+            @Valid @ModelAttribute("requestDto") PortfolioSearchRequestDto requestDto,
             BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
@@ -93,6 +94,8 @@ public class PortfolioRestController {
     ) {
         Map<String, Object> responseData = new HashMap<>();
         try {
+            // Todo : 로그인 필요 예외처리
+            if (user == null) throw new Exception("로그인이 필요합니다");
             Long userIdx = user.getUserIdx();
             portfolioService.deletePortfolio(id, userIdx);
 
@@ -100,6 +103,56 @@ public class PortfolioRestController {
             return ResponseEntity.ok().body(responseData);
         } catch (Exception e) {
             responseData.put("message", "포트폴리오 제거에 실패했습니다.");
+            return ResponseEntity.internalServerError().body(responseData);
+        }
+    }
+
+    /**
+     * 포트폴리오 좋아요 추가
+     */
+    @PostMapping("/{id}/add-like")
+    public ResponseEntity<?> addLike(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        Map<String, Object> responseData = new HashMap<>();
+        try {
+            // Todo : 로그인 필요 예외처리
+            // Todo : 로그인한 사용자 정보 전달
+            //Long userIdx = user.getUserIdx();
+            Long testUserIdx = 2L;
+            portfolioLikeService.addLike(id, testUserIdx);
+
+            responseData.put("message", "성공적으로 추가했습니다");
+            return ResponseEntity.ok().body(responseData);
+        } catch (Exception e) {
+            responseData.put("message", "좋아요 등록에 실패했습니다.");
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(responseData);
+        }
+    }
+
+    /**
+     * 포트폴리오 좋아요 제거
+     */
+    @PostMapping("/{id}/remove-like")
+    public ResponseEntity<?> removeLike(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        Map<String, Object> responseData = new HashMap<>();
+        try {
+            // Todo : 로그인 필요 예외처리
+            // Todo : 로그인한 사용자 정보 전달
+            //Long userIdx = user.getUserIdx();
+            Long testUserIdx = 2L;
+            portfolioLikeService.removeLike(id, testUserIdx);
+
+            responseData.put("message", "성공적으로 제거했습니다");
+            return ResponseEntity.ok().body(responseData);
+        } catch (Exception e) {
+            responseData.put("message", "좋아요 제거에 실패했습니다.");
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(responseData);
         }
     }
