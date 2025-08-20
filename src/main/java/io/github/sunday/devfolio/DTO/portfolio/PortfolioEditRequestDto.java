@@ -1,6 +1,5 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
-import io.github.sunday.devfolio.annotation.common.DateValid;
 import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;

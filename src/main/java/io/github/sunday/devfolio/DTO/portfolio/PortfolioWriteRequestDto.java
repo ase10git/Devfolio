@@ -1,7 +1,5 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.github.sunday.devfolio.annotation.common.DateValid;
 import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
