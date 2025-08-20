@@ -15,7 +15,7 @@ function initializeEditor() {
             addImageInfoInput(editor);
 
             // 에디터에 등록한 이미지 제거 시 input 제거
-            removeImageInfoInput(editor);
+            manageImageInfoInput(editor);
 
             window.editor = editor;
         })
@@ -37,41 +37,52 @@ function addImageInfoInput(editor) {
         const domImg = editor.editing.view.domConverter.mapViewToDom(viewImg);
 
         if (domImg) {
-            const container = document.getElementById('image-list-box');
-            if (container) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'images';
-                input.value = data.default;
-                container.appendChild(input);
-            }
+            buildImageInput(data.default);
         }
     });
 }
 
-function removeImageInfoInput(editor) {
+function manageImageInfoInput(editor) {
     const model = editor.model;
     model.document.registerPostFixer(writer => {
         const changes = model.document.differ.getChanges();
         let handled = false;
 
         for (const change of changes) {
-            if (change.type === 'remove' && change.name === 'imageBlock') {
-                handled = true;
-
-                const removedImageSrc = change.attributes.get('src');
-                const container = document.getElementById('image-list-box');
-                if (container) {
-                    const input = container.querySelector(`input[name="images"][value="${removedImageSrc}"]`);
-                    if (input) input.remove();
+            if ((change.name === 'imageBlock' || change.name === 'imageInline')) {
+                if (change.type === 'remove') {
+                    handled = true;
+    
+                    const removedImageSrc = change.attributes.get('src');
+                    const container = document.getElementById('image-list-box');
+                    if (container) {
+                        const input = container.querySelector(`input[value="${removedImageSrc}"]`);
+                        if (input) input.remove();
+                    }
+                    handled = false;
+                    break;
+                } else if (change.type === 'insert') {
+                    const addedImageSrc = change.attributes.get('src');
+                    if (addedImageSrc) buildImageInput(addedImageSrc);
                 }
-                handled = false;
-                break;
             }
         }
-
         return handled;
     });
+}
+
+/**
+ * 이미지 src를 가진 input 태그 생성
+ */
+function buildImageInput(data) {
+    const container = document.getElementById('image-list-box');
+    if (container) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'images';
+        input.value = data;
+        container.appendChild(input);
+    }
 }
 
 export default initializeEditor;

@@ -10,6 +10,7 @@ function validateForm() {
         validDate(event);
         validateCategory(event);
         validImageCount(event);
+        validDescription(event);
     });
 }
 
@@ -56,6 +57,24 @@ function validDate(event) {
 }
 
 /**
+ * 상세 설명 빈 값 검증
+ */
+function validDescription(event) {
+    const editor = window.editor;
+    const formError = document.getElementsByClassName("form-error editor")[0];
+
+    if (editor) {
+        const data = editor.getData().trim();
+        const textOnly = data.replace(/<[^>]*>/g, '').trim();
+        if (!textOnly) {
+            event.preventDefault();
+            formError.classList.add("visible");
+            formError.textContent = "상세 설명을 입력해주세요";
+        }
+    }
+}
+
+/**
  * 이미지 미리보기 및 삭제 동작
  */
 function previewImage() {
@@ -63,6 +82,7 @@ function previewImage() {
     const thumbnailInput = document.getElementById("thumbnail");
     const imgRemoveButton = document.querySelector(".img-remove-button");
 
+    updatedImageLabel();
     thumbnailInput.addEventListener("change", () => {
         const file = thumbnailInput.files[0];
         if (file) addPreviewImage(preview, file, imgRemoveButton);
@@ -73,9 +93,15 @@ function previewImage() {
 /**
  * 이미지 미리보기
  */
-function addPreviewImage(preview, file, removeButton) {
+function addPreviewImage(preview, file, removeButton,) {
     preview.classList.add("visible");
     removeButton.classList.add("visible");
+    updatedImageLabel();
+
+    // 수정 페이지에서 원본 이미지 숨기기
+    const originalImage = document.getElementById("original-image");
+    if (originalImage != null) originalImage.classList.add("hidden");
+
     const reader = new FileReader();
     reader.onload = function (event) {
         preview.src = event.target.result;
@@ -88,11 +114,31 @@ function addPreviewImage(preview, file, removeButton) {
  */
 function removePreviewImage(removeButton, preview, input) {
     removeButton.addEventListener("click", () => {
+        updatedImageLabel();
         preview.src = "#";
         preview.classList.remove("visible");
         input.value = "";
         removeButton.classList.remove("visible");
+
+        // 수정 페이지에서 원본 이미지 표시하기
+        const originalImage = document.getElementById("original-image");
+        if (originalImage != null) originalImage.classList.remove("hidden");
     });
+}
+
+/**
+ * 이미지 라벨 상태 업데이트
+ */
+function updatedImageLabel() {
+    const imageLabel = document.getElementsByClassName("image-label")[0];
+    const originalImage = document.getElementById("original-image");
+
+    if (originalImage != null) {
+        imageLabel.classList.add("hidden");
+        originalImage.classList.remove("hidden");
+    } else {
+        imageLabel.classList.remove("hidden");
+    }
 }
 
 /**
@@ -174,6 +220,17 @@ function addTemplate() {
 }
 
 /**
+ * 템플릿 토글 이벤트 리스너
+ */
+function addTemplateToggleEvent() {
+    const templateBox = document.getElementsByClassName("select-content")[0];
+    const toggleButton = document.getElementsByClassName("select-toggle-button")[0];
+    toggleButton.addEventListener("click", () => {
+        templateBox.classList.toggle("visible");
+    });
+}
+
+/**
  * DOMContentLoaded 이벤트 리스너
  */
 document.addEventListener("DOMContentLoaded", () => {
@@ -181,4 +238,5 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
     previewImage();
     addTemplate();
+    addTemplateToggleEvent();
 });

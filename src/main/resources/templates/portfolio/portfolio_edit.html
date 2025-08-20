@@ -9,28 +9,32 @@
     <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio_write.css}">
-    <title th:text="${portfolio.title} + ' 편집 | DevFolio'">포트폴리오 편집 | DevFolio</title>
+    <title th:text="${editDto.title} + ' 편집 | DevFolio'">포트폴리오 편집 | DevFolio</title>
 </head>
 <body>
 <header></header>
 <main>
-    <!-- Todo : Dto 설정 추가 -->
     <div class="container">
         <section class="form-section">
             <div class="title-box">
-                <h1>포트폴리오 수정하기</h1>
+                <h1>포트폴리오 편집하기</h1>
                 <span>*은 필수 입력 항목입니다.</span>
             </div>
-            <form th:action="@{/portfolio/edit}" method="post" id="write-form"
-                  th:object="${portfolioEditDto}">
+            <form th:action="@{/portfolio/{id}/edit(id=${editDto.portfolioIdx})}"
+                  method="post" id="write-form"
+                  enctype="multipart/form-data"
+                  th:object="${editDto}">
+                <input type="hidden" th:field="*{portfolioIdx}">
                 <div class="input-group">
                     <label for="title" class="group-label">
                         <span>제목</span>
                         <span class="required-mark">*</span>
                     </label>
                     <input type="text" id="title" th:field="*{title}"
-                           placeholder="포트폴리오 제목을 작성해주세요"
                            maxlength="200" required>
+                    <div th:if="${#fields.hasErrors('title')}" class="error-box">
+                        <span th:errors="*{title}" class="form-error"></span>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="start-date" class="group-label">
@@ -39,6 +43,15 @@
                     <input type="date" id="start-date" th:field="*{startDate}">
                     <span>-</span>
                     <input type="date" id="end-date" th:field="*{endDate}">
+                    <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
+                        <span th:errors="*{startDate}" class="form-error"></span>
+                    </div>
+                    <div th:if="${#fields.hasErrors('endDate')}" class="error-box">
+                        <span th:errors="*{endDate}" class="form-error"></span>
+                    </div>
+                    <div>
+                        <span class="form-error date"></span>
+                    </div>
                 </div>
                 <div class="input-group category-input-group">
                     <div class="group-label">
@@ -46,15 +59,29 @@
                         <span class="required-mark">*</span>
                     </div>
                     <div class="category-box">
-                        <ul class="category-list"
-                            th:each="category : ${categories}">
-                            <li>
-                                <input type="checkbox" th:id="${category.name}" th:field="*{category}" required>
-                                <label th:for="${category.name}" th:text="${category.name}">카테고리 이름</label>
+                        <ul class="category-list">
+                            <li th:each="category : ${categoryList}">
+                                <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
+                                       th:field="*{categories}" th:value="${category.categoryIdx}"
+                                >
+                                <label th:for="'category ' + ${category.categoryIdx}"
+                                       th:text="${category.nameKo}">카테고리 이름</label>
                             </li>
                         </ul>
                         <span>카테고리는 중복 선택할 수 있습니다.</span>
+                        <span class="form-error category"></span>
+                        <div th:if="${#fields.hasErrors('categories')}" class="error-box">
+                            <span th:errors="*{categories}" class="form-error"></span>
+                        </div>
                     </div>
+                </div>
+                <div class="remove-button-box">
+                    <input
+                            id="thumbnail-remove"
+                            type="checkbox"
+                            th:field="*{removeFlag}"
+                    >
+                    <label for="thumbnail-remove">썸네일 제거하기</label>
                 </div>
                 <div class="input-group image-input-group">
                     <label for="thumbnail" class="image-label">
@@ -63,66 +90,100 @@
                     </label>
                     <input type="file" id="thumbnail" accept="image/*" th:field="*{thumbnail}">
                     <div class="image-preview">
+                        <div class="original-image-box" th:unless="${editDto.thumbnailUrl == null or #strings.isEmpty(editDto.thumbnailUrl)}">
+                            <img
+                                id="original-image"
+                                th:src="${editDto.thumbnailUrl}"
+                                alt="원본 이미지">
+                        </div>
                         <div class="preview-box">
-                            <img alt="업로드한 이미지 미리보기">
-                            <button type="button" class="img-remove-btn">
+                            <img id="preview-image" alt="업로드한 이미지 미리보기">
+                            <button type="button" class="img-remove-button">
                                 <img th:src="@{/assets/icon/x-lg.svg}" alt="취소 버튼">
                             </button>
                         </div>
                     </div>
+                    <div th:if="${#fields.hasErrors('thumbnail')}" class="error-box">
+                        <span th:errors="*{thumbnail}" class="form-error"></span>
+                    </div>
                 </div>
                 <div class="input-group textarea-input-group">
-                    <label for="description" class="group-label">
+                    <label for="editor" class="group-label">
                         <span>상세 설명</span>
                         <span class="required-mark">*</span>
                     </label>
-                    <input type="textarea" id="description" th:field="*{description}"
-                           value="포트폴리오에 대한 상세 정보를 작성해주세요\n템플릿에 따라 변동됩니다"
-                           required>
+                    <div class="error-box">
+                        <span class="form-error editor"></span>
+                    </div>
+                    <div class="main-container">
+                        <div
+                            class="editor-container editor-container_classic-editor editor-container_include-style editor-container_include-fullscreen"
+                            id="editor-container"
+                        >
+                            <div class="editor-container__editor">
+                                <textarea id="editor" th:field="*{description}"></textarea>
+                            </div>
+                        </div>
+                        <div id="image-list-box">
+                            <th:block th:if="*{images}">
+                                <input type="hidden"
+                                       th:each="imageUrl : *{images}"
+                                       name="images" th:value="${imageUrl}">
+                            </th:block>
+                        </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('description')}" class="error-box">
+                        <span th:errors="*{description}" class="form-error"></span>
+                    </div>
                 </div>
-                <div class="btn-wrap">
-                    <button type="submit" class="write-btn">작성하기</button>
+                <div class="button-wrap">
+                    <button type="submit" class="write-button">수정하기</button>
                     <button type="button"
                             onclick="history.back()"
-                            class="cancel-btn">취소</button>
+                            class="cancel-button">취소</button>
                 </div>
             </form>
         </section>
         <aside class="template-select">
-            <h2>템플릿 선택</h2>
-            <ul class="template-list">
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-1" name="template">
-                        <label>템플릿 1</label>
-                    </div>
-                    <span>프로젝트 설명을 위한 기본 템플릿 1</span>
-                </li>
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-2" name="template">
-                        <label>템플릿 2</label>
-                    </div>
-                    <span>프로젝트 설명을 위한 기본 템플릿 1</span>
-                </li>
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-custom" name="template">
-                        <label>자유 템플릿</label>
-                    </div>
-                    <span>자유 형식 템플릿</span>
-                </li>
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-ai" name="template">
-                        <label>AI 추천 템플릿</label>
-                    </div>
-                    <span>Alan AI가 추천하는 템플릿</span>
-                </li>
-            </ul>
+            <div class="select-toggle">
+                <button type="button" class="select-toggle-button">
+                    <img th:src="@{/assets/icon/clipboard.svg}" alt="템플릿 버튼 아이콘">
+                    <span>템플릿</span>
+                </button>
+            </div>
+            <div class="select-content">
+                <h2>템플릿 추가</h2>
+                <ul class="template-list">
+                    <li>
+                        <div class="radio-input-group">
+                            <input type="radio" id="template-custom" name="template" checked>
+                            <label>자유 템플릿</label>
+                        </div>
+                        <span>자유 형식 포트폴리오 템플릿</span>
+                    </li>
+                    <li>
+                        <div class="radio-input-group">
+                            <input type="radio" id="template-ai" name="template">
+                            <label>AI 추천 템플릿</label>
+                        </div>
+                        <span>Alan AI가 추천하는 포트폴리오 템플릿</span>
+                    </li>
+                </ul>
+            </div>
         </aside>
     </div>
 </main>
 <footer></footer>
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "/ckeditor5/ckeditor5.js",
+            "ckeditor5/": "/ckeditor5/",
+            "ckeditor5Config": "/js/ckeditor5/ckeditor5-config.js"
+        }
+    }
+</script>
+<script type="module" th:src="@{/js/portfolio/portfolio-write.js}"></script>
+<script type="module" th:src="@{/js/portfolio/portfolio-edit.js}"></script>
 </body>
 </html>

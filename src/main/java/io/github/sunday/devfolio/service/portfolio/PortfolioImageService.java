@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.common.ImageUploadResult;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioEditRequestDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioWriteRequestDto;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.portfolio.PortfolioImage;
@@ -10,6 +11,7 @@ import io.github.sunday.devfolio.service.common.S3Service;
 import io.github.sunday.devfolio.service.common.SecureImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
@@ -32,6 +34,10 @@ public class PortfolioImageService {
      */
     public PortfolioImage getPortfolioThumbnail(Long portfolioIdx) {
         return portfolioImageRepository.findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolioIdx).orElse(null);
+    }
+
+    public List<PortfolioImage> getPortfolioImages(Long portfolioIdx) {
+        return portfolioImageRepository.findAllByPortfolio_PortfolioIdx(portfolioIdx);
     }
 
     /**
@@ -71,16 +77,77 @@ public class PortfolioImageService {
     }
 
     /**
-     * 포트폴리오 이미지 제거
-     * DB Entity와 AWS S3의 파일 제거
+     * 포트폴리오 이미지 수정
      */
-    public void deleteImageList(Long portfolioIdx, List<Long> imageIdxList) {
-        String filePath = "/portfolio/" + portfolioIdx;
-        imageIdxList.forEach(imageIdx -> deleteImage(imageIdx, filePath));
+    @Transactional
+    public void editPortfolioImage(Portfolio portfolio, PortfolioEditRequestDto editRequestDto, Long userIdx) throws Exception {
+        String filePath = userIdx + "/portfolio/" + portfolio.getPortfolioIdx();
+        PortfolioImage originalThumbnail = portfolioImageRepository
+                .findByPortfolio_PortfolioIdxAndIsThumbnailTrue(portfolio.getPortfolioIdx()).orElse(null);
+
+        // 썸네일 제거 동작
+        if (editRequestDto.isRemoveFlag() && originalThumbnail != null) {
+            deleteImage(originalThumbnail.getImageIdx());
+        }
+
+        // 썸네일 이미지 추가
+        MultipartFile thumbnailFile = editRequestDto.getThumbnail();
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            PortfolioImage thumbnailImage = addNewImage(thumbnailFile, filePath, true);
+            // DB에 이미지 추가
+            thumbnailImage.setPortfolio(portfolio);
+            portfolioImageRepository.save(thumbnailImage);
+        }
+
+        // 요청으로 온 이미지 목록
+        List<String> imageList = editRequestDto.getImages();
+
+        // 기존 목록 조회
+        List<PortfolioImage> originalImageList = getPortfolioImages(portfolio.getPortfolioIdx()).stream()
+                .filter(image -> !image.getIsThumbnail())
+                .toList();
+        List<String> originalUrlList = originalImageList.stream()
+                .filter(image -> !image.getIsThumbnail())
+                .map(image -> image.getImageUrl())
+                .toList();
+
+        // 기존 이미지 목록에서 이미지 제거
+        if (!originalImageList.isEmpty()) {
+            if (imageList == null || imageList.isEmpty()) {
+                originalImageList.stream()
+                        .forEach(image -> deleteImage(image.getImageIdx()));
+            } else {
+                originalImageList.stream()
+                        .filter(image -> imageList.stream()
+                                .noneMatch(requestUrl -> extractKeyFromUrl(requestUrl).equals(image.getS3Key())))
+                        .forEach(image -> deleteImage(image.getImageIdx()));
+            }
+        }
+
+        if (imageList != null && !imageList.isEmpty()) {
+            // 새 이미지 목록 추가
+            imageList
+                    .stream()
+                    .filter(imageUrl -> !originalUrlList.contains(imageUrl))
+                    .forEach(imageUrl -> {
+                    try {
+                        PortfolioImage imageInEditor = PortfolioImage.builder()
+                                .portfolio(portfolio)
+                                .imageUrl(imageUrl)
+                                .s3Key(extractKeyFromUrl(imageUrl))
+                                .isThumbnail(false)
+                                .createdAt(ZonedDateTime.now())
+                                .expireAt(ZonedDateTime.now().plusMonths(1))
+                                .build();
+                        portfolioImageRepository.save(imageInEditor);
+                        s3Service.updateObjectTags(imageInEditor.getS3Key(), "lifecycle", "");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            });
+        }
     }
 
-    // Todo : 이미지 수정 로직 추가
-    
     /**
      * AWS S3에 이미지 추가하기
      */
@@ -97,10 +164,10 @@ public class PortfolioImageService {
                 .build();
     }
 
-    private void deleteImage(Long imageIdx, String filePath) {
+    private void deleteImage(Long imageIdx) {
         PortfolioImage image = portfolioImageRepository.findById(imageIdx).orElse(null);
         if (image == null) return;
-        s3Service.deleteFile(fullFilePath(filePath, image.getS3Key()));
+        s3Service.deleteFile(image.getS3Key());
         portfolioImageRepository.deleteById(imageIdx);
     }
 
