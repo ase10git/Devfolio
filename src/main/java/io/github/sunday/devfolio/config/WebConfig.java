@@ -20,6 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginUserInterceptor(userService))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/js/**", "/assets/**");
+                .excludePathPatterns("/css/**", "/js/**", "/assets/**", "/ckeditor5/**");
     }
 }
