@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 /**
  * AI 서비스 요청용 컨트롤러
  */
@@ -24,7 +26,13 @@ public class AiController {
     public ResponseEntity<String> getPortfolioTemplate(
             @RequestParam String type
     ) {
-        String response = aiService.getPortfolioTemplate(type);
-        return ResponseEntity.ok(response);
+        try {
+            String response = aiService.getPortfolioTemplate(type);
+            aiService.resetState();
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("내부 서버 에러가 발생했습니다.");
+        }
     }
 }

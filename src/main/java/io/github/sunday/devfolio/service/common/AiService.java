@@ -2,9 +2,16 @@ package io.github.sunday.devfolio.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * AI 서비스
@@ -27,20 +34,43 @@ public class AiService {
     /**
      * 포트폴리오 템플릿 추천 받기 
      */
-    public String getPortfolioTemplate(String type) {
+    public String getPortfolioTemplate(String type) throws IOException {
         return alanClient.get()
-                .uri(buildRequestUrl(type))
+                .uri(buildPortfolioRequestUrl(type))
                 .retrieve()
                 .body(String.class);
     }
 
     /**
+     * 상태 초기화
+     */
+    public ResponseEntity<Void> resetState() {
+        return alanClient.delete()
+                .uri(buildAlanResetUrl())
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    /**
      * Alan AI 요청용 URL 생성
      */
-    private String buildRequestUrl(String type) {
-        String content = "개발자 프로젝트에 대한 포트폴리오를 작성하고 있어." + type + " 프로젝트를 진행했을 때 자주 사용하는 목차를 추천해줘.";
+    private String buildPortfolioRequestUrl(String type) throws IOException {
+        Path path = new ClassPathResource("/static/prompts/portfolio_template.txt").getFile().toPath();
+        String template = Files.readString(path);
+        String convert = new String(template.getBytes(StandardCharsets.UTF_8));
+        String prompt = String.format(convert, type);
         return UriComponentsBuilder.fromPath(alanUrlQuestion)
-                .queryParam("content", content)
+                .queryParam("content", prompt)
+                .queryParam("client_id", alanApiKey)
+                .encode()
+                .build().toUriString();
+    }
+
+    /**
+     * Alan AI 리셋용 URL 생성
+     */
+    private String buildAlanResetUrl() {
+        return UriComponentsBuilder.fromPath(alanUrlReset)
                 .queryParam("client_id", alanApiKey)
                 .encode()
                 .build().toUriString();
