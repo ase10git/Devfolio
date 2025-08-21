@@ -1,6 +1,9 @@
 package io.github.sunday.devfolio.service.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.github.sunday.devfolio.dto.common.AlanResponseDto;
+import io.github.sunday.devfolio.dto.portfolio.PortfolioTemplateDto;
+import io.github.sunday.devfolio.utils.StringExtractUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * AI 서비스
@@ -23,15 +27,27 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class AIService {
 
+    /**
+     * 기본 URL
+     */
     @Value("${alan.api.url.base}")
     private String baseUrl;
 
+    /**
+     * Alan AI 질문용 API
+     */
     @Value("${alan.api.url.question}")
     private String alanUrlQuestion;
 
+    /**
+     * Alan AI 상태 리셋용 API
+     */
     @Value("${alan.api.url.reset}")
     private String alanUrlReset;
 
+    /**
+     * Alan AI API Key
+     */
     @Value("${alan.api.key}")
     private String alanApiKey;
 
@@ -39,7 +55,7 @@ public class AIService {
     private final RestTemplate alanRestTemplate;
 
     /**
-     * 포트폴리오 템플릿 추천 받기 
+     * Alan AI에 포트폴리오 템플릿 추천 요청 보내기
      */
     public AlanResponseDto sendAIRequest(String type) throws Exception {
         return alanClient.get()
@@ -68,18 +84,28 @@ public class AIService {
                 .body(AlanResponseDto.class);
     }
 
+    /**
+     * 포트폴리오 템플릿 추천 요청 전송 및 응답 전달
+     */
     public ResponseEntity<?> getPortfolioTemplate(String type) throws Exception {
         if (type == null || type.isEmpty()) return ResponseEntity.badRequest().body("카테고리 타입을 입력해주세요");
 
         try {
+            // Alan AI에 요청 전송
             AlanResponseDto response = sendAIRequest(type);
 
-            if (response != null && !response.getContent().isEmpty()) {
+            if (response != null && response.getContent() != null && !response.getContent().isEmpty()) {
+                // Alan AI state 초기화
                 ResponseEntity<?> deleteResponse = resetState();
                 if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
                     System.out.println(deleteResponse.toString());
                 }
-                return ResponseEntity.ok(response);
+                
+                // 응답을 JSON 형태로 가공 후 DTO 형식에 맞게 변환
+                JsonNode jsonArray = StringExtractUtils.extractJsonArray(response);
+                List<PortfolioTemplateDto> templates = StringExtractUtils.parseToTemplateResponse(jsonArray);
+
+                return ResponseEntity.ok(templates);
             }
             return ResponseEntity.internalServerError().body("Alan AI 응답을 받아오는 데 오류가 발생했습니다");
         } catch (RestClientResponseException ex) {
@@ -89,7 +115,7 @@ public class AIService {
     }
 
     /**
-     * 상태 초기화
+     * Alan AI의 상태 초기화
      */
     public ResponseEntity<?> resetState() {
         String url = baseUrl + alanUrlReset;
@@ -105,7 +131,7 @@ public class AIService {
     }
 
     /**
-     * Alan AI 요청용 URL 생성
+     * 포트폴리오 템플릿 추천 요청용 URL 생성
      */
     private String buildPortfolioRequestUrl(String type) throws IOException {
         Path path = new ClassPathResource("/static/prompts/portfolio_template.txt").getFile().toPath();
