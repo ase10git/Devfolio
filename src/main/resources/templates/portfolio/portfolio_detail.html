@@ -18,10 +18,9 @@
             <section class="portfolio-section" th:object="${portfolio}">
                 <div class="title-box">
                     <h1 th:text="*{title}" id="portfolio-title">포트폴리오 제목</h1>
-                    <!-- Todo: 글 작성자에게만 표시하기 -->
-                    <div class="option-box">
+                    <div class="option-box" th:if="${isWriter != null && #strings.equals(isWriter, true)}">
                         <a th:href="@{/portfolio/{id}/edit(id=${portfolio.portfolioIdx})}">수정</a>
-                        <button type="button">삭제</button>
+                        <button type="button" id="delete-button" th:data-id="*{portfolioIdx}">삭제</button>
                     </div>
                 </div>
                 <div class="portfolio-meta">
@@ -61,14 +60,22 @@
                     <img th:src="*{thumbnailUrl}" th:alt="*{title}">
                 </div>
                 <div th:utext="*{description}" class="description"></div>
-                <div class="like-btn-wrap">
-                    <button type="button" id="like-btn">
-                        <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
-                        <span>좋아요</span>
-                    </button>
-                    <button type="button" id="like-undo-btn">
-                        <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
-                        <span>좋아요 중</span>
+                <div class="like-btn-wrap" th:unless="${isWriter != null && #strings.equals(isWriter, true)}">
+                    <button type="button" id="like-button"
+                            th:classappend="${liked} ? 'active' : ''"
+                            th:data-portfolio-id="*{portfolioIdx}"
+                            th:data-liked="${liked}"
+                    >
+                        <span class="like-image un-liked"
+                              th:classappend="${liked} ? 'hidden' : ''">
+                            <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
+                            <span>좋아요</span>
+                        </span>
+                        <span class="like-image liked"
+                              th:classappend="${liked} ? '' : 'hidden'">
+                            <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
+                            <span>좋아요 중</span>
+                        </span>
                     </button>
                 </div>
             </section>
@@ -98,5 +105,6 @@
     </div>
 </main>
 <footer></footer>
+<script type="module" th:src="@{/js/portfolio/portfolio-detail.js}"></script>
 </body>
 </html>

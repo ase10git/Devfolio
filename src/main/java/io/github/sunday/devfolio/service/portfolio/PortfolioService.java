@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -117,7 +118,8 @@ public class PortfolioService {
         String thumbnailUrl = thumbnail != null ? thumbnail.getImageUrl() : null;
 
         // 포트폴리오 댓글 가져오기
-        List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
+        // 시간 상 구현하지 못한 기능
+        //List<PortfolioCommentDto> comments =  portfolioCommentService.getPortfolioComments(portfolioIdx);
 
         String startDate = portfolio.getStartDate() != null ? portfolio.getStartDate().format(dateFormatter) : null;
         String endDate = portfolio.getEndDate() != null ? portfolio.getEndDate().format(dateFormatter) : null;
@@ -138,23 +140,27 @@ public class PortfolioService {
                 .thumbnailUrl(thumbnailUrl)
                 .writer(writerDto)
                 .categories(categories)
-                .comments(comments)
                 .build();
     }
 
     /**
      * 포트폴리오 수정용 DTO 생성하기
      */
-    public PortfolioEditRequestDto buildEditDto(Long portfolioIdx) throws Exception {
+    public PortfolioEditRequestDto buildEditDto(Long portfolioIdx, Long userIdx) throws Exception {
         // 포트폴리오 정보 가져오기
         Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElseThrow(
                 () -> new PortfolioNotFoundException("포트폴리오가 존재하지 않습니다.")
         );
 
         // 포트폴리오 작성자 정보 가져오기
+        User requestUser = userService.findByUserIdx(userIdx);
         User user = userService.findByUserIdx(portfolio.getUser().getUserIdx());
-        if (user == null) {
+        if (user == null || requestUser == null) {
             throw new NoWriterFoundException("작성자가 존재하지 않습니다");
+        }
+
+        if (!requestUser.equals(user)) {
+            throw new Exception("접근이 제한되었습니다");
         }
 
         // 포트폴리오 카테고리 가져오기
@@ -189,12 +195,13 @@ public class PortfolioService {
      * 포트폴리오 저장
      * 포트폴리오 데이터, 포트폴리오 카테고리, 썸네일 이미지, 포트폴리오 이미지 저장
      */
-    public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) {
+    @Transactional
+    public Long addNewPortfolio(PortfolioWriteRequestDto writeRequestDto, Long userIdx) throws Exception{
         // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
         // Todo : 사용자 없을 때의 에러 처리
         if (user == null) {
-            return null;
+            throw new Exception("접근이 제한되었습니다");
         }
 
         Portfolio portfolio = writeDtoToPortfolio(writeRequestDto, user);
@@ -206,11 +213,7 @@ public class PortfolioService {
 
         // 이미지 파일 저장
         // Todo : 에러 핸들링
-        try {
-            portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        portfolioImageService.addPortfolioImage(portfolio, writeRequestDto, userIdx);
 
         return newPortfolio.getPortfolioIdx();
     }
@@ -218,28 +221,24 @@ public class PortfolioService {
     /**
      * 포트폴리오 수정
      */
+    @Transactional
     public Long editPortfolio(PortfolioEditRequestDto editRequestDto, Long portfolioIdx, Long userIdx) throws Exception {
         try {
         // 사용자 검색
         User user = userService.findByUserIdx(userIdx);
 
-        // Todo : 사용자 없을 때의 에러 처리
-        if (user == null) {
-            return null;
-        }
         // Todo : 포트폴리오가 없을 때 에러 처리
         Portfolio original = portfolioRepository.findById(portfolioIdx).orElse(null);
-        if (original == null) {
-            return null;
+
+        // Todo : 사용자 없을 때의 에러 처리
+        if (user == null || user.getUserIdx().equals(original.getUser().getUserIdx())) {
+            throw new Exception("접근이 제한되었습니다");
         }
-        
-        // Todo : 포트폴리오 idx와 dto내의 idx가 다를 때 에러 처리
-            System.out.println(editRequestDto.getPortfolioIdx());
-            System.out.println(portfolioIdx);
-        if (!portfolioIdx.equals(editRequestDto.getPortfolioIdx())) {
-            return null;
+
+        if (original == null || !portfolioIdx.equals(editRequestDto.getPortfolioIdx())) {
+            throw new Exception("잘못된 요청입니다");
         }
-        
+
         // 수정 DTO를 portfolio에 반영
         Portfolio portfolio = editDtoToPortfolio(editRequestDto, original);
 
@@ -251,7 +250,6 @@ public class PortfolioService {
 
         // 이미지 파일 저장
         // Todo : 에러 핸들링
-
             portfolioImageService.editPortfolioImage(edittedPortfolio, editRequestDto, userIdx);
             return portfolio.getPortfolioIdx();
         } catch (Exception e) {
@@ -260,7 +258,37 @@ public class PortfolioService {
         }
     }
 
-    // Todo : 포트폴리오 삭제 기능 추가
+    /**
+     * 포트폴리오 삭제
+     */
+    public void deletePortfolio(Long portfolioIdx, Long userIdx) throws Exception {
+        // 사용자 검증
+        User user = userService.findByUserIdx(userIdx);
+
+        // Todo : 사용자 없을 때의 에러 처리
+        if (user == null) {
+            throw new Exception("사용자가 존재하지 않습니다");
+        }
+
+        // 포트폴리오 검색
+        Portfolio portfolio = portfolioRepository.findById(portfolioIdx).orElse(null);
+        if (portfolio == null) return;
+
+        // 포트폴리오 주인과 사용자 비교
+        if (!user.getUserIdx().equals(portfolio.getUser().getUserIdx())) {
+            throw new Exception("접근이 차단되었습니다");
+        }
+
+        try {
+            // S3 이미지 제거
+            portfolioImageService.deleteImages(portfolioIdx);
+
+            // 포트폴리오 제거
+            portfolioRepository.deleteById(portfolioIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 요청 DTO 정보로 정렬 기준 설정
