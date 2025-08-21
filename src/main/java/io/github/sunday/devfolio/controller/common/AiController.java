@@ -2,14 +2,11 @@ package io.github.sunday.devfolio.controller.common;
 
 import io.github.sunday.devfolio.service.common.AiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 /**
  * AI 서비스 요청용 컨트롤러
@@ -24,17 +21,12 @@ public class AiController {
      * Alan AI로 포트폴리오 작성 템플릿 요청하기
      */
     @GetMapping("/portfolio-template")
-    public ResponseEntity<String> getPortfolioTemplate(
+    public ResponseEntity<?> getPortfolioTemplate(
             @RequestParam String type
     ) {
         try {
-            String response = aiService.getPortfolioTemplate(type);
-            ResponseEntity<?> deleteResponse = aiService.resetState();
-            if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
-                System.out.println(deleteResponse.toString());
-            }
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
+            return aiService.getPortfolioTemplate(type);
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("내부 서버 에러가 발생했습니다.");
         }

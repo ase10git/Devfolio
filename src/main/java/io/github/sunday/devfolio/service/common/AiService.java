@@ -1,19 +1,17 @@
 package io.github.sunday.devfolio.service.common;
 
+import io.github.sunday.devfolio.dto.common.AlanResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,11 +41,51 @@ public class AiService {
     /**
      * 포트폴리오 템플릿 추천 받기 
      */
-    public String getPortfolioTemplate(String type) throws IOException {
+    public AlanResponseDto sendAIRequest(String type) throws Exception {
         return alanClient.get()
                 .uri(buildPortfolioRequestUrl(type))
                 .retrieve()
-                .body(String.class);
+                .onStatus(status -> status.is4xxClientError(), (req, res) -> {
+                    throw new RestClientResponseException(
+                            "클라이언트 오류 발생: " + res.getStatusCode(),
+                            res.getStatusCode().value(),
+                            res.getStatusText(),
+                            null,
+                            res.getBody().readAllBytes(),
+                            null
+                    );
+                })
+                .onStatus(status -> status.is5xxServerError(), (req, res) -> {
+                    throw new RestClientResponseException(
+                            "서버 오류 발생: " + res.getStatusCode(),
+                            res.getStatusCode().value(),
+                            res.getStatusText(),
+                            null,
+                            res.getBody().readAllBytes(),
+                            null
+                    );
+                })
+                .body(AlanResponseDto.class);
+    }
+
+    public ResponseEntity<?> getPortfolioTemplate(String type) throws Exception {
+        if (type == null || type.isEmpty()) return ResponseEntity.badRequest().body("카테고리 타입을 입력해주세요");
+
+        try {
+            AlanResponseDto response = sendAIRequest(type);
+
+            if (response != null && !response.getContent().isEmpty()) {
+                ResponseEntity<?> deleteResponse = resetState();
+                if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
+                    System.out.println(deleteResponse.toString());
+                }
+                return ResponseEntity.ok(response);
+            }
+            return ResponseEntity.internalServerError().body("Alan AI 응답을 받아오는 데 오류가 발생했습니다");
+        } catch (RestClientResponseException ex) {
+            System.err.println("API 요청 실패: " + ex.getRawStatusCode() + " - " + ex.getResponseBodyAsString());
+            throw ex;
+        }
     }
 
     /**
