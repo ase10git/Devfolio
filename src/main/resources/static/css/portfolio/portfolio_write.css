@@ -113,11 +113,11 @@ main {
     align-items: flex-start;
 }
 
-.category-box {
+.category-list-box {
     flex: 1;
 }
 
-.category-box > span:first-child {
+.category-list-box > span:first-child {
     color: #919191;
     font-size: 14px;
 }

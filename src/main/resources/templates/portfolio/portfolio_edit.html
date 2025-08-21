@@ -6,13 +6,14 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" th:href="@{/css/common/styles.css}">
-    <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio_write.css}">
     <title th:text="${editDto.title} + ' 편집 | DevFolio'">포트폴리오 편집 | DevFolio</title>
 </head>
 <body>
-<header></header>
+<header th:replace="~{fragments/header :: header}"></header>
 <main>
     <div class="container">
         <section class="form-section">
@@ -58,8 +59,8 @@
                         <span>카테고리</span>
                         <span class="required-mark">*</span>
                     </div>
-                    <div class="category-box">
-                        <ul class="category-list">
+                    <div class="category-list-box">
+                        <ul class="category-list-list">
                             <li th:each="category : ${categoryList}">
                                 <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
                                        th:field="*{categories}" th:value="${category.categoryIdx}"
