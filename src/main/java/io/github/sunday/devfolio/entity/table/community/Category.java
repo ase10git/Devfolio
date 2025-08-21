@@ -11,5 +11,18 @@ package io.github.sunday.devfolio.entity.table.community;
 public enum Category {
     study,
     question,
-    general
+    general;
+
+    public static boolean isValid(String value) {
+        if (value == null) return false;
+        return java.util.Arrays.stream(Category.values())
+                .anyMatch(c -> c.name().equals(value));
+    }
+
+    public static Category getCategory(String value) {
+        return java.util.Arrays.stream(Category.values())
+                .filter(c -> c.name().equals(value))
+                .findFirst()
+                .orElse(null);
+    }
 }

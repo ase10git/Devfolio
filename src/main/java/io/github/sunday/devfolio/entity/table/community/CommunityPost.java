@@ -65,6 +65,17 @@ public class CommunityPost {
     @Column(name = "category", nullable = false, columnDefinition = "VARCHAR(20)")
     private Category category;
 
+    /**
+     * 검색을 위한 tsvector
+     */
+    @Column(
+            name = "search_vector",
+            columnDefinition = "tsvector",
+            insertable = false,
+            updatable = false
+    )
+    private String searchVector;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

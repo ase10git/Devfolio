@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.controller;
 import io.github.sunday.devfolio.dto.community.*;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.service.community.CommunityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,6 @@ public class CommunityController {
     /**
      * 커뮤니티 게시글 목록 페이지를 표시합니다.
      *
-     * @param pageable 페이징 정보 (기본값: 10개씩, 생성일 내림차순 정렬)
      * @param model    뷰에 전달할 데이터 모델
      * @return 뷰 템플릿 경로
      */
@@ -32,7 +32,23 @@ public class CommunityController {
                             Model model) {
         Page<PostListResponse> postPage = communityService.getPosts(pageable);
         model.addAttribute("postPage", postPage);
-        return "community_list";
+        return "community/community_list";
+    }
+
+    /**
+     * 커뮤니티 게시글 목록 페이지를 표시합니다.
+     *
+     * @param model    뷰에 전달할 데이터 모델
+     * @return 뷰 템플릿 경로
+     */
+    @GetMapping("/search")
+    public String searchPosts(
+            @Valid @ModelAttribute CommunitySearchRequestDto searchRequestDto,
+            Model model) {
+        Page<PostListResponse> postPage = communityService.searchPosts(searchRequestDto);
+        model.addAttribute("searchDto", searchRequestDto);
+        model.addAttribute("postPage", postPage);
+        return "community/community_list";
     }
 
     /**

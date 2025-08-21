@@ -9,10 +9,10 @@ import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.repository.community.CommunityCommentRepository;
 import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
 import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
+import io.github.sunday.devfolio.repository.community.CommunityQueryDslRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +33,7 @@ public class CommunityService {
     private final CommunityCommentRepository communityCommentRepository;
     private final CommunityLikeRepository communityLikeRepository;
     private final UserRepository userRepository;
+    private final CommunityQueryDslRepository communityQueryDslRepository;
 
     /**
      * 게시글 목록을 페이징하여 조회합니다.
@@ -42,6 +43,21 @@ public class CommunityService {
      */
     public Page<PostListResponse> getPosts(Pageable pageable) {
         return communityPostRepository.findPostsWithCommentCount(pageable);
+    }
+
+    /**
+     * 게시글을 검색합니다
+     *
+     * @return 페이징 처리된 게시글 목록 (PostListResponse)
+     */
+    public Page<PostListResponse> searchPosts(CommunitySearchRequestDto searchRequestDto) {
+        Sort sort = Sort.by(searchRequestDto.getDirection(), searchRequestDto.getSort().getFieldName());
+        Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize(), sort);
+        List<CommunityPost> postList = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
+        List<PostListResponse> list = postList.stream()
+                .map(post -> PostListResponse.from(post, 0))
+                .toList();
+        return new PageImpl<>(list, pageable, list.size());
     }
 
     /**
