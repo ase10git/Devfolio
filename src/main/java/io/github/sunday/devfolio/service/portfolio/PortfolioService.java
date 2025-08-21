@@ -126,6 +126,10 @@ public class PortfolioService {
         String createdAt = portfolio.getCreatedAt() != null ? portfolio.getCreatedAt().format(dateTimeformatter) : null;
         String updatedAt = portfolio.getUpdatedAt() != null ? portfolio.getUpdatedAt().format(dateTimeformatter) : null;
 
+        // 조회수 올리기
+        portfolio.setViews(portfolio.getViews()+1);
+        portfolioRepository.save(portfolio);
+
         return PortfolioDetailDto.builder()
                 .portfolioIdx(portfolioIdx)
                 .title(portfolio.getTitle())

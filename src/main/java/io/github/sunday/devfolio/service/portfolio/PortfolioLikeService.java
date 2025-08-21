@@ -56,7 +56,11 @@ public class PortfolioLikeService {
                 .likedAt(ZonedDateTime.now())
                 .build();
         PortfolioLike saved = portfolioLikeRepository.save(portfolioLike);
-
+        
+        // 좋아요 카운트 변경
+        portfolio.setLikeCount(portfolio.getLikeCount()+1);
+        portfolioRepository.save(portfolio);
+        
         if (saved == null) {
             throw new Exception("좋아요 추가 중에 에러가 발생했습니다");
         }
@@ -73,6 +77,11 @@ public class PortfolioLikeService {
         validateNotOwner(user, portfolio);
 
         PortfolioLike target = portfolioLikeRepository.findByUserAndPortfolio(user, portfolio).orElse(null);
+
+        // 좋아요 카운트 변경
+        Integer likeCount = portfolio.getLikeCount() > 0 ? portfolio.getLikeCount() - 1 : 0;
+        portfolio.setLikeCount(likeCount);
+        portfolioRepository.save(portfolio);
 
         if (target != null) {
             portfolioLikeRepository.delete(target);
