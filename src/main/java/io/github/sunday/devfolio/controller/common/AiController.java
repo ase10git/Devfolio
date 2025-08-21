@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.controller.common;
 
 import io.github.sunday.devfolio.service.common.AiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,10 @@ public class AiController {
     ) {
         try {
             String response = aiService.getPortfolioTemplate(type);
-            //aiService.resetState();
+            ResponseEntity<?> deleteResponse = aiService.resetState();
+            if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
+                System.out.println(deleteResponse.toString());
+            }
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             e.printStackTrace();

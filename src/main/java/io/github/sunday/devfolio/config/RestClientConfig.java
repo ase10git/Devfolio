@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * HTTP 요청용 RestClient
@@ -29,5 +30,13 @@ public class RestClientConfig {
                 .defaultHeader("Content-Type", "application/json")
                 .defaultHeader("Accept", "application/json")
                 .build();
+    }
+
+    /**
+     * Delete 요청용 RestTemplate
+     */
+    @Bean
+    public RestTemplate alanRestTemplate() {
+        return new RestTemplate();
     }
 }

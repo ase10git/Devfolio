@@ -3,12 +3,17 @@ package io.github.sunday.devfolio.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +25,9 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class AiService {
 
+    @Value("${alan.api.url.base}")
+    private String baseUrl;
+
     @Value("${alan.api.url.question}")
     private String alanUrlQuestion;
 
@@ -30,6 +38,7 @@ public class AiService {
     private String alanApiKey;
 
     private final RestClient alanClient;
+    private final RestTemplate alanRestTemplate;
 
     /**
      * 포트폴리오 템플릿 추천 받기 
@@ -44,11 +53,17 @@ public class AiService {
     /**
      * 상태 초기화
      */
-    public ResponseEntity<Void> resetState() {
-        return alanClient.delete()
-                .uri(alanUrlReset)
-                .retrieve()
-                .toBodilessEntity();
+    public ResponseEntity<?> resetState() {
+        String url = baseUrl + alanUrlReset;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        headers.set("Accept", "application/json");
+
+        String body = String.format("{\"client_id\": \"%s\"}", alanApiKey);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        return alanRestTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
     }
 
     /**
