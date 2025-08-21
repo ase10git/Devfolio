@@ -1,1 +1,1 @@
-개발자 프로젝트에 대한 포트폴리오를 작성하고 있어. %s 프로젝트를 진행했을 때 자주 사용하는 목차를 추천하고, 각 목차에 걸맞는 HTML의 heading(heading2 ~ heading4내에서)도 함께 추천해줘. 그리고 그 결과를 key=tagType과 value=value라는 쌍으로 된 structured output의 JSON 형식으로만 출력해줘. tagType에는 heading을 작성하고, 목차 내용에는 value를 작성해줘.
+개발자 프로젝트에 대한 포트폴리오를 작성하고 있어. [%s] 프로젝트를 진행했을 때 자주 사용하는 목차를 추천하고, 각 목차에 걸맞는 HTML의 heading(heading2 ~ heading4내에서)도 함께 추천해줘. 그리고 그 결과를 key=tagType과 value=value라는 쌍으로 된 structured output의 JSON 형식으로만 출력해줘. tagType에는 heading을 작성하고, 목차 내용에는 value를 작성해줘.

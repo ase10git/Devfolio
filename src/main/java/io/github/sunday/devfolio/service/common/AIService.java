@@ -91,16 +91,16 @@ public class AIService {
         if (type == null || type.isEmpty()) return ResponseEntity.badRequest().body("카테고리 타입을 입력해주세요");
 
         try {
+            // Alan AI state 초기화
+            ResponseEntity<?> deleteResponse = resetState();
+            if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
+                System.out.println(deleteResponse.toString());
+            }
+
             // Alan AI에 요청 전송
             AlanResponseDto response = sendAIRequest(type);
 
             if (response != null && response.getContent() != null && !response.getContent().isEmpty()) {
-                // Alan AI state 초기화
-                ResponseEntity<?> deleteResponse = resetState();
-                if (!deleteResponse.getStatusCode().equals(HttpStatus.OK)) {
-                    System.out.println(deleteResponse.toString());
-                }
-                
                 // 응답을 JSON 형태로 가공 후 DTO 형식에 맞게 변환
                 JsonNode jsonArray = StringExtractUtils.extractJsonArray(response);
                 List<PortfolioTemplateDto> templates = StringExtractUtils.parseToTemplateResponse(jsonArray);
