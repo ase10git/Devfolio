@@ -28,7 +28,7 @@ public class AiController {
     ) {
         try {
             String response = aiService.getPortfolioTemplate(type);
-            aiService.resetState();
+            //aiService.resetState();
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             e.printStackTrace();

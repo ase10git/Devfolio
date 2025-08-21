@@ -46,7 +46,7 @@ public class AiService {
      */
     public ResponseEntity<Void> resetState() {
         return alanClient.delete()
-                .uri(buildAlanResetUrl())
+                .uri(alanUrlReset)
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -61,16 +61,6 @@ public class AiService {
         String prompt = String.format(convert, type);
         return UriComponentsBuilder.fromPath(alanUrlQuestion)
                 .queryParam("content", prompt)
-                .queryParam("client_id", alanApiKey)
-                .encode()
-                .build().toUriString();
-    }
-
-    /**
-     * Alan AI 리셋용 URL 생성
-     */
-    private String buildAlanResetUrl() {
-        return UriComponentsBuilder.fromPath(alanUrlReset)
                 .queryParam("client_id", alanApiKey)
                 .encode()
                 .build().toUriString();
