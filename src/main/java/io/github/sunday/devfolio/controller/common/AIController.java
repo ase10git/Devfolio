@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.controller.common;
 
-import io.github.sunday.devfolio.service.common.AiService;
+import io.github.sunday.devfolio.service.common.AIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/ai")
 @RequiredArgsConstructor
-public class AiController {
-    private final AiService aiService;
+public class AIController {
+    private final AIService aiService;
 
     /**
      * Alan AI로 포트폴리오 작성 템플릿 요청하기

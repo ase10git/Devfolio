@@ -21,7 +21,7 @@ import java.nio.file.Path;
  */
 @Service
 @RequiredArgsConstructor
-public class AiService {
+public class AIService {
 
     @Value("${alan.api.url.base}")
     private String baseUrl;
