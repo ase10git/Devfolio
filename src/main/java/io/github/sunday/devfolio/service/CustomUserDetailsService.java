@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.service;
 
+import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다: " + loginId));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getLoginId())
-                .password(user.getPassword())
-                .roles("USER")
-                .build();
+        return new CustomUserDetails(user);
     }
 }

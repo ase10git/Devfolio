@@ -175,7 +175,7 @@ input:autofill:active {
     100% {
         transform: rotate(360deg);
     }
-} 
+}
 
 /* common portfolio card style */
 .portfolio-card {
@@ -203,7 +203,7 @@ input:autofill:active {
 }
 
 .portfolio-link .card-img-box img {
-    width: 100%; 
+    width: 100%;
     aspect-ratio: 16 / 9;
     display: block;
     object-fit: cover;

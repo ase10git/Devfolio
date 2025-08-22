@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter // Form의 데이터를 바인딩하기 위해 Setter가 필요합니다.
 @NoArgsConstructor // 기본 생성자도 필요합니다.
-public class PostCreateRequest {
+public class PostCreateRequestDto {
     private String title;
     private String content;
     private Category category;

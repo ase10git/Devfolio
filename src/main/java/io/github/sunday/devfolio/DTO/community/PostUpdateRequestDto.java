@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostUpdateRequest {
+public class PostUpdateRequestDto {
     private Long postIdx; // 어떤 글을 수정할지 식별하기 위한 ID
     private String title;
     private String content;

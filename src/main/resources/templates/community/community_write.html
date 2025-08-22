@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="${isEditMode} ? '게시글 수정' : '게시글 작성'"></title>
-  <!-- CKEditor 5 CDN -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/translations/ko.js"></script>
+
   <!-- CSS Links -->
   <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
   <link rel="stylesheet" th:href="@{/css/community/community_write.css}">
+  <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
 </head>
 <body>
 <div class="page-wrapper">
@@ -68,7 +67,17 @@
     </form>
   </main>
 </div>
-<script th:src="@{/js/community/community_write.js}"></script>
+
+<script type="importmap">
+  {
+      "imports": {
+          "ckeditor5": "/ckeditor5/ckeditor5.js",
+          "ckeditor5/": "/ckeditor5/",
+          "ckeditor5Config": "/js/ckeditor5/ckeditor5-community-config.js"
+      }
+  }
+</script>
+<script type="module" th:src="@{/js/community/community-write.js}"></script>
 
 </body>
 </html>
