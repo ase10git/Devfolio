@@ -28,7 +28,7 @@ public class CommunitySearchRequestDto {
      */
     @Min(value = 1, message = "페이지 최소 크기는 1 이상이어야 합니다.")
     @Max(value = 100, message = "페이지 최대 크기는 100 이하여야 합니다.")
-    private int size = 20;
+    private int size = 10;
 
     /**
      * 검색 키워드
@@ -46,7 +46,7 @@ public class CommunitySearchRequestDto {
     /**
      * 정렬 기준
      */
-    private CommunitySort sort = CommunitySort.UPDATED_AT;
+    private CommunitySort sort = CommunitySort.CREATED_AT;
 
     /**
      * 정렬 방향
