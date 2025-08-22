@@ -46,7 +46,7 @@ public class CommunitySearchRequestDto {
     /**
      * 정렬 기준
      */
-    private CommunitySort sort = CommunitySort.CREATED_AT;
+    private CommunitySort sort = CommunitySort.UPDATED_AT;
 
     /**
      * 정렬 방향
