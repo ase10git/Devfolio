@@ -6,13 +6,14 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" th:href="@{/css/common/styles.css}">
-    <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
     <link rel="stylesheet" th:href="@{/css/portfolio/portfolio_write.css}">
     <title>포트폴리오 작성하기 | DevFolio</title>
 </head>
 <body>
-<header></header>
+<header th:replace="~{fragments/header :: header}"></header>
 <main>
     <div class="container">
         <section class="form-section">
@@ -41,11 +42,12 @@
                     </label>
                     <input type="date" id="start-date" th:field="*{startDate}">
                     <span>-</span>
-                    <input type="date" id="end-date" th:field="*{endDate}">
+                    <label for="end-date"></label><input type="date" id="end-date" th:field="*{endDate}">
                     <div th:if="${#fields.hasErrors('startDate')}" class="error-box">
                         <span th:errors="*{startDate}" class="form-error"></span>
+                    </div>
+                    <div th:if="${#fields.hasErrors('endDate')}" class="error-box">
                         <span th:errors="*{endDate}" class="form-error"></span>
-
                     </div>
                     <div>
                         <span class="form-error date"></span>
@@ -56,7 +58,7 @@
                         <span>카테고리</span>
                         <span class="required-mark">*</span>
                     </div>
-                    <div class="category-box">
+                    <div class="category-list-box">
                         <ul class="category-list">
                             <li th:each="category : ${categories}">
                                 <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
@@ -122,24 +124,38 @@
             </form>
         </section>
         <aside class="template-select">
-            <h2>템플릿 추가</h2>
-            <ul class="template-list">
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-custom" name="template" checked>
-                        <label>자유 템플릿</label>
-                    </div>
-                    <span>자유 형식 포트폴리오 템플릿</span>
-                </li>
-                <li>
-                    <div class="radio-input-group">
-                        <input type="radio" id="template-ai" name="template">
-                        <label>AI 추천 템플릿</label>
-                    </div>
-                    <span>Alan AI가 추천하는 포트폴리오 템플릿</span>
-                </li>
-            </ul>
+            <div class="select-toggle">
+                <button type="button" class="select-toggle-button">
+                    <img th:src="@{/assets/icon/clipboard.svg}" alt="템플릿 버튼 아이콘">
+                    <span>템플릿</span>
+                </button>
+            </div>
+            <div class="select-content">
+                <h2>템플릿 추가</h2>
+                <ul class="template-list">
+                    <li>
+                        <div class="radio-input-group">
+                            <input type="radio" id="template-custom" name="template" checked>
+                            <label>자유 템플릿</label>
+                        </div>
+                        <span>자유 형식 포트폴리오 템플릿</span>
+                    </li>
+                    <li>
+                        <div class="radio-input-group">
+                            <input type="button" id="template-ai" value="추천받기">
+                            <label>AI 추천 템플릿</label>
+                        </div>
+                        <span>Alan AI가 추천하는 포트폴리오 템플릿</span>
+                    </li>
+                </ul>
+            </div>
         </aside>
+    </div>
+    <div id="loading-overlay">
+        <div class="spinner-box">
+            <div class="loader"></div>
+            <span>요청 처리중...</span>
+        </div>
     </div>
 </main>
 <footer></footer>

@@ -6,12 +6,13 @@
     class="portfolio-link"
   >
     <div class="card-img-box">
-      <img th:src="@{portfolio.imageUrl}" th:alt="${portfolio.title}" />
+      <img th:unless="${portfolio.imageUrl == null or #strings.isEmpty(portfolio.imageUrl)}"
+              th:src="${portfolio.imageUrl}" th:alt="${portfolio.title}" />
     </div>
     <div class="card-info-box">
       <div class="writer-meta">
         <div class="writer-profile">
-          <img th:src="@{portfolio.writer.profileImg}" th:alt="${portfolio.writer.nickname}" />
+          <img th:src="@{portfolio.writer.profileImg == null or #strings.isEmpty(portfolio.writer.profileImg)} ? @{/assets/icon/person-fill.svg} : ${portfolio.writer.profileImg}" th:alt="${portfolio.writer.nickname}" />
         </div>
         <div class="writer-info">
           <span th:text="${portfolio.writer.nickname}">작성자 닉네임</span>

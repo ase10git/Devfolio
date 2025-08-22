@@ -10,6 +10,7 @@ function validateForm() {
         validDate(event);
         validateCategory(event);
         validImageCount(event);
+        validDescription(event);
     });
 }
 
@@ -56,6 +57,24 @@ function validDate(event) {
 }
 
 /**
+ * 상세 설명 빈 값 검증
+ */
+function validDescription(event) {
+    const editor = window.editor;
+    const formError = document.getElementsByClassName("form-error editor")[0];
+
+    if (editor) {
+        const data = editor.getData().trim();
+        const textOnly = data.replace(/<[^>]*>/g, '').trim();
+        if (!textOnly) {
+            event.preventDefault();
+            formError.classList.add("visible");
+            formError.textContent = "상세 설명을 입력해주세요";
+        }
+    }
+}
+
+/**
  * 이미지 미리보기 및 삭제 동작
  */
 function previewImage() {
@@ -63,6 +82,7 @@ function previewImage() {
     const thumbnailInput = document.getElementById("thumbnail");
     const imgRemoveButton = document.querySelector(".img-remove-button");
 
+    updatedImageLabel();
     thumbnailInput.addEventListener("change", () => {
         const file = thumbnailInput.files[0];
         if (file) addPreviewImage(preview, file, imgRemoveButton);
@@ -73,9 +93,15 @@ function previewImage() {
 /**
  * 이미지 미리보기
  */
-function addPreviewImage(preview, file, removeButton) {
+function addPreviewImage(preview, file, removeButton,) {
     preview.classList.add("visible");
     removeButton.classList.add("visible");
+    updatedImageLabel();
+
+    // 수정 페이지에서 원본 이미지 숨기기
+    const originalImage = document.getElementById("original-image");
+    if (originalImage != null) originalImage.classList.add("hidden");
+
     const reader = new FileReader();
     reader.onload = function (event) {
         preview.src = event.target.result;
@@ -88,11 +114,31 @@ function addPreviewImage(preview, file, removeButton) {
  */
 function removePreviewImage(removeButton, preview, input) {
     removeButton.addEventListener("click", () => {
+        updatedImageLabel();
         preview.src = "#";
         preview.classList.remove("visible");
         input.value = "";
         removeButton.classList.remove("visible");
+
+        // 수정 페이지에서 원본 이미지 표시하기
+        const originalImage = document.getElementById("original-image");
+        if (originalImage != null) originalImage.classList.remove("hidden");
     });
+}
+
+/**
+ * 이미지 라벨 상태 업데이트
+ */
+function updatedImageLabel() {
+    const imageLabel = document.getElementsByClassName("image-label")[0];
+    const originalImage = document.getElementById("original-image");
+
+    if (originalImage != null) {
+        imageLabel.classList.add("hidden");
+        originalImage.classList.remove("hidden");
+    } else {
+        imageLabel.classList.remove("hidden");
+    }
 }
 
 /**
@@ -128,6 +174,8 @@ function addTemplate() {
     });
     addTemplateEvent();
 
+
+    // 라디오 버튼에 이벤트 등록
     function addTemplateEvent() {
         const radios = document.querySelectorAll('input[name="template"]');
         radios.forEach(radio => {
@@ -139,14 +187,13 @@ function addTemplate() {
                         const data = templateData[key];
                         const headings = data.headings;
                         addHeadingsToEditor(headings);
-                    } else if (key === 4) {
-                        // Todo: AI 추천 템플릿 추가
-                    }
+                    } 
                 }
             });
         });
     }
 
+    // 미리 지정된 템플릿 데이터를 CKEditor에 추가
     function addHeadingsToEditor(headings) {
         
         if (window.editor) {
@@ -161,8 +208,12 @@ function addTemplate() {
 
                 // 템플릿으로 지정한 heading 추가
                 headings.forEach((heading, index) => {
-                    const tagElement = writer.createElement(heading.tagType);
+                    // heading tag 생성
+                    const tagName = heading.tagType !== null ? heading.tagType.toLowerCase() : "heading2";
+                    const tagElement = writer.createElement(tagName);
                     writer.setAttribute("id", `heading-${index}`, tagElement);
+
+                    // 텍스트로 추가
                     writer.insertText(heading.value, tagElement);
                     writer.append(tagElement, position);
                 });
@@ -171,6 +222,72 @@ function addTemplate() {
             setTimeout(() => addHeadingsToEditor(headings), 100);
         }
     }
+
+    // AI 요청 상태
+    let isAIRequesting = false;
+
+    // AI 템플릿 추천 동작
+    async function sendAITemplateRequest() {
+        const aiTemplateButton = document.getElementById("template-ai");
+        const overlay = document.getElementById("loading-overlay");
+
+        aiTemplateButton.addEventListener("click", async () => {
+            // 중복 요청 방지
+            if (isAIRequesting) return;
+
+            // 선택한 카테고리 정리
+            const categoryList = document.getElementsByClassName("category-list")[0];
+            const categorySelected = categoryList.querySelectorAll("input[type='checkbox']:checked ~ label");
+            
+            if (categorySelected === null || categorySelected.length === 0) {
+                alert("카테고리를 선택해주세요");
+                return;
+            }
+
+            const categoryNames = Array.from(categorySelected).map(label => label.textContent);
+            const inputType = categoryNames.join(", ");
+
+            const params = new URLSearchParams({type: inputType}).toString();
+            
+            // 요청 전송
+            isAIRequesting = true;
+            aiTemplateButton.disabled = true;
+            overlay.classList.add("active");
+
+            try {
+                await sendRequest(params);
+            } catch(e) {
+                alert("요청 중 오류가 발생했습니다.")
+            } finally {
+                isAIRequesting = false;
+                aiTemplateButton.disabled = false;
+                overlay.classList.remove("active");
+            }
+        });
+
+        async function sendRequest(params) {
+            const res = await fetch(`/api/ai/portfolio-template?${params}`, { method: "GET" });
+            const body = await res.json();
+    
+            if (res.ok) {
+                addHeadingsToEditor(body);
+            } else {
+                throw new Error("요청 실패");
+            }
+        }
+    }
+    sendAITemplateRequest();
+}
+
+/**
+ * 템플릿 토글 이벤트 리스너
+ */
+function addTemplateToggleEvent() {
+    const templateBox = document.getElementsByClassName("select-content")[0];
+    const toggleButton = document.getElementsByClassName("select-toggle-button")[0];
+    toggleButton.addEventListener("click", () => {
+        templateBox.classList.toggle("visible");
+    });
 }
 
 /**
@@ -181,4 +298,5 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
     previewImage();
     addTemplate();
+    addTemplateToggleEvent();
 });

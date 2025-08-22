@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-
     private final UserRepository userRepo;
     private final FollowRepository followRepo;
     private final ResumeRepository resumeRepo;

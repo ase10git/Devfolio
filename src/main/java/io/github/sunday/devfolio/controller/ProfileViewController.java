@@ -38,7 +38,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/profile")
 public class ProfileViewController {
-
     private final ProfileService profileService;
     private final ProfileUpdateService updateService;
 

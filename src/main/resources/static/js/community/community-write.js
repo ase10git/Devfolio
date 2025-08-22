@@ -1,3 +1,6 @@
+import { editorConfig } from 'ckeditor5Config';
+import { ClassicEditor } from 'ckeditor5';
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('post-form');
     const isEditMode = form.dataset.isEditMode === 'true';
@@ -22,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
     ClassicEditor
-        .create(document.querySelector('#editor'), { language: 'ko' })
+        .create(document.querySelector('#editor'), editorConfig)
         .then(newEditor => {
             editor = newEditor;
             if (isEditMode) {

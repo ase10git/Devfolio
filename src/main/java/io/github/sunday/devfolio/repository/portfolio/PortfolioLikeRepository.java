@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PortfolioLikeRepository extends JpaRepository<PortfolioLike, Long> {
 
@@ -22,4 +23,9 @@ public interface PortfolioLikeRepository extends JpaRepository<PortfolioLike, Lo
 
     // 특정 사용자가 특정 포트폴리오의 좋아요 삭제
     void deleteByUserAndPortfolio(User user, Portfolio portfolio);
+    
+    /**
+     * 사용자와 포트폴리오로 좋아요 표시 조회
+     */
+    Optional<PortfolioLike> findByUserAndPortfolio(User user, Portfolio portfolio);
 }

@@ -42,3 +42,11 @@ aws:
   region: ${AWS_REGION}
   s3:
     bucket-name: ${AWS_S3_BUCKET_NAME}
+
+alan:
+  api:
+    url:
+      base: ${ALAN_URL_BASE}
+      question: ${ALAN_URL_QUESTION}
+      reset: ${ALAN_URL_RESET}
+    key: ${ALAN_API_KEY}

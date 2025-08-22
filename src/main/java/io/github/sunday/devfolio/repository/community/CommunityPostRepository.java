@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.repository.community;
 
-import io.github.sunday.devfolio.dto.community.PostListResponse;
+import io.github.sunday.devfolio.dto.community.PostListResponseDto;
 import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
 import io.github.sunday.devfolio.entity.table.user.User;
@@ -19,13 +19,13 @@ import java.util.List;
  * 동적 쿼리 기반의 검색 기능을 지원합니다.
  */
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long>, JpaSpecificationExecutor<CommunityPost> {
-    @Query("SELECT new io.github.sunday.devfolio.dto.community.PostListResponse(" +
+    @Query("SELECT new io.github.sunday.devfolio.dto.community.PostListResponseDto(" +
             "    p.postIdx, p.title, p.user.nickname, p.category, p.createdAt, p.views, p.likeCount, " +
             "    p.status, p.content, p.user.profileImg, " +
             "    (SELECT COUNT(c) FROM CommunityComment c WHERE c.post = p)" +
             ") " +
             "FROM CommunityPost p")
-    Page<PostListResponse> findPostsWithCommentCount(Pageable pageable);
+    Page<PostListResponseDto> findPostsWithCommentCount(Pageable pageable);
 
     List<CommunityPost> findAllByUser(User user);
 }

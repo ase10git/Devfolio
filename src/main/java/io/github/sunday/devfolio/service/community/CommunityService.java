@@ -9,10 +9,10 @@ import io.github.sunday.devfolio.repository.UserRepository;
 import io.github.sunday.devfolio.repository.community.CommunityCommentRepository;
 import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
 import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
+import io.github.sunday.devfolio.repository.community.CommunityQueryDslRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +21,6 @@ import java.util.*;
 
 /**
  * 커뮤니티 게시판 관련 비즈니스 로직을 처리하는 서비스 클래스.
- *
- * @author YourName
  */
 @Service
 @RequiredArgsConstructor
@@ -33,6 +31,7 @@ public class CommunityService {
     private final CommunityCommentRepository communityCommentRepository;
     private final CommunityLikeRepository communityLikeRepository;
     private final UserRepository userRepository;
+    private final CommunityQueryDslRepository communityQueryDslRepository;
 
     /**
      * 게시글 목록을 페이징하여 조회합니다.
@@ -40,8 +39,26 @@ public class CommunityService {
      * @param pageable 페이징 및 정렬 정보
      * @return 페이징 처리된 게시글 목록 (PostListResponse)
      */
-    public Page<PostListResponse> getPosts(Pageable pageable) {
+
+    public Page<PostListResponseDto> getPosts(CommunitySearchRequestDto requestDto) {
+        Sort sort = Sort.by(requestDto.getDirection(), requestDto.getSort().getFieldName());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         return communityPostRepository.findPostsWithCommentCount(pageable);
+    }
+
+    /**
+     * 게시글을 검색합니다
+     *
+     * @return 페이징 처리된 게시글 목록 (PostListResponse)
+     */
+    public Page<PostListResponseDto> searchPosts(CommunitySearchRequestDto searchRequestDto) {
+        Sort sort = Sort.by(searchRequestDto.getDirection(), searchRequestDto.getSort().getFieldName());
+        Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize(), sort);
+        List<CommunityPost> postList = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
+        List<PostListResponseDto> list = postList.stream()
+                .map(post -> PostListResponseDto.from(post))
+                .toList();
+        return new PageImpl<>(list, pageable, list.size());
     }
 
     /**
@@ -51,44 +68,22 @@ public class CommunityService {
      * @param user   현재 로그인한 사용자 (좋아요 여부 확인용, null 가능)
      * @return 게시글 상세 정보
      */
-    @Transactional
-    public PostDetailResponse getPost(Long postId, User user) {
+    public PostDetailResponseDto getPost(Long postId, Long userId) {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다: " + postId));
         post.setViews(post.getViews() + 1);
 
-        // 좋아요 여부 확인
         boolean isLiked = false;
-        if (user != null) {
+        if (userId != null) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
             isLiked = communityLikeRepository.findByUserAndPost(user, post).isPresent();
         }
 
         List<CommunityComment> comments = communityCommentRepository.findAllByPost(post);
-        List<CommentResponse> commentResponses = convertToHierarchy(comments);
+        List<CommentResponseDto> commentResponsDtos = convertToHierarchy(comments);
 
-        return PostDetailResponse.of(post, commentResponses, isLiked);
-    }
-
-    private List<CommentResponse> convertToHierarchy(List<CommunityComment> comments) {
-        List<CommentResponse> result = new ArrayList<>();
-        Map<Long, CommentResponse> map = new HashMap<>();
-
-        comments.forEach(comment -> {
-            CommentResponse dto = CommentResponse.from(comment);
-            map.put(dto.getCommentId(), dto);
-
-            if (comment.getParent() != null) {
-                // 대댓글인 경우: 부모의 children 리스트에 추가
-                CommentResponse parentDto = map.get(comment.getParent().getCommentIdx());
-                if (parentDto != null) {
-                    parentDto.getChildren().add(dto);
-                }
-            } else {
-                // 최상위 댓글인 경우: 결과 리스트에 바로 추가
-                result.add(dto);
-            }
-        });
-        return result;
+        return PostDetailResponseDto.of(post, commentResponsDtos, isLiked);
     }
 
     /**
@@ -99,9 +94,9 @@ public class CommunityService {
      * @return 생성된 게시글의 ID
      */
     @Transactional
-    public Long createPost(PostCreateRequest requestDto, User loginUser) {
-        User writer = userRepository.findById(loginUser.getUserIdx())
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginUser.getUserIdx()));
+    public Long createPost(PostCreateRequestDto requestDto, Long userId) {
+        User writer = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
         CommunityPost newPost = requestDto.toEntity(writer);
         CommunityPost savedPost = communityPostRepository.save(newPost);
@@ -119,18 +114,17 @@ public class CommunityService {
      * @throws IllegalAccessException  수정 권한이 없는 경우
      */
     @Transactional
-    public void updatePost(PostUpdateRequest requestDto, User loginUser) {
-        User user = userRepository.findById(loginUser.getUserIdx())
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginUser.getUserIdx()));
+    public void updatePost(PostUpdateRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
         CommunityPost post = communityPostRepository.findById(requestDto.getPostIdx())
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-        if (!post.getUser().equals(user)) {
+        if (!Objects.equals(post.getUser().getUserIdx(), user.getUserIdx())) {
             throw new IllegalStateException("수정 권한이 없습니다.");
         }
 
-        // DTO의 내용으로 엔티티 업데이트
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
         post.setCategory(requestDto.getCategory());
@@ -149,17 +143,17 @@ public class CommunityService {
      * @throws IllegalAccessException  삭제 권한이 없는 경우
      */
     @Transactional
-    public void deletePost(Long postId, User user) {
-        CommunityPost post = communityPostRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다: " + postId));
+    public void deletePost(Long postId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
-        // 권한 검증
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
         if (!Objects.equals(post.getUser().getUserIdx(), user.getUserIdx())) {
-            throw new IllegalStateException("게시글을 삭제할 권한이 없습니다.");
+            throw new IllegalStateException("삭제 권한이 없습니다.");
         }
 
-        // TODO: 연관된 댓글, 좋아요 등도 함께 삭제하는 로직이 필요할 수 있습니다.
-        // Cascade 옵션에 따라 동작이 달라집니다.
         communityPostRepository.delete(post);
     }
 
@@ -170,30 +164,26 @@ public class CommunityService {
      * @param user       댓글을 작성하는 인증된 사용자
      */
     @Transactional
-    public void createComment(CommentCreateRequest requestDto, User loginUser) {
-        User writer = userRepository.findById(loginUser.getUserIdx())
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + loginUser.getUserIdx()));
+    public void createComment(CommentCreateRequestDto requestDto, Long userId) {
+        User writer = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
 
         CommunityPost post = communityPostRepository.findById(requestDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-        // 2. 부모 댓글 조회 (대댓글인 경우)
         CommunityComment parentComment = null;
         if (requestDto.getParentId() != null) {
             parentComment = communityCommentRepository.findById(requestDto.getParentId())
-                    .orElseThrow(() -> new EntityNotFoundException("부모 댓글을 찾을 수 없습니다: " + requestDto.getParentId()));
+                    .orElseThrow(() -> new EntityNotFoundException("부모 댓글을 찾을 수 없습니다."));
         }
 
-        // 3. 댓글 엔티티 생성
         CommunityComment newComment = CommunityComment.builder()
-                .post(post)
                 .user(writer)
+                .post(post)
                 .parent(parentComment)
                 .content(requestDto.getContent())
                 .createdAt(ZonedDateTime.now())
                 .build();
-
-        // 4. 댓글 저장
         communityCommentRepository.save(newComment);
     }
 
@@ -204,18 +194,19 @@ public class CommunityService {
      * @param user   좋아요를 누르는 사용자
      */
     @Transactional
-    public void toggleLike(Long postId, User user) {
+    public void toggleLike(Long postId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + userId));
+
         CommunityPost post = communityPostRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다: " + postId));
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
         Optional<CommunityLike> likeOptional = communityLikeRepository.findByUserAndPost(user, post);
 
         if (likeOptional.isPresent()) {
-            // 이미 좋아요를 누른 경우 -> 좋아요 취소
             communityLikeRepository.delete(likeOptional.get());
             post.setLikeCount(post.getLikeCount() - 1);
         } else {
-            // 좋아요를 누르지 않은 경우 -> 좋아요 추가
             CommunityLike newLike = CommunityLike.builder()
                     .user(user)
                     .post(post)
@@ -224,5 +215,41 @@ public class CommunityService {
             communityLikeRepository.save(newLike);
             post.setLikeCount(post.getLikeCount() + 1);
         }
+    }
+
+    /**
+     * 댓글 엔티티 목록을 부모-자식 관계를 갖는 계층형 DTO 목록으로 변환합니다.
+     *
+     * @param comments 변환할 댓글 엔티티 목록
+     * @return 최상위 댓글만 포함된 계층형 DTO 목록
+     */
+
+    private List<CommentResponseDto> convertToHierarchy(List<CommunityComment> comments) {
+        List<CommentResponseDto> result = new ArrayList<>();
+        Map<Long, CommentResponseDto> map = new HashMap<>();
+
+        // 1. 모든 댓글을 DTO로 변환하고 Map에 ID를 키로 저장
+        comments.forEach(comment -> {
+            CommentResponseDto dto = CommentResponseDto.from(comment);
+            map.put(dto.getCommentId(), dto);
+        });
+
+        // 2. 다시 모든 댓글을 순회하며 부모-자식 관계 설정
+        comments.forEach(comment -> {
+            CommentResponseDto dto = map.get(comment.getCommentIdx());
+            if (comment.getParent() != null) {
+                // 부모 댓글이 있는 경우(대댓글), 부모의 children 리스트에 추가
+                Long parentId = comment.getParent().getCommentIdx();
+                CommentResponseDto parentDto = map.get(parentId);
+                if (parentDto != null) {
+                    parentDto.getChildren().add(dto);
+                }
+            } else {
+                // 부모 댓글이 없는 경우(최상위 댓글), 결과 리스트에 바로 추가
+                result.add(dto);
+            }
+        });
+
+        return result;
     }
 }

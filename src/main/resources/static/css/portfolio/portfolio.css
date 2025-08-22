@@ -11,6 +11,12 @@ main {
 }
 */
 
+main {
+    margin: 100px 0;
+    padding: 0 50px;
+    width: 100%;
+}
+
 .container {
     width: 100%; max-width: var(--max-content-width);
     margin: 0 auto;
@@ -80,7 +86,7 @@ main {
 .carousel-item img {
     width: 100%; height: 100%;
     display: block;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .item-description {
@@ -125,6 +131,8 @@ main {
     width: 60px; height: 60px;
     border-radius: 50%;
     overflow: hidden;
+    background-color: white;
+    border: 1px solid #B1B1B1;
 }
 
 .carousel .writer-profile img {
@@ -473,34 +481,6 @@ main {
     font-weight: 500;
     font-size: 16px;
 }
-
-/* loading spinner */
-.spinner-box {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.loader {
-    width: 48px;
-    height: 48px;
-    border: 5px solid #FFF;
-    border-bottom-color: #3A5BA0;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-} 
 
 /* scroll error*/
 .scroll-error-box {

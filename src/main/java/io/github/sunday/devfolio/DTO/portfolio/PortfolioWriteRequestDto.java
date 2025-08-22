@@ -1,9 +1,9 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
-import io.github.sunday.devfolio.annotation.common.DateValid;
 import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -30,13 +30,13 @@ public class PortfolioWriteRequestDto {
     /**
      * 프로젝트 시작일
      */
-    @DateValid
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
 
     /**
      * 프로젝트 종료일
      */
-    @DateValid
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 
     /**
