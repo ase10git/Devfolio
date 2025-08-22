@@ -1,5 +1,7 @@
 package io.github.sunday.devfolio.config;
 
+import io.github.sunday.devfolio.service.CustomOAuth2UserService;
+import io.github.sunday.devfolio.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,7 +19,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public CustomOAuth2UserService customOAuth2UserService(UserService userService) {
+        return new CustomOAuth2UserService(userService);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio/**", "/portfolio**", "/error").permitAll()
@@ -40,7 +47,10 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/oauth2/success", true)
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/main", true)
                 )
                 .csrf(csrf -> csrf.disable());
 
