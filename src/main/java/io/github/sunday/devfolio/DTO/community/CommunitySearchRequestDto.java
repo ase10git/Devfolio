@@ -56,6 +56,6 @@ public class CommunitySearchRequestDto {
     @AssertTrue(message = "유효하지 않은 정렬 기준입니다.")
     public boolean isValidSort() {
         if (sort == null) return true;
-        return CommunitySort.fromFieldName(sort.getFieldName()) != null;
+        return CommunitySort.fromName(sort.name()) != null;
     }
 }

@@ -4,7 +4,6 @@ import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.community.*;
 import io.github.sunday.devfolio.entity.table.community.Category;
 import io.github.sunday.devfolio.enums.CommunitySort;
-import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.service.community.CommunityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,12 +49,13 @@ public class CommunityController {
         });
 
         // sort 유효성 검증
-        binder.registerCustomEditor(PortfolioSort.class, new PropertyEditorSupport() {
+        binder.registerCustomEditor(CommunitySort.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
-                PortfolioSort sort = PortfolioSort.fromFieldName(text);
+                CommunitySort sort = CommunitySort.fromName(text);
+                System.out.println(sort.name());
                 if (sort == null) {
-                    sort = PortfolioSort.UPDATED_AT;
+                    sort = CommunitySort.UPDATED_AT;
                 }
                 setValue(sort);
             }
@@ -87,6 +87,7 @@ public class CommunityController {
     public String listPosts(@Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
                             Model model) {
         Page<PostListResponseDto> postPage = communityService.getPosts(requestDto);
+        System.out.println(requestDto.getSize());
         model.addAttribute("postPage", postPage);
         model.addAttribute("requestDto", requestDto);
         model.addAttribute("categories", Category.values());
