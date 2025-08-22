@@ -12,7 +12,7 @@ public enum CommunitySort {
     /**
      * 수정 날짜, 댓글 수, 조회수, 좋아요 수
      */
-    CREATED_AT("createdAt", "최신순"),
+    UPDATED_AT("updatedAt", "최신순"),
     COMMENT_COUNT("commentCount", "댓글수"),
     VIEWS("views", "조회수"),
     LIKE_COUNT("likeCount", "좋아요수");
@@ -23,9 +23,9 @@ public enum CommunitySort {
     /**
      * 필드 이름으로 CommunitySort 탐색
      */
-    public static CommunitySort fromFieldName(String fieldName) {
+    public static CommunitySort fromName(String name) {
         for (CommunitySort sort : values()) {
-            if (sort.getFieldName().equalsIgnoreCase(fieldName))
+            if (sort.name().equalsIgnoreCase(name))
                 return sort;
         }
         return null;

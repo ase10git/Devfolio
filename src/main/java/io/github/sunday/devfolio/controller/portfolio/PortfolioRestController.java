@@ -55,7 +55,7 @@ public class PortfolioRestController {
         binder.registerCustomEditor(PortfolioSort.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
-                PortfolioSort sort = PortfolioSort.fromFieldName(text);
+                PortfolioSort sort = PortfolioSort.fromName(text);
                 if (sort == null) {
                     sort = PortfolioSort.UPDATED_AT;
                 }
