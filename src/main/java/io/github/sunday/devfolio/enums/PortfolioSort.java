@@ -23,9 +23,9 @@ public enum PortfolioSort {
     /**
      * 필드 이름으로 PortfolioSort 탐색
      */
-    public static PortfolioSort fromFieldName(String fieldName) {
+    public static PortfolioSort fromName(String name) {
         for (PortfolioSort sort : values()) {
-            if (sort.getFieldName().equalsIgnoreCase(fieldName))
+            if (sort.name().equalsIgnoreCase(name))
                 return sort;
         }
         return null;

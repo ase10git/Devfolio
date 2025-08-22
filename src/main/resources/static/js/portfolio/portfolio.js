@@ -42,7 +42,7 @@ function addSortButtonAction() {
       const url = new URL(window.location);
 
       params.set("sort", sort);
-      params.set("order", order);
+      params.set("direction", order);
 
       url.search = params.toString();
       window.location.href = url.toString();

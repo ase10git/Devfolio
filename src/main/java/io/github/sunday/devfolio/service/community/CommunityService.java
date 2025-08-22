@@ -40,7 +40,9 @@ public class CommunityService {
      * @return 페이징 처리된 게시글 목록 (PostListResponse)
      */
 
-    public Page<PostListResponseDto> getPosts(Pageable pageable) {
+    public Page<PostListResponseDto> getPosts(CommunitySearchRequestDto requestDto) {
+        Sort sort = Sort.by(requestDto.getDirection(), requestDto.getSort().getFieldName());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         return communityPostRepository.findPostsWithCommentCount(pageable);
     }
 
@@ -54,7 +56,7 @@ public class CommunityService {
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize(), sort);
         List<CommunityPost> postList = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
         List<PostListResponseDto> list = postList.stream()
-                .map(post -> PostListResponseDto.from(post, 0))
+                .map(post -> PostListResponseDto.from(post))
                 .toList();
         return new PageImpl<>(list, pageable, list.size());
     }

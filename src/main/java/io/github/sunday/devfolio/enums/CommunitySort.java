@@ -23,9 +23,9 @@ public enum CommunitySort {
     /**
      * 필드 이름으로 CommunitySort 탐색
      */
-    public static CommunitySort fromFieldName(String fieldName) {
+    public static CommunitySort fromName(String name) {
         for (CommunitySort sort : values()) {
-            if (sort.getFieldName().equalsIgnoreCase(fieldName))
+            if (sort.name().equalsIgnoreCase(name))
                 return sort;
         }
         return null;

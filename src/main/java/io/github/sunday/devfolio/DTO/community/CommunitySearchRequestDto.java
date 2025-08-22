@@ -28,7 +28,7 @@ public class CommunitySearchRequestDto {
      */
     @Min(value = 1, message = "페이지 최소 크기는 1 이상이어야 합니다.")
     @Max(value = 100, message = "페이지 최대 크기는 100 이하여야 합니다.")
-    private int size = 20;
+    private int size = 10;
 
     /**
      * 검색 키워드
@@ -56,6 +56,6 @@ public class CommunitySearchRequestDto {
     @AssertTrue(message = "유효하지 않은 정렬 기준입니다.")
     public boolean isValidSort() {
         if (sort == null) return true;
-        return CommunitySort.fromFieldName(sort.getFieldName()) != null;
+        return CommunitySort.fromName(sort.name()) != null;
     }
 }

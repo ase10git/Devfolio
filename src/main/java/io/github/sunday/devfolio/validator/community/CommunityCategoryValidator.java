@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class CommunityCategoryValidator implements ConstraintValidator<CommunityCategoryValid, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) return false;
+        if (value == null) return true;
         return Category.isValid(value);
     }
 }

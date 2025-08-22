@@ -121,7 +121,6 @@ public class CommunityQueryDslRepository {
 
                     // 정렬 기준 필드명
                     String property = order.getProperty();
-
                     return new OrderSpecifier(direction, pathBuilder.get(property));
                 })
                 .orElse(null);

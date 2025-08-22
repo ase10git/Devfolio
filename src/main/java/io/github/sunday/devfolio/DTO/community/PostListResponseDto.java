@@ -30,7 +30,7 @@ public class PostListResponseDto {
      * @param post 변환할 CommunityPost 엔티티
      * @return 변환된 PostListResponse 객체
      */
-    public static PostListResponseDto from(CommunityPost post, long commentCount) {
+    public static PostListResponseDto from(CommunityPost post) {
         return new PostListResponseDto(
                 post.getPostIdx(),
                 post.getTitle(),
@@ -42,7 +42,7 @@ public class PostListResponseDto {
                 post.getStatus(),
                 post.getContent(),
                 post.getUser().getProfileImg(),
-                commentCount
+                post.getCommentCount()
         );
     }
 }
