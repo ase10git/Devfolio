@@ -46,11 +46,18 @@ public class CommunityPost {
 
     /** 조회수 */
     @Column(name = "views", nullable = false)
+    @ColumnDefault("0")
     private Integer views;
 
     /** 좋아요 수 */
     @Column(name = "like_count", nullable = false)
+    @ColumnDefault("0")
     private Integer likeCount;
+
+    /** 댓글 수 */
+    @Column(name = "comment_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer commentCount;
 
     /** 생성 일시 */
     @Column(name = "created_at", nullable = false)
