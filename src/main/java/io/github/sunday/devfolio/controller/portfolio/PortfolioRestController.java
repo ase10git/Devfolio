@@ -1,8 +1,8 @@
 package io.github.sunday.devfolio.controller.portfolio;
 
+import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioListDto;
 import io.github.sunday.devfolio.dto.portfolio.PortfolioSearchRequestDto;
-import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.enums.PortfolioSort;
 import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;
@@ -89,13 +89,16 @@ public class PortfolioRestController {
     @PostMapping("/{id}/delete")
     public ResponseEntity<?> delete(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Map<String, Object> responseData = new HashMap<>();
         try {
             // Todo : 로그인 필요 예외처리
-            if (user == null) throw new Exception("로그인이 필요합니다");
-            Long userIdx = user.getUserIdx();
+            if (userDetails == null || userDetails.getUser() == null) {
+                throw new Exception("사용자가 없습니다");
+            }
+
+            Long userIdx = userDetails.getUser().getUserIdx();
             portfolioService.deletePortfolio(id, userIdx);
 
             responseData.put("message", "성공적으로 제거했습니다.");
@@ -112,15 +115,17 @@ public class PortfolioRestController {
     @PostMapping("/{id}/add-like")
     public ResponseEntity<?> addLike(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Map<String, Object> responseData = new HashMap<>();
         try {
             // Todo : 로그인 필요 예외처리
-            // Todo : 로그인한 사용자 정보 전달
-            //Long userIdx = user.getUserIdx();
-            Long testUserIdx = 2L;
-            portfolioLikeService.addLike(id, testUserIdx);
+            if (userDetails == null || userDetails.getUser() == null) {
+                throw new Exception("사용자가 없습니다");
+            }
+
+            Long userIdx = userDetails.getUser().getUserIdx();
+            portfolioLikeService.addLike(id, userIdx);
 
             responseData.put("message", "성공적으로 추가했습니다");
             return ResponseEntity.ok().body(responseData);
@@ -137,15 +142,16 @@ public class PortfolioRestController {
     @PostMapping("/{id}/remove-like")
     public ResponseEntity<?> removeLike(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Map<String, Object> responseData = new HashMap<>();
         try {
+            if (userDetails == null || userDetails.getUser() == null) {
+                throw new Exception("사용자가 없습니다");
+            }
             // Todo : 로그인 필요 예외처리
-            // Todo : 로그인한 사용자 정보 전달
-            //Long userIdx = user.getUserIdx();
-            Long testUserIdx = 2L;
-            portfolioLikeService.removeLike(id, testUserIdx);
+            Long userIdx = userDetails.getUser().getUserIdx();
+            portfolioLikeService.removeLike(id, userIdx);
 
             responseData.put("message", "성공적으로 제거했습니다");
             return ResponseEntity.ok().body(responseData);

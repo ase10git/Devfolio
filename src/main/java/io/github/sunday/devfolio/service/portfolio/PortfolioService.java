@@ -234,7 +234,7 @@ public class PortfolioService {
         Portfolio original = portfolioRepository.findById(portfolioIdx).orElse(null);
 
         // Todo : 사용자 없을 때의 에러 처리
-        if (user == null || user.getUserIdx().equals(original.getUser().getUserIdx())) {
+        if (user == null || !user.getUserIdx().equals(original.getUser().getUserIdx())) {
             throw new Exception("접근이 제한되었습니다");
         }
 
