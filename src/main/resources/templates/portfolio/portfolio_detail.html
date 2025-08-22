@@ -62,24 +62,26 @@
                     <img th:src="*{thumbnailUrl}" th:alt="*{title}">
                 </div>
                 <div th:utext="*{description}" class="description"></div>
-                <div class="like-btn-wrap" th:unless="${isWriter != null && #strings.equals(isWriter, true)}">
-                    <button type="button" id="like-button"
-                            th:classappend="${liked} ? 'active' : ''"
-                            th:data-portfolio-id="*{portfolioIdx}"
-                            th:data-liked="${liked}"
-                    >
+                <th:block th:if="${loggedIn != null && #strings.equals(loggedIn, true)}">
+                    <div class="like-btn-wrap" th:unless="${isWriter != null && #strings.equals(isWriter, true)}">
+                        <button type="button" id="like-button"
+                                th:classappend="${liked} ? 'active' : ''"
+                                th:data-portfolio-id="*{portfolioIdx}"
+                                th:data-liked="${liked}"
+                        >
                         <span class="like-image un-liked"
                               th:classappend="${liked} ? 'hidden' : ''">
                             <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
                             <span>좋아요</span>
                         </span>
-                        <span class="like-image liked"
-                              th:classappend="${liked} ? '' : 'hidden'">
+                            <span class="like-image liked"
+                                  th:classappend="${liked} ? '' : 'hidden'">
                             <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
                             <span>좋아요 중</span>
                         </span>
-                    </button>
-                </div>
+                        </button>
+                    </div>
+                </th:block>
             </section>
             <!-- 시간 문제로 구현 생략 -->
 <!--            <section class="comment-section">-->

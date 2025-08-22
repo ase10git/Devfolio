@@ -87,7 +87,6 @@ public class CommunityController {
     public String listPosts(@Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
                             Model model) {
         Page<PostListResponseDto> postPage = communityService.getPosts(requestDto);
-        System.out.println(requestDto.getSize());
         model.addAttribute("postPage", postPage);
         model.addAttribute("requestDto", requestDto);
         model.addAttribute("categories", Category.values());

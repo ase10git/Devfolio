@@ -112,7 +112,7 @@
                             </button>
                         </div>
                     </form>
-                    <div class="write-button-wrap">
+                    <div class="write-button-wrap" th:if="${loggedIn != null && #strings.equals(loggedIn, true)}">
                         <a th:href="@{/portfolio/new}">
                             <img th:src="@{/assets/icon/pencil.svg}" alt="작성 아이콘">
                             <span>작성하기</span>
