@@ -5,6 +5,10 @@
     <title>프로필 수정</title>
     <link rel="stylesheet" th:href="@{/css/profilepage/profile.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="/js/profile/profile_edit.js"></script>
+    <script th:inline="javascript">
+        const userIdx = /*[[${userIdx}]]*/ 0;
+    </script>
 </head>
 <body class="min-h-screen bg-gray-100">
 <main class="max-w-3xl mx-auto p-8">
@@ -13,9 +17,7 @@
 
         <div th:if="${error}" class="text-red-600 mb-3" th:text="${error}">에러 메시지</div>
 
-        <form th:action="@{|/profile/${userId}/edit|}" method="post" th:object="${form}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
+        <form th:action="@{|/profile/${userIdx}/edit|}" method="post" th:object="${form}">
             <div class="grid grid-cols-2 gap-4">
                 <label>프로필 이미지 URL
                     <input type="text" th:field="*{profileImg}" class="border rounded w-full px-3 py-2"/>
@@ -23,17 +25,28 @@
 
                 <label>닉네임
                     <div class="flex">
-                        <input type="text" th:field="*{nickname}" class="border rounded w-full px-3 py-2"/>
-                        <!-- (선택) 중복확인 버튼: fetch로 /profile/check/nickname 호출 -->
+                        <input type="text" id="nickname" th:field="*{nickname}" class="border rounded w-full px-3 py-2"/>
+                        <button type="button" onclick="checkNickname()" class="check-btn">중복확인</button>
                     </div>
+                    <div id="nickname-msg" class="msg"></div>
                 </label>
 
                 <label>이메일
                     <div class="flex">
-                        <input type="email" th:field="*{email}" class="border rounded w-full px-3 py-2"/>
-                        <!-- (선택) 중복확인 버튼: fetch로 /profile/check/email 호출 -->
+                        <input type="email" id="email" th:field="*{email}" class="border rounded w-full px-3 py-2"/>
+                        <button type="button" id="emailSend" class="check-btn" onclick="sendCode(event)">인증코드 발송</button>
                     </div>
+                    <div id="email-msg" class="msg"></div>
                 </label>
+
+                <!-- 인증코드 입력 -->
+                <div id="email-code-section" class="mt-2" style="display:none;">
+                    <div class="flex">
+                        <input type="text" id="emailCode" placeholder="6자리 인증 코드 입력" class="border rounded w-full px-3 py-2"/>
+                        <button type="button" id="verify" class="check-btn" onclick="verifyCode(event)">인증 확인</button>
+                    </div>
+                    <div id="email-verify-msg" class="msg"></div>
+                </div>
 
                 <label>새 비밀번호 (선택)
                     <input type="password" th:field="*{password}" class="border rounded w-full px-3 py-2"/>
@@ -53,7 +66,7 @@
             </div>
 
             <div class="mt-6 flex justify-end gap-2">
-                <a th:href="@{|/profile/${userId}?tab=resume|}" class="btn">취소</a>
+                <a th:href="@{|/profile/${userIdx}?tab=resume|}" class="btn">취소</a>
                 <button type="submit" class="btn btn--primary">수정하기</button>
             </div>
         </form>
@@ -64,7 +77,7 @@
         <div>
             <h2 class="text-xl font-bold mb-2">이력서 관리</h2>
             <p class="text-gray-600 mb-2">이력서는 별도 에디터/업로드 화면에서 관리합니다.</p>
-            <a th:href="@{|/profile/${userId}?tab=resume|}" class="btn">이력서 보기</a>
+            <a th:href="@{|/profile/${userIdx}?tab=resume|}" class="btn">이력서 보기</a>
             <!-- 필요 시 /resumes/edit, /resumes/new 같은 별도 화면으로 이동 -->
         </div>
     </section>

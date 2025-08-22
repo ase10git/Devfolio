@@ -46,4 +46,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return 해당 식별자를 가진 사용자 정보(Optional), 없으면 Optional.empty()
      */
     Optional<User> findByUserIdx(Long userIdx);
+
+    boolean existsByNicknameAndUserIdxNot(String nickname, Long userIdx);
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 public class ProfileDto {
 
     /** 사용자 고유 식별자 */
-    private Long userId;
+    private Long userIdx;
 
     /** 닉네임(표시명) */
     private String nickname;

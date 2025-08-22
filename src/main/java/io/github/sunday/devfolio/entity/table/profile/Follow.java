@@ -4,6 +4,7 @@ import io.github.sunday.devfolio.entity.table.user.User;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -31,7 +32,15 @@ public class Follow {
 
     /** 팔로우 일시 */
     @Column(name = "followed_at", nullable = false)
-    private LocalDateTime followedAt;
+    private ZonedDateTime followedAt;
+
+    /**
+     * 엔티티가 저장되기 전 자동으로 팔로우 일자를 설정합니다.
+     */
+    @PrePersist
+    protected void onCreate() {
+        this.followedAt = ZonedDateTime.now();
+    }
 
     /** 객체 동등성 비교 */
     @Override

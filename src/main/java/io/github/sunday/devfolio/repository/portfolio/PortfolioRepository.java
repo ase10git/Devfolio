@@ -1,6 +1,8 @@
 package io.github.sunday.devfolio.repository.portfolio;
 
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
+import io.github.sunday.devfolio.entity.table.profile.Resume;
+import io.github.sunday.devfolio.entity.table.user.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -28,4 +30,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
      * 사용자의 user_idx 값으로 포트폴리오 조회
      */
     List<Portfolio> findAllByUser_UserIdx(Long userIdx, Pageable pageable);
+
+    List<Portfolio> findAllByUser(User user);
 }

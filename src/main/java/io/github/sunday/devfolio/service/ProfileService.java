@@ -1,14 +1,21 @@
 package io.github.sunday.devfolio.service;
 
 import io.github.sunday.devfolio.dto.ProfileDto;
+import io.github.sunday.devfolio.entity.table.community.CommunityLike;
+import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
+import io.github.sunday.devfolio.entity.table.portfolio.PortfolioLike;
 import io.github.sunday.devfolio.entity.table.profile.Follow;
 import io.github.sunday.devfolio.entity.table.profile.Resume;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.FollowRepository;
 import io.github.sunday.devfolio.repository.ResumeRepository;
 import io.github.sunday.devfolio.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
+import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
+import io.github.sunday.devfolio.repository.portfolio.PortfolioLikeRepository;
+import io.github.sunday.devfolio.repository.portfolio.PortfolioRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +42,15 @@ public class ProfileService {
     private final FollowRepository followRepo;
     private final ResumeRepository resumeRepo;
     private final PortfolioRepository portfolioRepo;
-    private final PostRepository postRepo;
-    private final LikeRepository likeRepo;
+    private final CommunityPostRepository postRepo;
+    private final PortfolioLikeRepository portfolioLikeRepo;
+    private final CommunityLikeRepository CommunityLikeRepo;
 
     // -------- 요약/팔로우/이력서 --------
 
     @Transactional(readOnly = true)
-    public ProfileDto getProfile(Long targetUserId, User currentUser) {
-        User target = userRepo.findById(targetUserId)
+    public ProfileDto getProfile(Long targetUserIdx, User currentUser) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
 
         long followingCount = followRepo.countByFollower(target);
@@ -51,7 +59,7 @@ public class ProfileService {
                 followRepo.existsByFollowerAndFollowed(currentUser, target);
 
         return ProfileDto.builder()
-                .userId(target.getUserIdx())
+                .userIdx(target.getUserIdx())
                 .nickname(target.getNickname())
                 .email(target.getEmail())
                 .profileImg(target.getProfileImg())
@@ -65,9 +73,9 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean toggleFollow(User currentUser, Long targetUserId) {
+    public boolean toggleFollow(User currentUser, Long targetUserIdx) {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        User target = userRepo.findById(targetUserId)
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
 
         if (followRepo.existsByFollowerAndFollowed(currentUser, target)) {
@@ -84,8 +92,8 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<Resume> getResumes(Long targetUserId) {
-        User target = userRepo.findById(targetUserId)
+    public List<Resume> getResumes(Long targetUserIdx) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         return resumeRepo.findAllByUser(target);
     }
@@ -93,15 +101,15 @@ public class ProfileService {
     // -------- 포트폴리오/게시글 --------
 
     @Transactional(readOnly = true)
-    public List<Portfolio> getPortfolios(Long targetUserId) {
-        User target = userRepo.findById(targetUserId)
+    public List<Portfolio> getPortfolios(Long targetUserIdx) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         return portfolioRepo.findAllByUser(target);
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getPosts(Long targetUserId) {
-        User target = userRepo.findById(targetUserId)
+    public List<CommunityPost> getPosts(Long targetUserIdx) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         return postRepo.findAllByUser(target);
     }
@@ -111,27 +119,27 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public List<Portfolio> getLikedPortfolios(User currentUser) {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        return likeRepo.findAllByUserAndPortfolioIsNotNull(currentUser)
-                .stream().map(Like::getPortfolio).collect(Collectors.toList());
+        return portfolioLikeRepo.findAllByUser(currentUser)
+                .stream().map(PortfolioLike::getPortfolio).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getLikedPosts(User currentUser) {
+    public List<CommunityPost> getLikedPosts(User currentUser) {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        return likeRepo.findAllByUserAndPostIsNotNull(currentUser)
-                .stream().map(Like::getPost).collect(Collectors.toList());
+        return CommunityLikeRepo.findAllByUser(currentUser)
+                .stream().map(CommunityLike::getPost).collect(Collectors.toList());
     }
 
     @Transactional
-    public boolean togglePortfolioLike(User currentUser, Long portfolioId) {
+    public boolean togglePortfolioLike(User currentUser, Long portfolioIdx) {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        Portfolio pf = portfolioRepo.findById(portfolioId)
+        Portfolio pf = portfolioRepo.findById(portfolioIdx)
                 .orElseThrow(() -> new IllegalArgumentException("퐅트폴리오가 존재하지 않습니다"));
-        if (likeRepo.existsByUserAndPortfolio(currentUser, pf)) {
-            likeRepo.deleteByUserAndPortfolio(currentUser, pf);
+        if (portfolioLikeRepo.existsByUserAndPortfolio(currentUser, pf)) {
+            portfolioLikeRepo.deleteByUserAndPortfolio(currentUser, pf);
             return false;
         }
-        likeRepo.save(Like.builder()
+        portfolioLikeRepo.save(PortfolioLike.builder()
                 .user(currentUser)
                 .portfolio(pf)
                 .likedAt(ZonedDateTime.now(ZoneId.of("UTC")))
@@ -140,15 +148,15 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean togglePostLike(User currentUser, Long postId) {
+    public boolean togglePostLike(User currentUser, Long postIdx) {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        Post post = postRepo.findById(postId)
+        CommunityPost post = postRepo.findById(postIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글"));
-        if (likeRepo.existsByUserAndPost(currentUser, post)) {
-            likeRepo.deleteByUserAndPost(currentUser, post);
+        if (CommunityLikeRepo.existsByUserAndPost(currentUser, post)) {
+            CommunityLikeRepo.deleteByUserAndPost(currentUser, post);
             return false;
         }
-        likeRepo.save(Like.builder()
+        CommunityLikeRepo.save(CommunityLike.builder()
                 .user(currentUser)
                 .post(post)
                 .likedAt(ZonedDateTime.now(ZoneId.of("UTC")))
@@ -159,16 +167,16 @@ public class ProfileService {
     // -------- 팔로워/팔로잉 목록 + 현재 사용자의 팔로잉 집합 --------
 
     @Transactional(readOnly = true)
-    public List<User> getFollowers(Long targetUserId) {
-        User target = userRepo.findById(targetUserId)
+    public List<User> getFollowers(Long targetUserIdx) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         return followRepo.findAllByFollowed(target)
                 .stream().map(Follow::getFollower).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<User> getFollowing(Long targetUserId) {
-        User target = userRepo.findById(targetUserId)
+    public List<User> getFollowing(Long targetUserIdx) {
+        User target = userRepo.findByUserIdx(targetUserIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         return followRepo.findAllByFollower(target)
                 .stream().map(Follow::getFollowed).collect(Collectors.toList());
