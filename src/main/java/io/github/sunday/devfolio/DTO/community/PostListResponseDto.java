@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
  */
 @AllArgsConstructor
 @Getter
-public class PostListResponse {
+public class PostListResponseDto {
     private final Long postIdx;
     private final String title;
     private final String authorNickname;
@@ -30,8 +30,8 @@ public class PostListResponse {
      * @param post 변환할 CommunityPost 엔티티
      * @return 변환된 PostListResponse 객체
      */
-    public static PostListResponse from(CommunityPost post, long commentCount) {
-        return new PostListResponse(
+    public static PostListResponseDto from(CommunityPost post, long commentCount) {
+        return new PostListResponseDto(
                 post.getPostIdx(),
                 post.getTitle(),
                 post.getUser().getNickname(),

@@ -1,104 +1,73 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <!-- Spring Security 태그 라이브러리 추가 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${post.title}">게시글 제목</title>
+    <title th:text="${post.title}">게시글 상세</title>
+    <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_detail.css}">
 </head>
 <body>
-<main>
-    <!-- 게시글 정보 -->
-    <article class="post">
-        <header class="post-header">
-            <h1 th:text="${post.title}">게시글 제목</h1>
-            <div class="post-meta">
-                    <span class="author-info">
-                        <!-- 프로필 이미지가 없을 경우 기본 이미지 표시 (선택적) -->
-                        <img th:src="${post.authorProfileImg != null ? post.authorProfileImg : '/assets/images/default-profile.png'}"
-                             alt="프로필 이미지" class="profile-img">
-                        <span th:text="${post.authorNickname}">작성자</span>
-                    </span>
-                <span th:text="'작성일: ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                <span th:text="'조회수: ' + ${post.views}"></span>
-                <span th:text="'좋아요: ' + ${post.likeCount}"></span>
+<div class="page-wrapper">
+    <main class="detail-main-container">
+        <!-- 게시글 컨텐츠 영역 -->
+        <div class="post-container">
+            <header class="post-header">
+                <div class="title-and-tags">
+                    <span class="tag"
+                          th:text="${post.category.name() == 'study' ? '스터디 그룹 모집' :
+                (post.category.name() == 'question' ? '질문 & 답변' : '자유 게시판')}"></span>
+                    <h1 th:text="${post.title}"></h1>
+                </div>
+                <div class="action-buttons"
+                     th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == post.authorUserIdx}">
+                    <a th:href="@{/community/{id}/edit(id=${post.postIdx})}" class="btn-secondary">수정</a>
+                    <form th:action="@{/community/{id}/delete(id=${post.postIdx})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                        <button type="submit" class="btn-secondary">삭제</button>
+                    </form>
+                </div>
+            </header>
+
+            <div class="author-meta">
+                <img th:src="${post.authorProfileImg != null ? post.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필">
+                <span class="author-name" th:text="${post.authorNickname}"></span>
+                <span class="divider">|</span>
+                <span class="timestamp" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+                <div class="post-stats">
+                    <span>조회 <span th:text="${post.views}"></span></span>
+                    <span>좋아요 <span th:text="${post.likeCount}"></span></span>
+                </div>
             </div>
-        </header>
 
-        <!-- 게시글 본문 (CKEditor로 작성된 HTML 렌더링) -->
-        <div class="post-content" th:utext="${post.content}">
-            <p>게시글 내용이 여기에 표시됩니다.</p>
-        </div>
+            <article class="post-content" th:utext="${post.content}"></article>
 
-        <div class="post-interactions">
-            <!-- 로그인한 사용자에게만 좋아요 버튼을 보여줍니다 -->
-            <div th:if="${#authentication.isAuthenticated()}">
+            <div class="like-button-wrapper">
                 <form th:action="@{/community/{id}/like(id=${post.postIdx})}" method="post">
                     <button type="submit" class="btn-like" th:classappend="${post.likedByCurrentUser} ? 'liked' : ''">
-                        <!-- likedByCurrentUser 값에 따라 아이콘이나 텍스트 변경 -->
-                        <span th:if="${post.likedByCurrentUser}">❤️ 좋아요 취소</span>
-                        <span th:unless="${post.likedByCurrentUser}">🤍 좋아요</span>
+                        <span th:text="${post.likedByCurrentUser} ? '👍 좋아요 취소' : '👍 좋아요'"></span>
                     </button>
-                    <!-- 좋아요 개수는 버튼 옆에 표시 -->
-                    <span th:text="${post.likeCount}"></span>
                 </form>
             </div>
+        </div>
 
-            <!-- 로그인하지 않은 사용자에게는 그냥 개수만 보여줍니다 -->
-            <div th:unless="${#authentication.isAuthenticated()}">
-                <span>🤍 <span th:text="${post.likeCount}"></span></span>
+        <!-- 댓글 섹션 -->
+        <section class="comment-container">
+            <h2>댓글 <span th:text="${#lists.size(post.comments)}"></span></h2>
+
+            <div class="comment-write-box" th:if="${#authentication.isAuthenticated()}">
+                <form th:action="@{/community/{id}/comments(id=${post.postIdx})}" th:object="${commentRequest}" method="post" class="comment-form">
+                    <input type="hidden" th:field="*{parentId}" />
+                    <textarea th:field="*{content}" placeholder="댓글을 작성해주세요" required></textarea>
+                    <button type="submit" class="btn-submit">작성</button>
+                </form>
             </div>
-        </div>
+            <div class="comment-login-prompt" th:unless="${#authentication.isAuthenticated()}">
+                <p>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</p>
+            </div>
 
-        <!--
-            수정/삭제 버튼
-        -->
-        <div class="post-actions"
-             th:if="${#authentication.isAuthenticated() and #authentication.principal.userIdx == post.authorUserIdx}">
-            <a th:href="@{/community/{id}/edit(id=${post.postIdx})}" class="btn-edit">수정</a>
-            <form th:action="@{/community/{id}/delete(id=${post.postIdx})}" method="post"
-                  onsubmit="return confirm('정말로 삭제하시겠습니까?');" style="display:inline;">
-                <button type="submit" class="btn-delete">삭제</button>
-            </form>
-        </div>
-    </article>
-
-    <!-- 댓글 섹션 -->
-    <section class="comment-section">
-        <h3>댓글 <span th:text="${#lists.size(post.comments)}">0</span>개</h3>
-
-        <!-- 댓글 작성 폼 -->
-        <!-- 로그인한 경우에만 폼을 보여줍니다. (sec:authorize="isAuthenticated()") 사용 가능 -->
-        <div class="comment-form" th:if="${#authentication.isAuthenticated()}">
-            <form th:action="@{/community/{id}/comments(id=${post.postIdx})}"
-                  th:object="${commentRequest}"
-                  method="post">
-
-                <!--
-                    대댓글을 위한 parentId hidden input.
-                    초기에는 값이 없으며, JavaScript로 '답글' 버튼 클릭 시 채워집니다. (추후 구현)
-                -->
-                <input type="hidden" th:field="*{parentId}" />
-
-                <textarea th:field="*{content}" placeholder="댓글을 입력하세요" required></textarea>
-                <button type="submit">댓글 작성</button>
-            </form>
-        </div>
-
-        <!-- 로그인하지 않은 경우 로그인 유도 메시지 -->
-        <div class="comment-login-prompt" th:unless="${#authentication.isAuthenticated()}">
-            <p>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</p>
-        </div>
-
-        <!--
-            댓글 목록: fragments/comment_tree.html 파일의 commentTree 프래그먼트를 가져와 렌더링합니다.
-            post.comments (최상위 댓글 목록)를 파라미터로 전달합니다.
-        -->
-        <div th:replace="~{fragments/comment_tree :: commentTree(comments=${post.comments})}">
-            <!-- 이 내용은 프래그먼트로 대체되므로 보이지 않습니다. -->
-            <p>댓글 로딩 중...</p>
-        </div>
-    </section>
-</main>
+            <div th:replace="~{fragments/comment_tree :: commentTree(comments=${post.comments})}"></div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/community/community-comment.js}"></script>
 </body>
 </html>

@@ -57,8 +57,8 @@
                             <h3 class="post-title"><a th:href="@{/community/{id}(id=${post.postIdx})}" th:text="${post.title}"></a></h3>
                             <p class="post-category"
                                th:text="${post.category.name() == 'study' ? '스터디 그룹 모집' :
-                                         (post.category.name() == 'question' ? '질문&답변' : '자유 게시판')}">
-                            </p><p class="post-snippet" th:text="${#strings.abbreviate(post.content, 150)}"></p>
+                                    (post.category.name() == 'question' ? '질문&답변' : '자유 게시판')}">
+                            </p><p class="post-snippet" th:utext="${#strings.abbreviate(post.content, 150)}"></p>
                         </div>
                         <div class="post-item-meta">
                             <div class="author-info">
