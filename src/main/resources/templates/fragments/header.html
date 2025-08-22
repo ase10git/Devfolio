@@ -21,7 +21,7 @@
             </th:block>
 
             <th:block th:if="${session.loginUserIdx != null}">
-              <form th:action="@{/users/{id}(id=${session.loginUserIdx})}" method="get" class="button-form">
+              <form th:action="@{/profile/{userId}(userId=${session.loginUserIdx})}" method="get" class="button-form">
                 <button type="submit" class="myPageBtn">My Page</button>
               </form>
 

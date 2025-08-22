@@ -49,5 +49,9 @@ public class ProfileUpdateService {
 
         return userRepository.save(currentUser);
     }
+
+    public boolean isNicknameDuplicateForEdit(String nickname, Long userIdx) {
+        return userRepository.existsByNicknameAndUserIdxNot(nickname, userIdx);
+    }
 }
 
