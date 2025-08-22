@@ -100,7 +100,7 @@
     align-items: center;
     margin-bottom: 1.5rem;
 }
-.sort-tabs a {
+.sort-tabs button {
     color: #868e96;
     background-color: #f1f3f5;
     text-decoration: none;
@@ -109,8 +109,10 @@
     font-weight: 500;
     margin-right: 0.5rem;
     font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
 }
-.sort-tabs a.active {
+.sort-tabs button.active {
     background-color: #339af0;
     color: white;
     font-weight: 700;

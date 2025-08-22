@@ -12,7 +12,7 @@ public enum CommunitySort {
     /**
      * 수정 날짜, 댓글 수, 조회수, 좋아요 수
      */
-    UPDATED_AT("updatedAt", "최신순"),
+    CREATED_AT("createdAt", "최신순"),
     COMMENT_COUNT("commentCount", "댓글수"),
     VIEWS("views", "조회수"),
     LIKE_COUNT("likeCount", "좋아요수");

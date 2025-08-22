@@ -83,7 +83,6 @@ public class PortfolioRestController {
         return ResponseEntity.ok().body(list);
     }
 
-
     /**
      * 포트폴리오 제거
      */
