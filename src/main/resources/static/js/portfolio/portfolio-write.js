@@ -195,21 +195,24 @@ function addTemplate() {
 
     // 미리 지정된 템플릿 데이터를 CKEditor에 추가
     function addHeadingsToEditor(headings) {
-        
+        if (headings === null) {
+            alert('추가할 템플릿 정보가 없습니다');
+            return;
+        }
+
         if (window.editor) {
             const editor = window.editor;
-
             editor.model.change(writer => {
-                // 에디터 요소 중 마지막 요소 위치 가져오기
-                const root = editor.model.document.getRoot();
-                const children = Array.from(root.getChildren());
-                const lastChild = children[children.length - 1];
-                const position = writer.createPositionAfter(lastChild);
-
                 // 템플릿으로 지정한 heading 추가
                 headings.forEach((heading, index) => {
+                    // 에디터 요소 중 마지막 요소 위치 가져오기
+                    const root = editor.model.document.getRoot();
+                    const children = Array.from(root.getChildren());
+                    const lastChild = children[children.length - 1];
+                    const position = writer.createPositionAfter(lastChild);
+
                     // heading tag 생성
-                    const tagName = heading.tagType !== null ? heading.tagType.toLowerCase() : "heading2";
+                    const tagName = (heading.tagType !== null && heading.tagType !== "heading") ? heading.tagType.toLowerCase() : "heading2";
                     const tagElement = writer.createElement(tagName);
                     writer.setAttribute("id", `heading-${index}`, tagElement);
 
@@ -219,7 +222,7 @@ function addTemplate() {
                 });
             });
         } else {
-            setTimeout(() => addHeadingsToEditor(headings), 100);
+            setTimeout(() => addHeadingsToEditor(headings), 500);
         }
     }
 
@@ -257,6 +260,7 @@ function addTemplate() {
             try {
                 await sendRequest(params);
             } catch(e) {
+                console.error(e);
                 alert("요청 중 오류가 발생했습니다.")
             } finally {
                 isAIRequesting = false;
