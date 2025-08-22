@@ -24,6 +24,9 @@ function initializeEditor() {
         });
 }
 
+/**
+ * CKEditor에 이미지 업로드 후 input 추가
+ */
 function addImageInfoInput(editor) {
     // 이미지 업로드 후 input 추가
     const imageUploadEditing = editor.plugins.get('ImageUploadEditing');
@@ -42,12 +45,16 @@ function addImageInfoInput(editor) {
     });
 }
 
+/**
+ * CKEditor에 등록한 이미지 제거 시 input 제거
+ */
 function manageImageInfoInput(editor) {
     const model = editor.model;
     model.document.registerPostFixer(writer => {
         const changes = model.document.differ.getChanges();
         let handled = false;
 
+        // CKEditor 내의 이벤트 감지
         for (const change of changes) {
             if ((change.name === 'imageBlock' || change.name === 'imageInline')) {
                 if (change.type === 'remove') {

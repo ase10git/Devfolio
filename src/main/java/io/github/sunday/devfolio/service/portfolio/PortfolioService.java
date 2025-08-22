@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -125,6 +124,10 @@ public class PortfolioService {
         String endDate = portfolio.getEndDate() != null ? portfolio.getEndDate().format(dateFormatter) : null;
         String createdAt = portfolio.getCreatedAt() != null ? portfolio.getCreatedAt().format(dateTimeformatter) : null;
         String updatedAt = portfolio.getUpdatedAt() != null ? portfolio.getUpdatedAt().format(dateTimeformatter) : null;
+
+        // 조회수 올리기
+        portfolio.setViews(portfolio.getViews()+1);
+        portfolioRepository.save(portfolio);
 
         return PortfolioDetailDto.builder()
                 .portfolioIdx(portfolioIdx)

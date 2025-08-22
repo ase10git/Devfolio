@@ -11,6 +11,12 @@ main {
 }
 */
 
+main {
+    margin: 100px 0;
+    padding: 0 50px;
+    width: 100%;
+}
+
 .container {
     width: 100%; max-width: var(--max-content-width);
     margin: 0 auto;

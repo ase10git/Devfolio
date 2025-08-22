@@ -44,12 +44,21 @@ public class PortfolioCategoryService {
     }
 
     /**
-     * 카테고리 이름으로 존재하는 카테고리인지 검증
+     * 카테고리 id로 존재하는 카테고리인지 검증
      */
     public boolean exists(Long categoryIdx) {
         if (categoryIdx == null) return true;
         return cachedCategories.stream()
                 .anyMatch(category -> category.getCategoryIdx().equals(categoryIdx));
+    }
+
+    /**
+     * 카테고리 이름으로 존재하는 카테고리인지 검증
+     */
+    public boolean existsByName(String name) {
+        if (name == null || name.isEmpty()) return false;
+        return cachedCategories.stream()
+                .anyMatch(category -> category.getNameKo().equals(name));
     }
 
     /**

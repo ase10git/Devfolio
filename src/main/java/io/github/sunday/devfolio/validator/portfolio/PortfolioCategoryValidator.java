@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,16 +26,28 @@ public class PortfolioCategoryValidator implements ConstraintValidator<Portfolio
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         if (value == null) return true;
 
+        // 포트폴리오 id로 요청이 들어오는 경우
         if (value instanceof Long id) {
             return portfolioCategoryService.exists(id);
         }
 
+        // 포트폴리오 id 리스트로 요청이 들어오는 경우
         if (value instanceof List<?> list) {
             return list.stream()
                     .filter(Long.class::isInstance)
                     .map(Long.class::cast)
                     .allMatch(portfolioCategoryService::exists);
         }
+
+        // 포트폴리오 String으로 요청이 들어오는 경우
+        if (value instanceof String name) {
+            if (name.isEmpty()) return false;
+
+            String[] categories = name.split("\\s*,\\s*");
+            return Arrays.stream(categories)
+                    .allMatch(categoryName -> portfolioCategoryService.existsByName(categoryName));
+        }
+
         return false;
     }
 }

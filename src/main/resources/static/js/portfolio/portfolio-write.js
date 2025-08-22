@@ -174,6 +174,8 @@ function addTemplate() {
     });
     addTemplateEvent();
 
+
+    // 라디오 버튼에 이벤트 등록
     function addTemplateEvent() {
         const radios = document.querySelectorAll('input[name="template"]');
         radios.forEach(radio => {
@@ -185,14 +187,13 @@ function addTemplate() {
                         const data = templateData[key];
                         const headings = data.headings;
                         addHeadingsToEditor(headings);
-                    } else if (key === 4) {
-                        // Todo: AI 추천 템플릿 추가
-                    }
+                    } 
                 }
             });
         });
     }
 
+    // 미리 지정된 템플릿 데이터를 CKEditor에 추가
     function addHeadingsToEditor(headings) {
         
         if (window.editor) {
@@ -207,8 +208,12 @@ function addTemplate() {
 
                 // 템플릿으로 지정한 heading 추가
                 headings.forEach((heading, index) => {
-                    const tagElement = writer.createElement(heading.tagType);
+                    // heading tag 생성
+                    const tagName = heading.tagType !== null ? heading.tagType.toLowerCase() : "heading2";
+                    const tagElement = writer.createElement(tagName);
                     writer.setAttribute("id", `heading-${index}`, tagElement);
+
+                    // 텍스트로 추가
                     writer.insertText(heading.value, tagElement);
                     writer.append(tagElement, position);
                 });
@@ -217,6 +222,61 @@ function addTemplate() {
             setTimeout(() => addHeadingsToEditor(headings), 100);
         }
     }
+
+    // AI 요청 상태
+    let isAIRequesting = false;
+
+    // AI 템플릿 추천 동작
+    async function sendAITemplateRequest() {
+        const aiTemplateButton = document.getElementById("template-ai");
+        const overlay = document.getElementById("loading-overlay");
+
+        aiTemplateButton.addEventListener("click", async () => {
+            // 중복 요청 방지
+            if (isAIRequesting) return;
+
+            // 선택한 카테고리 정리
+            const categoryList = document.getElementsByClassName("category-list")[0];
+            const categorySelected = categoryList.querySelectorAll("input[type='checkbox']:checked ~ label");
+            
+            if (categorySelected === null || categorySelected.length === 0) {
+                alert("카테고리를 선택해주세요");
+                return;
+            }
+
+            const categoryNames = Array.from(categorySelected).map(label => label.textContent);
+            const inputType = categoryNames.join(", ");
+
+            const params = new URLSearchParams({type: inputType}).toString();
+            
+            // 요청 전송
+            isAIRequesting = true;
+            aiTemplateButton.disabled = true;
+            overlay.classList.add("active");
+
+            try {
+                await sendRequest(params);
+            } catch(e) {
+                alert("요청 중 오류가 발생했습니다.")
+            } finally {
+                isAIRequesting = false;
+                aiTemplateButton.disabled = false;
+                overlay.classList.remove("active");
+            }
+        });
+
+        async function sendRequest(params) {
+            const res = await fetch(`/api/ai/portfolio-template?${params}`, { method: "GET" });
+            const body = await res.json();
+    
+            if (res.ok) {
+                addHeadingsToEditor(body);
+            } else {
+                throw new Error("요청 실패");
+            }
+        }
+    }
+    sendAITemplateRequest();
 }
 
 /**
