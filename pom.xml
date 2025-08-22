@@ -149,6 +149,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.downgoon</groupId>
+			<artifactId>MarvinPlugins</artifactId>
+			<version>1.5.5</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
