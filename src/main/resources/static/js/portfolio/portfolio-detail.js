@@ -100,9 +100,23 @@ function toggleLike() {
 }
 
 /**
+ * 목록으로 가기 버튼 이벤트 리스너
+ */
+function addListButtonEvent() {
+    const listButton = document.getElementById("back-button");
+    if (listButton) {
+        listButton.addEventListener("click", () => {
+            location.href = "/portfolio";
+        });
+    }
+}
+
+
+/**
  * DOMContentLoaded 이벤트 리스너
  */
 document.addEventListener("DOMContentLoaded", () => {
     addDeleteButtonEvent();
     toggleLike();
+    addListButtonEvent();
 });

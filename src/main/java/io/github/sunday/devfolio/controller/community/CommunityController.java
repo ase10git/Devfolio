@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.controller.community;
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.community.*;
 import io.github.sunday.devfolio.service.community.CommunityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -50,6 +51,22 @@ public class CommunityController {
     public String listPosts(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                             Model model) {
         Page<PostListResponseDto> postPage = communityService.getPosts(pageable);
+        model.addAttribute("postPage", postPage);
+        return "community/community_list";
+    }
+
+    /**
+     * 커뮤니티 게시글 목록 페이지를 표시합니다.
+     *
+     * @param model    뷰에 전달할 데이터 모델
+     * @return 뷰 템플릿 경로
+     */
+    @GetMapping("/search")
+    public String searchPosts(
+            @Valid @ModelAttribute CommunitySearchRequestDto searchRequestDto,
+            Model model) {
+        Page<PostListResponseDto> postPage = communityService.searchPosts(searchRequestDto);
+        model.addAttribute("searchDto", searchRequestDto);
         model.addAttribute("postPage", postPage);
         return "community/community_list";
     }

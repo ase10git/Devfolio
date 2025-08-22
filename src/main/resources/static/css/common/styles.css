@@ -175,4 +175,123 @@ input:autofill:active {
     100% {
         transform: rotate(360deg);
     }
-} 
+}
+
+/* common portfolio card style */
+.portfolio-card {
+    border: 1px solid #9D9D9D;
+    border-radius: 15px;
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.portfolio-card:hover {
+    box-shadow: 0 5px 10px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.portfolio-link {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .card-img-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.portfolio-link .card-img-box img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    object-fit: cover;
+}
+
+.portfolio-link .card-info-box {
+    width: 100%;
+    padding: 0 15px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.portfolio-link .writer-meta {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .writer-profile {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+}
+
+.portfolio-link .writer-profile img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.portfolio-link .writer-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.portfolio-link .portfolio-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .portfolio-info {
+    width: 100%;
+}
+
+.portfolio-link .portfolio-title {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.portfolio-link .category-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-box span {
+    padding: 3px 5px;
+    border-radius: var(--box-radius-8);
+    background-color: #CFE8FF;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* stats */
+.stats-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
