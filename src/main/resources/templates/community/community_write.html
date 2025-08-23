@@ -5,6 +5,8 @@
   <title th:text="${isEditMode} ? '게시글 수정' : '게시글 작성'"></title>
 
   <!-- CSS Links -->
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
   <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
   <link rel="stylesheet" th:href="@{/css/community/community_write.css}">
   <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
@@ -67,7 +69,7 @@
     </form>
   </main>
 </div>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script type="importmap">
   {
       "imports": {
@@ -78,6 +80,5 @@
   }
 </script>
 <script type="module" th:src="@{/js/community/community-write.js}"></script>
-
 </body>
 </html>

@@ -1,0 +1,55 @@
+.footer{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+}
+
+.site-info, .site-info ul {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.site-info ul {
+    gap: 20px;
+}
+
+.site-info ul li, .site-info ul li a {
+    cursor: pointer;
+    font-weight: 500;
+    color: #868e96;
+}
+
+.site-info ul li:hover, .site-info ul li a:hover {
+    color: black;
+}
+
+.project-info a {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.project-info a:hover {
+    color: #3A5BA0;
+}
+
+.icon-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #868e96;
+}
+
+.icon-box img {
+    width: 20px;
+    height: 20px;
+}
