@@ -2,6 +2,7 @@ package io.github.sunday.devfolio.service;
 
 
 import io.github.sunday.devfolio.dto.ProfileUpdateRequest;
+import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.EmailVerificationRepository;
@@ -32,6 +33,12 @@ public class ProfileUpdateService {
 
     @Transactional
     public User updateProfile(User currentUser, ProfileUpdateRequest req) {
+        if (currentUser.getOauthProvider() != AuthProvider.LOCAL) {
+            // 소셜 회원이면 이메일/비밀번호 무시
+            req.setEmail(currentUser.getEmail());
+            req.setPassword(null);
+        }
+
         String email = req.getEmail().trim().toLowerCase();
         String nickname = req.getNickname().trim();
         String password = req.getPassword();
@@ -91,4 +98,3 @@ public class ProfileUpdateService {
         return userRepository.existsByNicknameAndUserIdxNot(nickname, userIdx);
     }
 }
-
