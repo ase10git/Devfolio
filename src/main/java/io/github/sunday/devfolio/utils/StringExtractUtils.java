@@ -31,11 +31,13 @@ public class StringExtractUtils {
         Pattern pattern = Pattern.compile("```json\\s*(.*?)\\s*```", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(content);
 
-        if (!matcher.find()) {
-            throw new IllegalArgumentException("content에 json 블록이 없습니다.");
-        }
+        String jsonPart;
+        if (matcher.find()) {
+            jsonPart= matcher.group(1);
 
-        String jsonPart = matcher.group(1); // ```json 과 ``` 사이 문자열
+        } else {
+            jsonPart = "[]";
+        }
 
         // JSON 파싱
         return mapper.readTree(jsonPart);

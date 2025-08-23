@@ -14,7 +14,7 @@
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-<main>
+<main class="portfolio-main">
     <div class="container">
         <div class="title-box">
             <h1>포트폴리오</h1>
@@ -33,7 +33,7 @@
                         <a th:href="@{/portfolio/{id}(id=${hotPortfolio.portfolioIdx})}">
                             <img
                                     th:classappend="${iterStat.index == 0} ? ' active' : ''"
-                                    th:src="${hotPortfolio.imageUrl == null or #strings.isEmpty(hotPortfolio.imageUrl)} ? @{/assets/icon/x-lg.svg} : ${hotPortfolio.imageUrl}"
+                                    th:src="${hotPortfolio.imageUrl == null or #strings.isEmpty(hotPortfolio.imageUrl)} ? @{/assets/images/portfolio-default-thumbnail.png} : ${hotPortfolio.imageUrl}"
                                     alt="포트폴리오 이미지"
                                     title="포트폴리오 이미지"
                             />
@@ -112,7 +112,7 @@
                             </button>
                         </div>
                     </form>
-                    <div class="write-button-wrap">
+                    <div class="write-button-wrap" th:if="${loggedIn != null && #strings.equals(loggedIn, true)}">
                         <a th:href="@{/portfolio/new}">
                             <img th:src="@{/assets/icon/pencil.svg}" alt="작성 아이콘">
                             <span>작성하기</span>

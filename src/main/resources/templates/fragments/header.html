@@ -10,6 +10,8 @@
             <a href="/main" class="mainBtn">
                 <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="devfolio-logo-img" />
             </a>
+            <a th:href="@{/portfolio}" class="left-button">포트폴리오</a>
+            <a th:href="@{/community}" class="left-button">커뮤니티</a>
         </div>
 
         <div class="header-right">
@@ -21,7 +23,7 @@
             </th:block>
 
             <th:block th:if="${session.loginUserIdx != null}">
-              <form th:action="@{/users/{id}(id=${session.loginUserIdx})}" method="get" class="button-form">
+              <form th:action="@{/profile/{userId}(userId=${session.loginUserIdx})}" method="get" class="button-form">
                 <button type="submit" class="myPageBtn">My Page</button>
               </form>
 

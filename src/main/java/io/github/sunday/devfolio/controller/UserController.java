@@ -6,6 +6,10 @@ import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.EmailVerificationRepository;
 import io.github.sunday.devfolio.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -107,7 +111,7 @@ public class UserController {
             return "signup";
         }
 
-        // 인증 시간 만료 여부(예: 인증 후 10분 내에만 회원가입 가능)
+        // 인증 시간 만료 여부(예: 인증 후 5분 내에만 회원가입 가능)
         if (verification.getExpiredAt().isBefore(ZonedDateTime.now())) {
             model.addAttribute("error", "이메일 인증이 만료되었습니다. 다시 인증해 주세요.");
             return "signup";
@@ -157,7 +161,21 @@ public class UserController {
      * @return login.html 템플릿 경로
      */
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+        // 로그인한 사용자인지 확인
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            // 이미 로그인된 사용자라면 메인으로 리다이렉트
+            return "redirect:/main";
+        }
+
+        // 로그인 에러 메시지 처리
+        Object errorMessage = request.getSession().getAttribute("loginErrorMessage");
+        if (errorMessage != null) {
+            model.addAttribute("loginErrorMessage", errorMessage);
+            // 1회성 출력 후 세션에서 제거
+            request.getSession().removeAttribute("loginErrorMessage");
+        }
         return "login";
     }
 }

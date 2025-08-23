@@ -1,5 +1,7 @@
 package io.github.sunday.devfolio.config;
 
+import io.github.sunday.devfolio.service.CustomOAuth2UserService;
+import io.github.sunday.devfolio.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -17,10 +20,18 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public CustomOAuth2UserService customOAuth2UserService(UserService userService) {
+        return new CustomOAuth2UserService(userService);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio/**", "/portfolio**", "/error").permitAll()
+                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/portfolio/new", "/portfolio/*/edit").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/portfolio**", "/portfolio/**").permitAll()
+                        .requestMatchers("/api/portfolio/list**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/ckeditor5/**", "/prompts/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/community", "/community/**").permitAll()
@@ -31,6 +42,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("loginId")
                         .defaultSuccessUrl("/main", true)
+                        .failureHandler((request, response, exception) -> {
+                            request.getSession().setAttribute("loginErrorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
+                            response.sendRedirect("/login?error");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -40,7 +55,21 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/oauth2/success", true)
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/main", true)
+                        .failureHandler((request, response, exception) -> {
+                            String errorMessage = "로그인에 실패했습니다.";
+                            if (exception instanceof OAuth2AuthenticationException authEx) {
+                                String desc = authEx.getError().getDescription();
+                                errorMessage = (desc != null) ? desc : authEx.getMessage();
+                            }
+                            // 세션에 저장 (1회성)
+                            request.getSession().setAttribute("loginErrorMessage", errorMessage);
+                            // 다시 로그인 페이지로 리다이렉트
+                            response.sendRedirect("/login?error");
+                        })
                 )
                 .csrf(csrf -> csrf.disable());
 

@@ -14,7 +14,7 @@
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-<main>
+<main class="portfolio-main">
     <div class="container">
         <section class="form-section">
             <div class="title-box">
@@ -60,7 +60,7 @@
                         <span class="required-mark">*</span>
                     </div>
                     <div class="category-list-box">
-                        <ul class="category-list-list">
+                        <ul class="category-list">
                             <li th:each="category : ${categoryList}">
                                 <input type="checkbox" th:id="'category ' + ${category.categoryIdx}"
                                        th:field="*{categories}" th:value="${category.categoryIdx}"

@@ -4,9 +4,12 @@ import io.github.sunday.devfolio.entity.table.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Spring Security의 UserDetails 인터페이스를 구현한 사용자 정의 클래스.
@@ -21,7 +24,7 @@ import java.util.Collection;
  * @see io.github.sunday.devfolio.service.CustomUserDetailsService
  */
 @Getter
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, OAuth2User {
 
     /** 애플리케이션의 사용자 정보를 담고 있는 원본 User 엔티티 */
     private final User user;
@@ -98,5 +101,20 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // OAuth2User 구현
+    @Override
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attrs = new HashMap<>();
+        attrs.put("email", user.getEmail());
+        attrs.put("name", user.getNickname());
+        attrs.put("providerId", user.getProviderId());
+        return attrs;
+    }
+
+    @Override
+    public String getName() {
+        return user.getNickname(); // OAuth2User.getName() 반환
     }
 }

@@ -149,11 +149,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.github.downgoon</groupId>
-			<artifactId>MarvinPlugins</artifactId>
-			<version>1.5.5</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -198,6 +193,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.6.3</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

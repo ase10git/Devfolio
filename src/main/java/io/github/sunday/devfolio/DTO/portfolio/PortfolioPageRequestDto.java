@@ -44,6 +44,6 @@ public class PortfolioPageRequestDto {
     @AssertTrue(message = "유효하지 않은 정렬 기준입니다.")
     public boolean isValidSort() {
         if (sort == null) return true;
-        return PortfolioSort.fromFieldName(sort.getFieldName()) != null;
+        return PortfolioSort.fromName(sort.name()) != null;
     }
 }

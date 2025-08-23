@@ -68,7 +68,7 @@ public class CommunityService {
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize(), sort);
         List<CommunityPost> postList = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
         List<PostListResponseDto> list = postList.stream()
-                .map(post -> PostListResponseDto.from(post, 0))
+                .map(post -> PostListResponseDto.from(post))
                 .toList();
         return new PageImpl<>(list, pageable, list.size());
     }

@@ -16,6 +16,14 @@ public interface PortfolioLikeRepository extends JpaRepository<PortfolioLike, Lo
      */
     List<PortfolioLike> findAllByUser_UserIdx(Long userIdx, Pageable pageable);
 
+    List<PortfolioLike> findAllByUser(User user);
+
+    // 특정 사용자가 특정 포트폴리오를 좋아요했는지 확인
+    boolean existsByUserAndPortfolio(User user, Portfolio portfolio);
+
+    // 특정 사용자가 특정 포트폴리오의 좋아요 삭제
+    void deleteByUserAndPortfolio(User user, Portfolio portfolio);
+    
     /**
      * 사용자와 포트폴리오로 좋아요 표시 조회
      */

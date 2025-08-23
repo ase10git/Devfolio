@@ -6,8 +6,8 @@
     class="portfolio-link"
   >
     <div class="card-img-box">
-      <img th:unless="${portfolio.imageUrl == null or #strings.isEmpty(portfolio.imageUrl)}"
-              th:src="${portfolio.imageUrl}" th:alt="${portfolio.title}" />
+      <img th:src="${portfolio.imageUrl != null and !#strings.isEmpty(portfolio.imageUrl)} ? ${portfolio.imageUrl} : @{/assets/images/portfolio-default-thumbnail.png}"
+              th:alt="${portfolio.title}" />
     </div>
     <div class="card-info-box">
       <div class="writer-meta">
