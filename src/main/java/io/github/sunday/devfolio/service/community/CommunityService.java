@@ -41,7 +41,21 @@ public class CommunityService {
      */
 
     public Page<PostListResponseDto> getPosts(Pageable pageable) {
-        return communityPostRepository.findPostsWithCommentCount(pageable);
+        Page<CommunityPost> postPage = communityPostRepository.findAll(pageable);
+
+        return postPage.map(post -> new PostListResponseDto(
+                post.getPostIdx(),
+                post.getTitle(),
+                post.getUser().getNickname(),
+                post.getCategory(),
+                post.getCreatedAt(),
+                post.getViews(),
+                post.getLikeCount(),
+                post.getStatus(),
+                post.getContent(),
+                post.getUser().getProfileImg(),
+                post.getCommentCount() // 실제 컬럼 값을 사용
+        ));
     }
 
     /**
@@ -78,10 +92,12 @@ public class CommunityService {
             isLiked = communityLikeRepository.findByUserAndPost(user, post).isPresent();
         }
 
-        List<CommunityComment> comments = communityCommentRepository.findAllByPost(post);
-        List<CommentResponseDto> commentResponsDtos = convertToHierarchy(comments);
+        List<CommunityComment> allComments = communityCommentRepository.findAllByPost(post);
+        long totalCommentCount = allComments.size();
 
-        return PostDetailResponseDto.of(post, commentResponsDtos, isLiked);
+        List<CommentResponseDto> hierarchicalComments = convertToHierarchy(allComments);
+
+        return PostDetailResponseDto.of(post, hierarchicalComments, totalCommentCount, isLiked);
     }
 
     /**
@@ -169,6 +185,8 @@ public class CommunityService {
         CommunityPost post = communityPostRepository.findById(requestDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
+        post.setCommentCount(post.getCommentCount() + 1);
+
         CommunityComment parentComment = null;
         if (requestDto.getParentId() != null) {
             parentComment = communityCommentRepository.findById(requestDto.getParentId())
@@ -249,5 +267,62 @@ public class CommunityService {
         });
 
         return result;
+    }
+
+    /**
+     * 댓글 내용을 수정합니다.
+     * <p>요청한 사용자가 댓글 작성자인지 권한을 확인합니다.</p>
+     *
+     * @param requestDto 수정할 댓글 ID와 새로운 내용이 담긴 DTO
+     * @param userId     수정을 요청한 사용자 ID
+     */
+    @Transactional
+    public void updateComment(CommentUpdateRequestDto requestDto, Long userId) {
+        CommunityComment comment = communityCommentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+
+        if (!Objects.equals(comment.getUser().getUserIdx(), userId)) {
+            throw new IllegalStateException("댓글을 수정할 권한이 없습니다.");
+        }
+
+        comment.setContent(requestDto.getContent());
+        comment.setUpdatedAt(ZonedDateTime.now());
+    }
+
+    /**
+     * 댓글을 삭제합니다.
+     * <p>요청한 사용자가 댓글 작성자인지 권한을 확인합니다.</p>
+     *
+     * @param commentId 삭제할 댓글의 ID
+     * @param userId    삭제를 요청한 사용자 ID
+     */
+    @Transactional
+    public void deleteComment(Long commentId, Long userId) {
+        CommunityComment comment = communityCommentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+
+        if (!Objects.equals(comment.getUser().getUserIdx(), userId)) {
+            throw new IllegalStateException("댓글을 삭제할 권한이 없습니다.");
+        }
+
+        // [핵심 2] 삭제될 댓글의 총 개수(본인 + 모든 자손)를 계산합니다.
+        long countToDelete = countSelfAndChildren(comment);
+
+        // [핵심 3] 게시글의 댓글 수를 계산된 개수만큼 감소시킵니다.
+        CommunityPost post = comment.getPost();
+        post.setCommentCount((int)(post.getCommentCount() - countToDelete));
+
+        communityCommentRepository.delete(comment);
+    }
+
+    /**
+     * 자기 자신과 모든 자손 댓글의 수를 재귀적으로 계산하는 helper 메서드
+     */
+    private long countSelfAndChildren(CommunityComment comment) {
+        long count = 1; // 자기 자신
+        for (CommunityComment child : comment.getChildren()) {
+            count += countSelfAndChildren(child);
+        }
+        return count;
     }
 }

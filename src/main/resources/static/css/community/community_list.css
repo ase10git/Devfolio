@@ -1,14 +1,16 @@
 /* --- 페이지 전체 제목 --- */
-.page-header {
+.page-title-area {
     text-align: center;
-    margin: 3rem auto 2rem;
+    padding: 3rem 0 2rem; /* 위아래로 적절한 여백 부여 */
 }
-.page-header h1 {
+
+.page-title-area h1 {
     margin: 0 0 0.5rem;
     font-size: 2.2rem;
     font-weight: 700;
 }
-.page-header p {
+
+.page-title-area p {
     margin: 0;
     color: #555;
     font-size: 1.1rem;

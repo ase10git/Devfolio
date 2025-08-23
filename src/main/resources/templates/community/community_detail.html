@@ -5,8 +5,11 @@
     <title th:text="${post.title}">게시글 상세</title>
     <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_detail.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
 <div class="page-wrapper">
     <main class="detail-main-container">
         <!-- 게시글 컨텐츠 영역 -->
@@ -43,7 +46,7 @@
             <div class="like-button-wrapper">
                 <form th:action="@{/community/{id}/like(id=${post.postIdx})}" method="post">
                     <button type="submit" class="btn-like" th:classappend="${post.likedByCurrentUser} ? 'liked' : ''">
-                        <span th:text="${post.likedByCurrentUser} ? '👍 좋아요 취소' : '👍 좋아요'"></span>
+                        <span th:text="${post.likedByCurrentUser} ? '♡ 좋아요 취소' : '♥ 좋아요'"></span>
                     </button>
                 </form>
             </div>
@@ -51,13 +54,15 @@
 
         <!-- 댓글 섹션 -->
         <section class="comment-container">
-            <h2>댓글 <span th:text="${#lists.size(post.comments)}"></span></h2>
+            <h2>댓글 <span id="comment-count" th:text="${post.totalCommentCount}"></span></h2>
 
-            <div class="comment-write-box" th:if="${#authentication.isAuthenticated()}">
-                <form th:action="@{/community/{id}/comments(id=${post.postIdx})}" th:object="${commentRequest}" method="post" class="comment-form">
+            <div class="comment-write-box" id="main-comment-form-container" th:if="${#authentication.isAuthenticated()}">
+                <form th:action="@{/community/{id}/comments(id=${post.postIdx})}" th:object="${commentRequest}" method="post" class="comment-form" id="main-comment-form">
                     <input type="hidden" th:field="*{parentId}" />
                     <textarea th:field="*{content}" placeholder="댓글을 작성해주세요" required></textarea>
-                    <button type="submit" class="btn-submit">작성</button>
+                    <div class="comment-form-actions">
+                        <button type="submit" class="btn-submit">작성</button>
+                    </div>
                 </form>
             </div>
             <div class="comment-login-prompt" th:unless="${#authentication.isAuthenticated()}">

@@ -5,15 +5,16 @@
     <title>커뮤니티</title>
     <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_list.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
 <div class="page-wrapper">
-    <!-- 실제 헤더가 여기에 위치합니다 -->
-
-    <header class="page-header">
+    <header th:replace="~{fragments/header :: header}"></header>
+    <div class="page-title-area">
         <h1>커뮤니티</h1>
         <p>커뮤니티에서 스터디 그룹을 모집하거나 질의응답을 통해 다른 개발자와 소통하세요</p>
-    </header>
+    </div>
 
     <main class="community-main">
         <aside class="category-sidebar">
@@ -67,9 +68,9 @@
                                 <span class="timestamp" th:text="' • ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
                             </div>
                             <div class="post-stats">
-                                <span><img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘" /><span th:text="${post.views}"></span></span>
-                                <span><img th:src="@{/assets/icon/heart-fill.svg}" alt="하트 아이콘" /><span th:text="${post.likeCount}"></span></span>
-                                <span><img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘" /><span th:text="${post.commentCount}"></span></span>
+                                <span><img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘" /> <span th:text="${post.views}"></span></span>
+                                <span>♥ <span th:text="${post.likeCount}"></span></span>
+                                <span><img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘" /> <span th:text="${post.commentCount}"></span></span>
                             </div>
                         </div>
                     </article>

@@ -15,11 +15,5 @@ import org.springframework.data.jpa.repository.Query;
  * 동적 쿼리 기반의 검색 기능을 지원합니다.
  */
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long>, JpaSpecificationExecutor<CommunityPost> {
-    @Query("SELECT new io.github.sunday.devfolio.dto.community.PostListResponseDto(" +
-            "    p.postIdx, p.title, p.user.nickname, p.category, p.createdAt, p.views, p.likeCount, " +
-            "    p.status, p.content, p.user.profileImg, " +
-            "    (SELECT COUNT(c) FROM CommunityComment c WHERE c.post = p)" +
-            ") " +
-            "FROM CommunityPost p")
-    Page<PostListResponseDto> findPostsWithCommentCount(Pageable pageable);
+
 }

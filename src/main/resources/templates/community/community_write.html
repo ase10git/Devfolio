@@ -8,8 +8,11 @@
   <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
   <link rel="stylesheet" th:href="@{/css/community/community_write.css}">
   <link rel="stylesheet" th:href="@{/ckeditor5/ckeditor5.css}">
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
 <div class="page-wrapper">
   <main class="form-main-container">
     <form th:action="${isEditMode} ? @{/community/{id}/edit(id=${postRequest.postIdx})} : @{/community/new}"

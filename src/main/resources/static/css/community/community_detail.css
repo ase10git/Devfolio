@@ -12,6 +12,7 @@
     padding: 3rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
 .post-header {
     display: flex;
     justify-content: space-between;
@@ -19,6 +20,7 @@
     border-bottom: 1px solid #e9ecef;
     padding-bottom: 1.5rem;
 }
+
 .title-and-tags .tag {
     font-size: 0.9rem;
     font-weight: 700;
@@ -29,17 +31,21 @@
     margin-bottom: 1rem;
     display: inline-block;
 }
+
 .post-header h1 {
     font-size: 2rem;
     margin: 0;
     line-height: 1.4;
 }
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;
     flex-shrink: 0;
 }
-.action-buttons .btn-secondary, .action-buttons form button {
+
+.action-buttons .btn-secondary,
+.action-buttons form button {
     background-color: #f1f3f5;
     border: none;
     border-radius: 8px;
@@ -50,26 +56,42 @@
     color: #495057;
     font-size: 0.9rem;
 }
-.action-buttons form { margin: 0; }
+
+.action-buttons form {
+    margin: 0;
+}
+
 .author-meta {
     display: flex;
     align-items: center;
     padding: 1.5rem 0;
     color: #868e96;
 }
+
 .author-meta img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 0.8rem;
 }
+
 .author-name {
     font-weight: 600;
     color: #343a40;
 }
-.author-meta .divider { margin: 0 1rem; }
-.post-stats { margin-left: auto; }
-.post-stats span { margin-left: 1.5rem; }
+
+.author-meta .divider {
+    margin: 0 1rem;
+}
+
+.post-stats {
+    margin-left: auto;
+}
+
+.post-stats span {
+    margin-left: 1.5rem;
+}
+
 .post-content {
     padding: 2rem 0;
     line-height: 1.8;
@@ -77,11 +99,16 @@
     font-size: 1.05rem;
     border-bottom: 1px solid #e9ecef;
 }
+
 .like-button-wrapper {
     text-align: center;
     padding: 2rem 0;
 }
-.like-button-wrapper form { display: inline-block; }
+
+.like-button-wrapper form {
+    display: inline-block;
+}
+
 .btn-like {
     border: 1px solid #adb5bd;
     background-color: #fff;
@@ -92,6 +119,7 @@
     cursor: pointer;
     transition: all 0.2s;
 }
+
 .btn-like.liked {
     background-color: #ffe3e3;
     border-color: #ffc2c2;
@@ -111,14 +139,19 @@
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
 }
+
+/* --- 댓글 작성 폼 (메인 & 대댓글 공용) --- */
 .comment-write-box {
     border: 1px solid #dee2e6;
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 2rem;
 }
-.comment-form { display: flex; flex-direction: column; }
-.comment-write-box textarea {
+.comment-form {
+    display: flex;
+    flex-direction: column;
+}
+.comment-form textarea {
     border: none;
     resize: none;
     min-height: 80px;
@@ -127,8 +160,12 @@
     font-size: 1rem;
     font-family: inherit;
 }
-.comment-write-box .btn-submit {
-    align-self: flex-end;
+.comment-form-actions {
+    align-self: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    display: flex;
+    gap: 0.5rem;
+}
+.comment-form .btn-submit {
     background-color: #339af0;
     color: white;
     border: none;
@@ -145,64 +182,84 @@
     margin-bottom: 2rem;
 }
 
-/* --- 댓글 목록 (fragments/comment_tree.html 관련 스타일) --- */
-.comment-list { margin-top: 1rem; }
+/* --- 댓글 목록 및 대댓글 UI --- */
+.comment-list {
+    margin-top: 1rem;
+}
+
 .comment-item {
     padding: 1.5rem 0;
     border-top: 1px solid #f1f3f5;
 }
+
 .comment-list > .comment-item:first-child {
     border-top: none;
     padding-top: 0;
 }
+
 .comment-author {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    gap: 0.8rem;
+    margin-bottom: 0.75rem;
 }
+
 .profile-img-small {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
 }
-.comment-author strong { font-size: 1rem; }
-.comment-date { font-size: 0.85rem; color: #868e96; }
-.comment-content { padding-left: calc(32px + 0.5rem); margin-bottom: 0.5rem; }
-.comment-actions { padding-left: calc(32px + 0.5rem); }
-.btn-reply {
-    background: none; border: none; color: #868e96;
-    cursor: pointer; font-size: 0.85rem; padding: 0.25rem 0.5rem; margin-left: -0.5rem;
+
+.comment-author strong {
+    font-size: 1rem;
+    font-weight: 600;
 }
-.replies {
-    margin-left: 3rem;
-    border-left: 2px solid #e9ecef;
-    padding-left: 1.5rem;
-    margin-top: 1.5rem;
+
+.comment-date {
+    font-size: 0.85rem;
+    color: #868e96;
+}
+
+.comment-content {
+    padding-left: calc(36px + 0.8rem);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 
 .comment-actions {
-    margin-top: 0.5rem;
-    padding-left: calc(32px + 0.8rem); /* 프로필 이미지 너비 + 간격 */
+    padding-left: calc(36px + 0.8rem);
+    display: flex;
+    gap: 0.5rem;
 }
 
-.btn-reply {
+.btn-reply,
+.btn-edit,
+.btn-delete {
     background: none;
     border: none;
     color: #868e96;
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
-    padding: 0.25rem 0.5rem;
-    margin-left: -0.5rem; /* 버튼 패딩만큼 왼쪽으로 이동 */
+    padding: 0.25rem;
 }
 
-.btn-reply:hover {
+.btn-reply:hover,
+.btn-edit:hover,
+.btn-delete:hover {
     text-decoration: underline;
 }
 
 .reply-form-container {
     margin-top: 1rem;
+    padding-left: calc(36px + 0.8rem);
+}
+
+.reply-form-container .comment-write-box {
+    margin-bottom: 0;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
 }
 
 .btn-cancel-reply {
@@ -213,12 +270,50 @@
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
-    margin-right: 0.5rem;
 }
 
 .replies {
-    margin-left: 2.5rem; /* 대댓글 들여쓰기 */
+    margin-left: 2.5rem;
     border-left: 2px solid #e9ecef;
-    padding-left: 1.5rem;
+    padding-left: 2rem;
     margin-top: 1.5rem;
+}
+
+/* --- 댓글 수정 UI --- */
+.edit-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 0.5rem;
+    border: 1px solid #339af0;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+}
+
+.edit-actions {
+    padding-left: 0;
+    align-self: flex-end;
+}
+
+.btn-cancel-edit,
+.btn-save-edit {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-save-edit {
+    background-color: #339af0;
+    color: white;
+    border-color: #339af0;
 }
