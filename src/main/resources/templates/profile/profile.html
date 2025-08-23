@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>프로필</title>
     <link rel="stylesheet" th:href="@{/css/profilepage/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/styles.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <script>
         // 간단 모달 토글
@@ -241,6 +244,6 @@
         </form>
     </div>
 </div>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

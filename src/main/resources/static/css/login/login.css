@@ -1,5 +1,5 @@
-main {
-    margin-top: 160px;
+.login-main {
+    margin: 160px 0;
     width: 100%;
     display: flex;
     flex-direction: column;

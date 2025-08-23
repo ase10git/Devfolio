@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>커뮤니티</title>
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_list.css}">
 </head>
@@ -116,6 +118,7 @@
         </section>
     </main>
 </div>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script type="module" th:src="@{/js/community/community-list.js}"></script>
 </body>
 </html>

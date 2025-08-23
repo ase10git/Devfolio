@@ -10,7 +10,7 @@
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-<main>
+<main class="login-main">
   <section class="container">
     <div class="logo-box">
       <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="logo-img" />
@@ -58,6 +58,7 @@
     </form>
   </section>
 </main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script type="module" th:src="@{/js/login/login.js}"></script>
 </body>
 </html>
