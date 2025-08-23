@@ -28,7 +28,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio/**", "/error").permitAll()
+                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/portfolio/new", "/portfolio/*/edit").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/portfolio**", "/portfolio/**").permitAll()
+                        .requestMatchers("/api/portfolio/list**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/ckeditor5/**", "/prompts/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/community", "/community/{postId}").permitAll()
