@@ -111,7 +111,7 @@ public class UserController {
             return "signup";
         }
 
-        // 인증 시간 만료 여부(예: 인증 후 10분 내에만 회원가입 가능)
+        // 인증 시간 만료 여부(예: 인증 후 5분 내에만 회원가입 가능)
         if (verification.getExpiredAt().isBefore(ZonedDateTime.now())) {
             model.addAttribute("error", "이메일 인증이 만료되었습니다. 다시 인증해 주세요.");
             return "signup";

@@ -2,7 +2,9 @@ package io.github.sunday.devfolio.service;
 
 
 import io.github.sunday.devfolio.dto.ProfileUpdateRequest;
+import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.repository.EmailVerificationRepository;
 import io.github.sunday.devfolio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,12 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.ZonedDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileUpdateService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final EmailVerificationRepository emailVerificationRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void verifyPassword(User currentUser, String rawPassword) {
@@ -31,11 +36,30 @@ public class ProfileUpdateService {
         String nickname = req.getNickname().trim();
         String password = req.getPassword();
 
-        // 중복 검사 (자기 자신 제외)
-        if (!currentUser.getEmail().equals(email)
-                && userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        // 이메일 변경 시 이메일 인증 확인
+        if (!currentUser.getEmail().equals(email)) {
+            EmailVerification verification = emailVerificationRepository
+                    .findTopByEmailOrderByExpiredAtDesc(email)
+                    .orElse(null);
+
+            // 이메일 중복 검사 (자기 자신 제외)
+            if (userRepository.existsByEmail(email)) {
+                throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            }
+
+            if (verification == null) {
+                throw new IllegalArgumentException("이메일 인증을 진행해 주세요.");
+            }
+
+            if (!Boolean.TRUE.equals(verification.getVerified())) {
+                throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
+            }
+
+            if (verification.getExpiredAt().isBefore(ZonedDateTime.now())) {
+                throw new IllegalArgumentException("이메일 인증이 만료되었습니다. 다시 인증해 주세요.");
+            }
         }
+        // 닉네임 중복 검사 (자기 자신 제외)
         if (!currentUser.getNickname().equals(nickname)
                 && userRepository.existsByNickname(nickname)) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
