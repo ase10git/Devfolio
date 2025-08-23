@@ -6,23 +6,52 @@
   <link rel="stylesheet" th:href="@{/css/common/header.css}">
   <link rel="stylesheet" th:href="@{/css/common/footer.css}">
   <link rel="stylesheet" th:href="@{/css/common/styles.css}">
+  <link rel="stylesheet" th:href="@{/css/common/main.css}">
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
-
-  <span>
-    <th:block th:if="${session.loginUserIdx == null}">
-      <form th:action="@{/login}" method="get" class="button-form">
-        <button type="submit" class="loginBtn">로그인</button>
-      </form>
-    </th:block>
-    <th:block th:if="${session.loginUserIdx != null}">
-      <form th:action="@{/logout}" method="post" class="button-form">
-        <button type="submit" class="loginBtn">로그아웃</button>
-      </form>
-    </th:block>
-  </span>
-
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="service-main">
+  <section class="visual">
+    <img th:src="@{/assets/images/main-information-visual.png}" alt="서비스 소개 이미지">
+    <div>
+      <h1>개발자를 위한 프로젝트 포트폴리오 공유 사이트</h1>
+      <p>Devfolio는 개발자를 위한 프로젝트 포트폴리오 제작 사이트로 다양한 포트폴리오를 제작하고 공유하는 플랫폼입니다.</p>
+    </div>
+  </section>
+  <section class="service-section">
+    <header class="service-header">
+      <h2>주요 기능 소개</h2>
+      <p>Devfolio에서 템플릿화된 포트폴리오와 이력서를 관리하고 다른 사람들과 공유하세요</p>
+    </header>
+    <div class="service-info">
+      <div class="service-card">
+        <div class="service-image-box">
+          <img>
+        </div>
+        <div class="service-meta">
+          <div>
+            <h3 class="service-title">포트폴리오 검색 및 작성</h3>
+            <p class="description">다른 개발자들의 포트폴리오를 검색하거나 새 포트폴리오를 추가해보세요.</p>
+            <p>자유 형식과 AI 제공 템플릿으로 원하는 템플릿 적용해서 프로젝트별 포트폴리오를 만들 수 있습니다.</p>
+          </div>
+          <div><a th:href="@{/portfolio}">바로 가기</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="team-section">
+    <header class="service-header">
+      <h2>주요 기능 소개</h2>
+      <p>Devfolio에서 템플릿화된 포트폴리오와 이력서를 관리하고 다른 사람들과 공유하세요</p>
+    </header>
+    <div>
+      <div>
+        <img>
+      </div>
+      <div>Team Sunday 설명</div>
+    </div>
+  </section>
+</main>
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
