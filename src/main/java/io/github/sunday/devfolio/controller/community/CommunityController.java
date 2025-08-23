@@ -2,6 +2,8 @@ package io.github.sunday.devfolio.controller.community;
 
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.community.*;
+import io.github.sunday.devfolio.entity.table.community.Category;
+import io.github.sunday.devfolio.enums.CommunitySort;
 import io.github.sunday.devfolio.service.community.CommunityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/community")
@@ -31,11 +38,13 @@ public class CommunityController {
      * 커뮤니티 게시글 목록 페이지를 표시합니다.
      */
     @GetMapping
-    public String listPosts(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+    public String listPosts(@Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
                             Model model) {
-        Page<PostListResponseDto> postPage = communityService.getPosts(pageable);
-        model.addAttribute("searchDto", new CommunitySearchRequestDto());
+        Page<PostListResponseDto> postPage = communityService.getPosts(requestDto);
         model.addAttribute("postPage", postPage);
+        model.addAttribute("requestDto", requestDto);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("sortOptions", CommunitySort.values());
         return "community/community_list";
     }
 
@@ -47,11 +56,26 @@ public class CommunityController {
      */
     @GetMapping("/search")
     public String searchPosts(
-            @Valid @ModelAttribute CommunitySearchRequestDto searchRequestDto,
-            Model model) {
-        Page<PostListResponseDto> postPage = communityService.searchPosts(searchRequestDto);
-        model.addAttribute("searchDto", searchRequestDto);
+            @Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        List<String> errorMessages = new ArrayList<>();
+        if (bindingResult.hasErrors()) {
+            errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+        }
+        Page<PostListResponseDto> postPage = communityService.searchPosts(requestDto);
         model.addAttribute("postPage", postPage);
+        model.addAttribute("requestDto", requestDto);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("sortOptions", CommunitySort.values());
+
+        if (!errorMessages.isEmpty()) {
+            model.addAttribute("error", errorMessages);
+        }
         return "community/community_list";
     }
 

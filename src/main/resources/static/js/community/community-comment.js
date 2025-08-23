@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function updateComment(commentId, content, contentDiv, originalText) {
         try {
-            const response = await fetch('api/community/comments', {
+            const response = await fetch('/api/community/comments', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ commentId: commentId, content: content })
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function deleteComment(commentId) {
         try {
-            const response = await fetch(`api/community/comments/${commentId}`, {
+            const response = await fetch(`/api/community/comments/${commentId}`, {
                 method: 'DELETE'
             });
 

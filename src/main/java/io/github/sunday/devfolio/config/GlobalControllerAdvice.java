@@ -1,5 +1,7 @@
-package io.github.sunday.devfolio.config; // 패키지는 프로젝트 구조에 맞게 조정
+package io.github.sunday.devfolio.config;
 
+import io.github.sunday.devfolio.enums.CommunitySort; // import 필요
+import io.github.sunday.devfolio.enums.PortfolioSort;   // import 필요
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -7,28 +9,17 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
-/**
- * 전역 컨트롤러 설정을 위한 클래스.
- * <p>
- * @ControllerAdvice 어노테이션을 통해 애플리케이션의 모든 컨트롤러에
- * 공통적으로 적용될 @InitBinder, @ExceptionHandler 등을 정의합니다.
- * </p>
- */
+import java.beans.PropertyEditorSupport;
+
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
     /**
-     * 모든 컨트롤러의 데이터 바인딩 시 String 타입에 대한 전처리를 수행합니다.
-     * <p>
-     * 입력된 문자열의 앞뒤 공백을 제거하고,
-     * Jsoup 라이브러리를 사용하여 XSS(Cross-Site Scripting) 공격에 사용될 수 있는
-     * 잠재적으로 위험한 HTML 태그를 필터링합니다.
-     * </p>
-     *
-     * @param binder 데이터 바인딩 설정을 위한 WebDataBinder 객체
+     * 모든 String 타입 입력에 대해 기본 XSS 방어 및 공백 제거를 수행합니다.
+     * 가장 엄격한 Safelist.basic()을 사용합니다.
      */
     @InitBinder
-    public void initBinder(WebDataBinder binder) {
+    public void initStringBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
             @Override
             public void setAsText(String text) {
@@ -36,9 +27,43 @@ public class GlobalControllerAdvice {
                     super.setValue(null);
                     return;
                 }
-                // CKEditor 내용 유지를 위해 기본적인 태그는 허용하는 relaxed Safelist 사용
-                String safeText = Jsoup.clean(text, Safelist.relaxed());
+                // HTML 태그가 거의 없는 일반적인 문자열 필드를 위한 설정
+                String safeText = Jsoup.clean(text, Safelist.basic());
                 super.setAsText(safeText.trim());
+            }
+        });
+    }
+
+    /**
+     * CommunitySort Enum 타입 변환을 처리합니다.
+     */
+    @InitBinder
+    public void initCommunitySortBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(CommunitySort.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                CommunitySort sort = CommunitySort.fromName(text);
+                if (sort == null) {
+                    sort = CommunitySort.UPDATED_AT; // 기본값
+                }
+                setValue(sort);
+            }
+        });
+    }
+
+    /**
+     * PortfolioSort Enum 타입 변환을 처리합니다.
+     */
+    @InitBinder
+    public void initPortfolioSortBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(PortfolioSort.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                PortfolioSort sort = PortfolioSort.fromName(text);
+                if (sort == null) {
+                    sort = PortfolioSort.UPDATED_AT; // 기본값
+                }
+                setValue(sort);
             }
         });
     }

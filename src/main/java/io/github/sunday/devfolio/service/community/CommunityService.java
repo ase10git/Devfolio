@@ -40,7 +40,9 @@ public class CommunityService {
      * @return 페이징 처리된 게시글 목록 (PostListResponse)
      */
 
-    public Page<PostListResponseDto> getPosts(Pageable pageable) {
+    public Page<PostListResponseDto> getPosts(CommunitySearchRequestDto requestDto) {
+        Sort sort = Sort.by(requestDto.getDirection(), requestDto.getSort().getFieldName());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
         Page<CommunityPost> postPage = communityPostRepository.findAll(pageable);
 
         return postPage.map(post -> new PostListResponseDto(
@@ -54,7 +56,7 @@ public class CommunityService {
                 post.getStatus(),
                 post.getContent(),
                 post.getUser().getProfileImg(),
-                post.getCommentCount() // 실제 컬럼 값을 사용
+                post.getCommentCount()
         ));
     }
 
