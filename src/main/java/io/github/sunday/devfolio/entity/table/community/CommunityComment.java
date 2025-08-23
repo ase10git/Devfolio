@@ -53,6 +53,16 @@ public class CommunityComment {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> children = new ArrayList<>();
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = ZonedDateTime.now();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

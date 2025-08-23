@@ -143,7 +143,6 @@ public class CommunityService {
         post.setContent(requestDto.getContent());
         post.setCategory(requestDto.getCategory());
         post.setStatus(requestDto.getStatus());
-        post.setUpdatedAt(ZonedDateTime.now());
     }
 
     /**
@@ -198,7 +197,6 @@ public class CommunityService {
                 .post(post)
                 .parent(parentComment)
                 .content(requestDto.getContent())
-                .createdAt(ZonedDateTime.now())
                 .build();
         communityCommentRepository.save(newComment);
     }
@@ -226,7 +224,6 @@ public class CommunityService {
             CommunityLike newLike = CommunityLike.builder()
                     .user(user)
                     .post(post)
-                    .likedAt(ZonedDateTime.now())
                     .build();
             communityLikeRepository.save(newLike);
             post.setLikeCount(post.getLikeCount() + 1);
@@ -286,7 +283,6 @@ public class CommunityService {
         }
 
         comment.setContent(requestDto.getContent());
-        comment.setUpdatedAt(ZonedDateTime.now());
     }
 
     /**

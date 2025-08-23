@@ -66,24 +66,6 @@ public class PortfolioController {
     }
 
     /**
-     * 포트폴리오 작성 요청이 들어올 때 DTO 내의 String에서 script를 제거
-     */
-    @InitBinder({"writeRequestDto", "editRequestDto"})
-    public void initBinderToWrite(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
-            @Override
-            public void setAsText(String text) {
-                if (text != null) {
-                    String safeText = Jsoup.clean(text, Safelist.relaxed());
-                    super.setAsText(safeText.trim());
-                } else {
-                    super.setValue(null);
-                }
-            }
-        });
-    }
-
-    /**
      * 포트폴리오 메인 페이지 출력
      * 포트폴리오 검색, 핫한 포트폴리오 제공
      */

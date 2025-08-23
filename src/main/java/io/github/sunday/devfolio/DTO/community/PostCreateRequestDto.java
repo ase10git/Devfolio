@@ -35,6 +35,7 @@ public class PostCreateRequestDto {
                 .status(this.status) // 기본값 설정
                 .views(0)
                 .likeCount(0)
+                .commentCount(0)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }

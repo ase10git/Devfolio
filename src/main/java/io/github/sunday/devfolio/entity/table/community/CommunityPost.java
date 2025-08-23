@@ -84,6 +84,17 @@ public class CommunityPost {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityImage> images = new ArrayList<>();
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = ZonedDateTime.now();
+    }
+
     /**
      * 검색을 위한 tsvector
      */

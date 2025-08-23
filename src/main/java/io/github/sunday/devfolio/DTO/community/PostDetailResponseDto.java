@@ -24,11 +24,12 @@ public class PostDetailResponseDto {
     private final Integer views;
     private final Integer likeCount;
     private final List<CommentResponseDto> comments;
+    private final long totalCommentCount;
     private boolean likedByCurrentUser;
     private final Category category;
     private final String status;
 
-    public static PostDetailResponseDto of(CommunityPost post, List<CommentResponseDto> comments, boolean isLiked) {
+    public static PostDetailResponseDto of(CommunityPost post, List<CommentResponseDto> comments, long totalCommentCount, boolean isLiked) {
         return PostDetailResponseDto.builder()
                 .postIdx(post.getPostIdx())
                 .title(post.getTitle())
@@ -40,6 +41,7 @@ public class PostDetailResponseDto {
                 .views(post.getViews())
                 .likeCount(post.getLikeCount())
                 .comments(comments)
+                .totalCommentCount(totalCommentCount)
                 .likedByCurrentUser(isLiked)
                 .category(post.getCategory())
                 .status(post.getStatus())
