@@ -23,6 +23,10 @@ ol {
   list-style-type: none;
 }
 
+body {
+    background-color: #F0F8FF;
+}
+
 /* text type input option */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

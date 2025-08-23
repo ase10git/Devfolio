@@ -1,17 +1,4 @@
-/* Todo : 통합 후 제거 예정 */
-/*
-body {
-    background-color: #F0F8FF;
-}
-
-main {
-    margin: 100px 0;
-    padding: 0 50px;
-    width: 100%;
-}
-*/
-
-main {
+.portfolio-main {
     margin: 100px 0;
     padding: 0 50px;
     width: 100%;
@@ -29,12 +16,14 @@ main {
 
 /* form section */
 .form-section {
-    flex: 1;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 30px;
+    background-color: white;
+    border-radius: var(--box-radius-15);
 }
 
 .title-box {
