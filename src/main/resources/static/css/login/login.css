@@ -88,6 +88,10 @@ label {
     background-color: #E8F0FF;
 }
 
+.input-field:focus {
+    box-shadow: 0 0 5px #3A5BA0;
+}
+
 .password-toggle-button {
     position: absolute;
     top: 45%;
@@ -109,10 +113,6 @@ label {
 
 .eye-slash-icon.hidden {
     display: none;
-}
-
-.input-field:focus {
-    box-shadow: 0 0 5px #3A5BA0;
 }
 
 .login {
