@@ -68,9 +68,16 @@
         <h1 class="text-2xl font-bold capitalize" th:text="${tab}">resume</h1>
 
         <div>
-            <button th:if="${isSelf}" class="px-4 py-2 bg-blue-600 text-white rounded"
+            <!-- 본인 프로필 & 로컬 회원일 경우 -->
+            <button th:if="${isSelf and user.oauthProvider.name() == 'LOCAL'}" class="px-4 py-2 bg-blue-600 text-white rounded"
                     type="button" onclick="openVerifyModal()">프로필 수정</button>
 
+            <!-- 본인 프로필 & 소셜 회원일 경우 -->
+            <a th:if="${isSelf and user.oauthProvider.name() != 'LOCAL'}"
+               th:href="@{|/profile/${user.userIdx}/edit|}"
+               class="px-4 py-2 bg-blue-600 text-white rounded inline-block">프로필 수정</a>
+
+            <!-- 타인 프로필일 경우 -->
             <form th:if="${!isSelf}" th:action="@{|/profile/${user.userIdx}/follow|}" method="post" class="inline">
                 <input type="hidden" name="ownerUserIdx" th:value="${user.userIdx}"/>
                 <input type="hidden" name="tab" th:value="${tab}"/>
