@@ -185,6 +185,7 @@ public class ProfileViewController {
 
         model.addAttribute("form", form);
         model.addAttribute("userIdx", userIdx);
+        model.addAttribute("oauthProvider", currentUser.getOauthProvider());
         return "profile/profile_edit";
     }
 
