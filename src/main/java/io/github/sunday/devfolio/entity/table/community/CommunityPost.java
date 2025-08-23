@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,7 +59,7 @@ public class CommunityPost {
     /** 댓글 수 */
     @Column(name = "comment_count", nullable = false)
     @ColumnDefault("0")
-    private Integer commentCount;
+    private Integer commentCount = 0;
 
     /** 생성 일시 */
     @Column(name = "created_at", nullable = false)
@@ -71,6 +73,27 @@ public class CommunityPost {
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, columnDefinition = "VARCHAR(20)")
     private Category category;
+
+    /** 참조 무결성 제약조건 해결 위한 필드 **/
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityImage> images = new ArrayList<>();
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = ZonedDateTime.now();
+    }
 
     /**
      * 검색을 위한 tsvector

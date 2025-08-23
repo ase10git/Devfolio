@@ -1,90 +1,176 @@
-// static/js/community/community_detail.js
-
 document.addEventListener('DOMContentLoaded', function () {
-    // 페이지에 댓글 작성 폼이 있는지 확인 (로그인 상태)
-    const mainCommentFormContainer = document.querySelector('.comment-write-box');
-    if (!mainCommentFormContainer) {
-        return; // 폼이 없으면 (비로그인 상태) 스크립트 실행 중단
-    }
 
-    const mainCommentForm = mainCommentFormContainer.querySelector('.comment-form');
-    const parentIdInput = mainCommentForm.querySelector('input[name="parentId"]');
-    const textarea = mainCommentForm.querySelector('textarea');
-
-    // '답글' 버튼 클릭 이벤트 처리
+    // '답글' 버튼 클릭 이벤트
     document.querySelectorAll('.btn-reply').forEach(button => {
         button.addEventListener('click', function() {
-            // 다른 곳에 열려있을 수 있는 대댓글 폼을 먼저 초기화
-            resetCommentForm();
+            // 페이지에 이미 열려있는 다른 대댓글 폼이 있다면 먼저 제거
+            const existingReplyForm = document.querySelector('.reply-form-container .comment-write-box');
+            if (existingReplyForm) {
+                existingReplyForm.remove();
+            }
 
             const commentId = this.dataset.commentId;
             const commentItem = document.getElementById('comment-' + commentId);
             const replyFormContainer = commentItem.querySelector('.reply-form-container');
 
-            // 1. parentId input의 값을 현재 댓글 ID로 설정
-            parentIdInput.value = commentId;
+            // 대댓글 폼의 HTML을 생성하여 삽입
+            replyFormContainer.innerHTML = createReplyFormHtml(commentId);
 
-            // 2. 메인 댓글 폼을 이 컨테이너로 이동시킴
-            replyFormContainer.appendChild(mainCommentForm);
-
-            // 3. 텍스트에리어에 포커스
-            textarea.focus();
-
-            // 4. 취소 버튼 추가
-            addCancelButton();
+            // 동적으로 생성된 폼의 요소들에 이벤트 리스너를 다시 연결
+            addEventListenersToReplyForm(replyFormContainer);
         });
     });
 
-    // '수정' 버튼 클릭 이벤트 처리 (임시)
+    // '수정' 버튼 클릭 이벤트
     document.querySelectorAll('.btn-edit').forEach(button => {
         button.addEventListener('click', function() {
-            alert('댓글 ID: ' + this.dataset.commentId + ' 수정 기능은 구현 예정입니다.');
+            const commentId = this.dataset.commentId;
+            const commentItem = document.getElementById('comment-' + commentId);
+            const contentDiv = commentItem.querySelector('.comment-content');
+            showEditUI(contentDiv, commentId);
         });
     });
 
-    // '삭제' 버튼 클릭 이벤트 처리 (임시)
+    // '삭제' 버튼 클릭 이벤트
     document.querySelectorAll('.btn-delete').forEach(button => {
         button.addEventListener('click', function() {
             if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
-                alert('댓글 ID: ' + this.dataset.commentId + ' 삭제 기능은 구현 예정입니다.');
-                // TODO: 여기에 fetch API 등을 사용하여 서버에 삭제 요청을 보내는 로직 추가
+                const commentId = this.dataset.commentId;
+                deleteComment(commentId);
             }
         });
     });
 
-    // 취소 버튼을 만들고 이벤트 리스너를 추가하는 함수
-    function addCancelButton() {
-        // 이미 취소 버튼이 있다면 새로 만들지 않음
-        if (mainCommentForm.querySelector('.btn-cancel-reply')) {
-            return;
-        }
+    /**
+     * 대댓글 작성 폼의 HTML 문자열을 생성하는 함수
+     * @param {string} parentId - 부모 댓글의 ID
+     * @returns {string} - 생성된 HTML 문자열
+     */
+    function createReplyFormHtml(parentId) {
+        const mainForm = document.getElementById('main-comment-form');
+        // 비로그인 상태 등 메인 폼이 없는 경우를 대비
+        if (!mainForm) return '';
 
-        const cancelButton = document.createElement('button');
-        cancelButton.type = 'button';
-        cancelButton.textContent = '취소';
-        cancelButton.className = 'btn-cancel-reply';
+        const formAction = mainForm.getAttribute('action');
 
-        cancelButton.addEventListener('click', resetCommentForm); // [개선] 함수 직접 참조
-
-        // '작성' 버튼 앞에 취소 버튼 삽입
-        mainCommentForm.querySelector('button[type="submit"]').insertAdjacentElement('beforebegin', cancelButton);
+        return `
+            <div class="comment-write-box">
+                <form action="${formAction}" method="post" class="comment-form">
+                    <input type="hidden" name="parentId" value="${parentId}" />
+                    <textarea name="content" placeholder="대댓글을 작성해주세요" required></textarea>
+                    <div class="comment-form-actions">
+                        <button type="button" class="btn-cancel-reply">취소</button>
+                        <button type="submit" class="btn-submit">작성</button>
+                    </div>
+                </form>
+            </div>
+        `;
     }
 
-    // 댓글 폼을 원래 위치로 되돌리고 상태를 초기화하는 함수
-    function resetCommentForm() {
-        // 1. 폼을 원래의 컨테이너로 이동
-        mainCommentFormContainer.appendChild(mainCommentForm);
+    /**
+     * 동적으로 생성된 대댓글 폼 내의 요소들에 이벤트를 추가하는 함수
+     * @param {HTMLElement} container - 대댓글 폼을 감싸는 컨테이너
+     */
+    function addEventListenersToReplyForm(container) {
+        const replyFormBox = container.querySelector('.comment-write-box');
+        if (!replyFormBox) return;
 
-        // 2. parentId 값을 비움
-        parentIdInput.value = '';
+        // '취소' 버튼 클릭 시 폼(을 감싸는 div) 제거
+        replyFormBox.querySelector('.btn-cancel-reply').addEventListener('click', () => {
+            replyFormBox.remove();
+        });
 
-        // 3. [개선] 텍스트에리어 내용도 비움
-        textarea.value = '';
+        // 폼 제출 시 유효성 검사
+        replyFormBox.querySelector('form').addEventListener('submit', (e) => {
+            const textarea = replyFormBox.querySelector('textarea');
+            if (textarea.value.trim() === '') {
+                alert('내용을 입력해주세요.');
+                e.preventDefault(); // 제출 막기
+            }
+        });
+    }
 
-        // 4. 취소 버튼 제거
-        const cancelButton = mainCommentForm.querySelector('.btn-cancel-reply');
-        if (cancelButton) {
-            cancelButton.remove();
+    /**
+     * 댓글 수정 UI를 생성하고 표시하는 함수
+     * @param {HTMLElement} contentDiv - 수정할 내용이 표시된 div
+     * @param {string} commentId - 수정할 댓글의 ID
+     */
+    function showEditUI(contentDiv, commentId) {
+        const originalText = contentDiv.textContent.trim();
+        contentDiv.innerHTML = `
+            <div class="edit-area">
+                <textarea class="edit-textarea">${originalText}</textarea>
+                <div class="edit-actions">
+                    <button type="button" class="btn-cancel-edit">취소</button>
+                    <button type="button" class="btn-save-edit">저장</button>
+                </div>
+            </div>
+        `;
+
+        contentDiv.querySelector('.btn-save-edit').addEventListener('click', () => {
+            const newContent = contentDiv.querySelector('.edit-textarea').value;
+            updateComment(commentId, newContent, contentDiv, originalText);
+        });
+
+        contentDiv.querySelector('.btn-cancel-edit').addEventListener('click', () => {
+            contentDiv.textContent = originalText;
+        });
+    }
+
+    /**
+     * 서버에 댓글 수정 요청을 보내는 함수 (fetch API 사용)
+     */
+    async function updateComment(commentId, content, contentDiv, originalText) {
+        try {
+            const response = await fetch('/api/community/comments', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ commentId: commentId, content: content })
+            });
+
+            if (response.ok) {
+                contentDiv.textContent = content;
+            } else {
+                const errorMessage = await response.text();
+                alert('댓글 수정 실패: ' + errorMessage);
+                contentDiv.textContent = originalText;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+        }
+    }
+
+    /**
+     * 서버에 댓글 삭제 요청을 보내는 함수 (fetch API 사용)
+     */
+    async function deleteComment(commentId) {
+        try {
+            const response = await fetch(`/api/community/comments/${commentId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const commentElement = document.getElementById('comment-' + commentId);
+                if (commentElement) {
+                    const commentsToRemove = commentElement.querySelectorAll('.comment-item');
+                    const deletedCount = 1 + commentsToRemove.length; // 본인(1) + 자식들
+
+                    const countSpan = document.getElementById('comment-count');
+                    if (countSpan) {
+                        const currentCount = parseInt(countSpan.textContent, 10);
+                        countSpan.textContent = currentCount - deletedCount;
+                    }
+
+                    commentElement.remove();
+                }
+            } else {
+                const errorMessage = await response.text();
+                alert('댓글 삭제 실패: ' + errorMessage);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
         }
     }
 });

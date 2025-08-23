@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/portfolio/list**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/ckeditor5/**", "/prompts/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/community", "/community/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/community", "/community/**").permitAll()
                         .requestMatchers("/community/**").authenticated()
                         .anyRequest().authenticated()
                 )

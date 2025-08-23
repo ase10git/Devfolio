@@ -34,8 +34,12 @@ public class CommunityLike {
 
     /** 좋아요 시각 (기본값 now()) */
     @Column(name = "liked_at", nullable = false)
-    @ColumnDefault("now()")
     private ZonedDateTime likedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.likedAt = ZonedDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {
