@@ -29,7 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SecureImageService {
 
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    private static final long MAX_FILE_SIZE = 100 * 1024 * 1024; // 10MB
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
             "image/jpeg",
             "image/jpg",
