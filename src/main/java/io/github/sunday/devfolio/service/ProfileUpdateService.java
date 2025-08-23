@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 public class ProfileUpdateService {
 
     private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     public void verifyPassword(User currentUser, String rawPassword) {
@@ -26,21 +27,33 @@ public class ProfileUpdateService {
 
     @Transactional
     public User updateProfile(User currentUser, ProfileUpdateRequest req) {
+        String email = req.getEmail().trim().toLowerCase();
+        String nickname = req.getNickname().trim();
+        String password = req.getPassword();
+
         // 중복 검사 (자기 자신 제외)
-        if (!currentUser.getEmail().equals(req.getEmail())
-                && userRepository.existsByEmail(req.getEmail().trim().toLowerCase())) {
+        if (!currentUser.getEmail().equals(email)
+                && userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
-        if (!currentUser.getNickname().equals(req.getNickname())
-                && userRepository.existsByNickname(req.getNickname().trim())) {
+        if (!currentUser.getNickname().equals(nickname)
+                && userRepository.existsByNickname(nickname)) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+        // 닉네임 유효성 검사
+        if (!userService.isValidNickname(nickname)) {
+            throw new IllegalArgumentException("닉네임은 한글/영문/숫자를 사용한 4~12자만 가능합니다.");
+        }
+        // 비밀번호 유효성 검사 (비밀번호 입력 시만)
+        if (StringUtils.hasText(password) && !userService.isValidPassword(password)) {
+            throw new IllegalArgumentException("비밀번호는 영문+숫자 필수, 특수문자는 !@#$%^&*()만 가능하며 8~20자여야 합니다.");
         }
 
         // 변경사항 반영
-        currentUser.setEmail(req.getEmail().trim().toLowerCase());
-        currentUser.setNickname(req.getNickname().trim());
-        if (StringUtils.hasText(req.getPassword())) {
-            currentUser.setPassword(passwordEncoder.encode(req.getPassword()));
+        currentUser.setEmail(email);
+        currentUser.setNickname(nickname);
+        if (StringUtils.hasText(password)) {
+            currentUser.setPassword(passwordEncoder.encode(password));
         }
         currentUser.setGithubUrl(req.getGithubUrl());
         currentUser.setBlogUrl(req.getBlogUrl());
