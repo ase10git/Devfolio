@@ -6,6 +6,7 @@ import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.EmailVerificationRepository;
 import io.github.sunday.devfolio.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -157,7 +158,13 @@ public class UserController {
      * @return login.html 템플릿 경로
      */
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+        Object errorMessage = request.getSession().getAttribute("loginErrorMessage");
+        if (errorMessage != null) {
+            model.addAttribute("loginErrorMessage", errorMessage);
+            // 1회성 출력 후 세션에서 제거
+            request.getSession().removeAttribute("loginErrorMessage");
+        }
         return "login";
     }
 }

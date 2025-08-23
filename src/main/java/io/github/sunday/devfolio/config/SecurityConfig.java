@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -27,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio/**", "/portfolio**", "/error").permitAll()
+                        .requestMatchers("/", "/main", "/signup", "/login", "/email/**", "/check/**", "/portfolio/**", "/error").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/ckeditor5/**", "/prompts/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/community", "/community/{postId}").permitAll()
@@ -51,6 +52,17 @@ public class SecurityConfig {
                                 userInfo.userService(customOAuth2UserService)
                         )
                         .defaultSuccessUrl("/main", true)
+                        .failureHandler((request, response, exception) -> {
+                            String errorMessage = "로그인에 실패했습니다.";
+                            if (exception instanceof OAuth2AuthenticationException authEx) {
+                                String desc = authEx.getError().getDescription();
+                                errorMessage = (desc != null) ? desc : authEx.getMessage();
+                            }
+                            // 세션에 저장 (1회성)
+                            request.getSession().setAttribute("loginErrorMessage", errorMessage);
+                            // 다시 로그인 페이지로 리다이렉트
+                            response.sendRedirect("/login?error");
+                        })
                 )
                 .csrf(csrf -> csrf.disable());
 

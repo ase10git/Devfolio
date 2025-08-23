@@ -31,10 +31,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (user != null) {
             // 기존 로컬 회원이 존재하면 소셜 로그인 차단
-            if (user.getOauthProvider() == null) {
+            if (user.getOauthProvider() == AuthProvider.LOCAL) {
                 throw new OAuth2AuthenticationException(
-                        new OAuth2Error("email_exists"),
-                        "이미 같은 이메일로 계정이 존재합니다."
+                        new OAuth2Error("email_exists", "이미 사용 중인 이메일입니다. 기존 계정으로 로그인해 주세요.", null)
                 );
             }
             // 기존 소셜 회원이면 그대로 진행
