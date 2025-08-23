@@ -39,6 +39,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("loginId")
                         .defaultSuccessUrl("/main", true)
+                        .failureHandler((request, response, exception) -> {
+                            request.getSession().setAttribute("loginErrorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
+                            response.sendRedirect("/login?error");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout

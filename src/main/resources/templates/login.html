@@ -116,8 +116,6 @@
     <div th:if="${loginErrorMessage}" class="msg error">
       <span th:text="${loginErrorMessage}"></span>
     </div>
-
-    <div th:if="${param.error} eq 'login'" class="msg error">아이디 또는 비밀번호가 잘못되었습니다.</div>
   </div>
 
   <form method="post" th:action="@{/login}">
