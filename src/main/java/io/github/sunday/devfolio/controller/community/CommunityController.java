@@ -34,6 +34,7 @@ public class CommunityController {
     public String listPosts(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                             Model model) {
         Page<PostListResponseDto> postPage = communityService.getPosts(pageable);
+        model.addAttribute("searchDto", new CommunitySearchRequestDto());
         model.addAttribute("postPage", postPage);
         return "community/community_list";
     }
@@ -182,48 +183,4 @@ public class CommunityController {
         return "redirect:/community/" + postId;
     }
 
-    /**
-     * 댓글 수정을 처리하는 API. (AJAX용)
-     *
-     * @param requestDto        수정할 댓글 정보가 담긴 DTO (JSON 형식)
-     * @param customUserDetails 현재 인증된 사용자 정보
-     * @return 성공 또는 실패 메시지를 담은 ResponseEntity
-     */
-    @PutMapping("/comments")
-    @ResponseBody // 이 어노테이션이 중요합니다. HTML 페이지가 아닌 데이터를 반환합니다.
-    public ResponseEntity<String> updateComment(@RequestBody CommentUpdateRequestDto requestDto,
-                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (customUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-        try {
-            communityService.updateComment(requestDto, customUserDetails.getUser().getUserIdx());
-            return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
-        } catch (Exception e) {
-            // 권한 없음 등의 서비스 레이어 예외 메시지를 클라이언트로 전달
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    /**
-     * 댓글 삭제를 처리하는 API. (AJAX용)
-     *
-     * @param commentId         삭제할 댓글의 ID
-     * @param customUserDetails 현재 인증된 사용자 정보
-     * @return 성공 또는 실패 메시지를 담은 ResponseEntity
-     */
-    @DeleteMapping("/comments/{commentId}")
-    @ResponseBody
-    public ResponseEntity<String> deleteComment(@PathVariable Long commentId,
-                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (customUserDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-        try {
-            communityService.deleteComment(commentId, customUserDetails.getUser().getUserIdx());
-            return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
 }

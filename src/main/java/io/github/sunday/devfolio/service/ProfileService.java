@@ -61,6 +61,7 @@ public class ProfileService {
                 .userIdx(target.getUserIdx())
                 .nickname(target.getNickname())
                 .email(target.getEmail())
+                .oauthProvider(target.getOauthProvider())
                 .profileImg(target.getProfileImg())
                 .githubUrl(target.getGithubUrl())
                 .blogUrl(target.getBlogUrl())

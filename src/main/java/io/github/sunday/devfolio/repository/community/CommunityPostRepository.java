@@ -20,4 +20,5 @@ import java.util.List;
  */
 public interface CommunityPostRepository extends JpaRepository<CommunityPost, Long>, JpaSpecificationExecutor<CommunityPost> {
 
+    List<CommunityPost> findAllByUser(User target);
 }
