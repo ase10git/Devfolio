@@ -41,6 +41,9 @@
 .left-button:visited {
   color: #111111;
 }
+.left-button:hover {
+  color: #3A5BA0;
+}
 
 .loginBtn {
   display: inline-block;
@@ -58,11 +61,11 @@
   display: inline-block;
   padding: 6px 12px;
   margin-right: 10px;
-  border: 1px solid #00a05a;
+  border: 1px solid #3A5BA0;
   border-radius: 6px;
   font-weight: bold;
   font-size: 16px;
-  color: #00a05a;
+  color: #3A5BA0;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;

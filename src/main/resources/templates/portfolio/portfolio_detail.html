@@ -13,7 +13,7 @@
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-<main>
+<main class="portfolio-main">
     <div class="container">
         <div class="main-contents">
             <section class="portfolio-section" th:object="${portfolio}">
@@ -35,7 +35,7 @@
                     <div class="portfolio-info-wrap">
                         <div class="portfolio-info">
                             <span class="info-label">기간</span>
-                            <span>
+                            <span th:if="*{startDate != null or endDate != null}">
                                 <span th:if="*{startDate}"
                                         th:text="*{startDate}">2025.07.30</span>
                                 <span th:unless="*{startDate}">없음</span>
@@ -44,6 +44,7 @@
                                       th:text="*{endDate}">2025.07.30</span>
                                 <span th:unless="*{endDate}">없음</span>
                             </span>
+                            <span th:if="*{startDate == null and endDate == null}">없음</span>
                             <span class="info-label">카테고리</span>
                             <div class="category-box">
                                 <span th:each="category : ${portfolio.categories}"
@@ -57,9 +58,8 @@
                         </div>
                     </div>
                 </div>
-                <div th:if="*{thumbnailUrl}"
-                        class="portfolio-thumbnail">
-                    <img th:src="*{thumbnailUrl}" th:alt="*{title}">
+                <div class="portfolio-thumbnail">
+                    <img th:src="${portfolio.thumbnailUrl == null or #strings.isEmpty(portfolio.thumbnailUrl)} ? @{/assets/images/portfolio-default-thumbnail.png}" th:alt="*{title}">
                 </div>
                 <div th:utext="*{description}" class="description"></div>
                 <th:block th:if="${loggedIn != null && #strings.equals(loggedIn, true)}">
@@ -69,19 +69,20 @@
                                 th:data-portfolio-id="*{portfolioIdx}"
                                 th:data-liked="${liked}"
                         >
-                        <span class="like-image un-liked"
-                              th:classappend="${liked} ? 'hidden' : ''">
-                            <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
-                            <span>좋아요</span>
-                        </span>
-                            <span class="like-image liked"
-                                  th:classappend="${liked} ? '' : 'hidden'">
-                            <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
-                            <span>좋아요 중</span>
-                        </span>
+                            <span class="like-image un-liked"
+                                  th:classappend="${liked} ? 'hidden' : ''">
+                                <img th:src="@{/assets/icon/heart.svg}" alt="빈 하트 아이콘">
+                                <span>좋아요</span>
+                            </span>
+                                <span class="like-image liked"
+                                      th:classappend="${liked} ? '' : 'hidden'">
+                                <img th:src="@{/assets/icon/heart-fill.svg}" alt="색칠된 하트 아이콘">
+                                <span>좋아요 중</span>
+                            </span>
                         </button>
                     </div>
                 </th:block>
+                <div id="bottom-anchor"></div>
             </section>
             <!-- 시간 문제로 구현 생략 -->
 <!--            <section class="comment-section">-->
@@ -98,9 +99,10 @@
         </div>
         <nav class="portfolio-nav">
             <div class="nav-link-wrap">
-                <a href="#portfolio-title">맨 위로</a>
+                <a href="#portfolio-title"><img class="arrow-up" th:src="@{/assets/icon/triangle.svg}" alt="위로 가기"></a>
 <!--                <div class="nav-divider-line"></div>-->
 <!--                <a href="#comment-title">댓글</a>-->
+                <a href="#bottom-anchor"><img class="arrow-down" th:src="@{/assets/icon/triangle.svg}" alt="아래로 가기"></a>
             </div>
             <div class="nav-btn-wrap">
                 <button type="button" id="back-button">목록으로</button>
