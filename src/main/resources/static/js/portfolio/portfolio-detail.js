@@ -46,7 +46,8 @@ function toggleLike() {
         likeButton.addEventListener("click", function () {
             clientSideLiked = !clientSideLiked;
             updateUI();
-        
+            likeButton.disabled = true;
+
             if (pending) {
                 clearTimeout(debounceTimer);
             }
@@ -75,6 +76,7 @@ function toggleLike() {
             pending = false;
             const url = requestLiked ? `/api/portfolio/${portfolioId}/add-like` : `/api/portfolio/${portfolioId}/remove-like`;
             if (currentLiked === requestLiked) return;
+
             try {
                 await fetch(url, {method: "POST"})
                 .then((res) => {
@@ -88,14 +90,16 @@ function toggleLike() {
                 clientSideLiked = !clientSideLiked;
                 updateUI();
                 alert("좋아요 등록/제거 동작에 실패했습니다");
+            } finally {
+                likeButton.disabled = false;
             }
         }
     
         window.addEventListener("beforeunload", () => {
-        requestLiked = clientSideLiked;
-        if (pending) {
-            navigator.sendBeacon(requestLiked ? `/api/portfolio/${portfolioId}/add-like` : `/api/portfolio/${portfolioId}/remove-like`);
-        }
+            requestLiked = clientSideLiked;
+            if (pending) {
+                navigator.sendBeacon(requestLiked ? `/api/portfolio/${portfolioId}/add-like` : `/api/portfolio/${portfolioId}/remove-like`);
+            }
         });
 }
 

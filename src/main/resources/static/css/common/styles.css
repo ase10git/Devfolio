@@ -184,7 +184,7 @@ input:autofill:active {
 /* common portfolio card style */
 .portfolio-card {
     border: 1px solid #9D9D9D;
-    border-radius: 15px;
+    border-radius: var(--box-radius-15);
     transition: box-shadow 0.1s ease-in-out;
 }
 
@@ -203,7 +203,8 @@ input:autofill:active {
 
 .portfolio-link .card-img-box {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: fit-content;
+    border-radius: var(--box-radius-15) var(--box-radius-15) 0 0;
 }
 
 .portfolio-link .card-img-box img {
@@ -211,6 +212,7 @@ input:autofill:active {
     aspect-ratio: 16 / 9;
     display: block;
     object-fit: cover;
+    border-radius: var(--box-radius-15) var(--box-radius-15) 0 0;
 }
 
 .portfolio-link .card-info-box {
@@ -227,12 +229,14 @@ input:autofill:active {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .portfolio-link .writer-profile {
-    width: 30px; height: 30px;
+    width: 50px; height: 50px;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
+    border: 1px solid #9D9D9D;
 }
 
 .portfolio-link .writer-profile img {
