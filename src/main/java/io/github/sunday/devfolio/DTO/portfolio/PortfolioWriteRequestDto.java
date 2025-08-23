@@ -3,6 +3,8 @@ package io.github.sunday.devfolio.dto.portfolio;
 import io.github.sunday.devfolio.annotation.portfolio.PortfolioCategoryValid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,5 +73,13 @@ public class PortfolioWriteRequestDto {
             return true;
         }
         return endDate.isAfter(startDate);
+    }
+
+    public void setContent(String content) {
+        if (content != null) {
+            this.description = Jsoup.clean(content, Safelist.relaxed());
+        } else {
+            this.description = null;
+        }
     }
 }

@@ -6,6 +6,8 @@ import io.github.sunday.devfolio.entity.table.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 import java.time.ZonedDateTime;
 
@@ -13,13 +15,22 @@ import java.time.ZonedDateTime;
  * 게시글 생성을 요청할 때 사용하는 DTO.
  */
 @Getter
-@Setter // Form의 데이터를 바인딩하기 위해 Setter가 필요합니다.
+@Setter
 @NoArgsConstructor // 기본 생성자도 필요합니다.
 public class PostCreateRequestDto {
     private String title;
     private String content;
     private Category category;
     private String status = "ACTIVE"; // 상태는 기본값으로 설정하거나 선택 가능하게 할 수 있습니다.
+
+    public void setContent(String content) {
+        if (content != null) {
+            // content 필드에 대해서만 relaxed Safelist를 적용
+            this.content = Jsoup.clean(content, Safelist.relaxed());
+        } else {
+            this.content = null;
+        }
+    }
 
     /**
      * DTO를 CommunityPost 엔티티로 변환합니다.
