@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.dto;
 
+import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,6 +19,9 @@ public class ProfileDto {
 
     /** 이메일(표시/연락 목적) */
     private String email;
+
+    /** OAuth 제공자 */
+    private AuthProvider oauthProvider;
 
     /** 프로필 이미지 URL */
     private String profileImg;
