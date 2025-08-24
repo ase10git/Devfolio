@@ -99,21 +99,37 @@
             <nav th:if="${postPage.totalPages > 1}" class="pagination">
                 <ul>
                     <li th:classappend="${postPage.first} ? 'disabled' : ''">
-                        <a th:href="@{/community(page=0)}">«</a>
+                        <a th:href="@{/community/search(page=0,
+                                          categoryName=${requestDto.categoryName},
+                                          keyword=${requestDto.keyword},
+                                          sort=${requestDto.sort})}">«</a>
                     </li>
                     <li th:classappend="${!postPage.hasPrevious()} ? 'disabled' : ''">
-                        <a th:href="@{/community(page=postPage.number-1)}">‹</a>
+                        <a th:href="@{/community/search(page=${postPage.number - 1},
+                                          categoryName=${requestDto.categoryName},
+                                          keyword=${requestDto.keyword},
+                                          sort=${requestDto.sort})}">‹</a>
                     </li>
                     <li th:each="pageNum : ${#numbers.sequence(0, postPage.totalPages - 1)}"
                         th:if="${pageNum >= postPage.number - 2 and pageNum <= postPage.number + 2}">
-                        <a th:href="@{/community(page=${pageNum})}" th:text="${pageNum + 1}"
+                        <a th:href="@{/community/search(page=${pageNum},
+                                          categoryName=${requestDto.categoryName},
+                                          keyword=${requestDto.keyword},
+                                          sort=${requestDto.sort})}"
+                           th:text="${pageNum + 1}"
                            th:classappend="${pageNum == postPage.number} ? 'active' : ''"></a>
                     </li>
                     <li th:classappend="${!postPage.hasNext()} ? 'disabled' : ''">
-                        <a th:href="@{/community(page=${postPage.number+1})}">›</a>
+                        <a th:href="@{/community/search(page=${postPage.number + 1},
+                                          categoryName=${requestDto.categoryName},
+                                          keyword=${requestDto.keyword},
+                                          sort=${requestDto.sort})}">›</a>
                     </li>
                     <li th:classappend="${postPage.last} ? 'disabled' : ''">
-                        <a th:href="@{/community(page=postPage.totalPages-1)}">»</a>
+                        <a th:href="@{/community/search(page=${postPage.totalPages - 1},
+                                          categoryName=${requestDto.categoryName},
+                                          keyword=${requestDto.keyword},
+                                          sort=${requestDto.sort})}">»</a>
                     </li>
                 </ul>
             </nav>
