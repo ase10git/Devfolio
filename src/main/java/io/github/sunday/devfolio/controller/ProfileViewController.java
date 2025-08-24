@@ -202,6 +202,7 @@ public class ProfileViewController {
             updateService.updateProfile(currentUser, form);
             return "redirect:/profile/" + userIdx + "?tab=resume";
         } catch (IllegalArgumentException e) {
+            model.addAttribute("oauthProvider", currentUser.getOauthProvider());
             model.addAttribute("form", form);
             model.addAttribute("userIdx", userIdx);
             model.addAttribute("error", e.getMessage());

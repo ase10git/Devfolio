@@ -14,16 +14,20 @@
     </script>
 </head>
 <body class="min-h-screen bg-gray-100">
+<header th:replace="~{fragments/header :: header}"></header>
+
 <main class="max-w-3xl mx-auto p-8">
     <section class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">프로필 수정</h1>
+        <h1 class="text-2xl font-bold mb-6">프로필 수정</h1>
 
-        <div th:if="${error}" class="text-red-600 mb-3" th:text="${error}">에러 메시지</div>
+        <div th:if="${error}" class="text-red-600 mb-4" th:text="${error}">에러 메시지</div>
 
         <form th:action="@{|/profile/${userIdx}/edit|}" method="post" th:object="${form}">
             <div class="grid grid-cols-2 gap-4">
                 <label>프로필 이미지 URL
-                    <input type="text" th:field="*{profileImg}" class="border rounded w-full px-3 py-2"/>
+                    <div class="flex">
+                        <input type="text" th:field="*{profileImg}" class="border rounded w-full px-3 py-2"/>
+                    </div>
                 </label>
 
                 <label>닉네임
@@ -41,46 +45,56 @@
                     </div>
                     <div id="email-msg" class="msg"></div>
                 </label>
-                <label th:if="${oauthProvider != T(io.github.sunday.devfolio.entity.table.user.AuthProvider).LOCAL}">이메일 수정 불가
-                    <input type="hidden" th:field="*{email}" />
+                <label th:if="${oauthProvider != T(io.github.sunday.devfolio.entity.table.user.AuthProvider).LOCAL}" class="mb-4">이메일 수정 불가
+                    <input type="hidden" th:field="*{email}"/>
                 </label>
 
                 <!-- 인증코드 입력 -->
-                <div id="email-code-section" class="mt-2" style="display:none;">
-                    <div class="flex">
-                        <input type="text" id="emailCode" placeholder="6자리 인증 코드 입력" class="border rounded w-full px-3 py-2"/>
-                        <button type="button" id="verify" class="check-btn" onclick="verifyCode(event)">인증 확인</button>
+                <label id="email-code-section" style="display:none;">인증 코드
+                    <div class="mt-2">
+                        <div class="flex">
+                            <input type="text" id="emailCode" placeholder="6자리 인증 코드 입력" class="border rounded w-full px-3 py-2"/>
+                            <button type="button" id="verify" class="check-btn" onclick="verifyCode(event)">인증 확인</button>
+                        </div>
+                        <div id="email-verify-msg" class="msg"></div>
                     </div>
-                    <div id="email-verify-msg" class="msg"></div>
-                </div>
+                </label>
 
                 <label th:if="${oauthProvider == T(io.github.sunday.devfolio.entity.table.user.AuthProvider).LOCAL}">새 비밀번호 (선택)
-                    <input type="password" th:field="*{password}" class="border rounded w-full px-3 py-2"/>
+                    <div class="flex">
+                        <input type="password" th:field="*{password}" class="border rounded w-full px-3 py-2"/>
+                    </div>
                 </label>
-                <label th:if="${oauthProvider != T(io.github.sunday.devfolio.entity.table.user.AuthProvider).LOCAL}">비밀번호 수정 불가
-                    <input type="hidden" th:field="*{password}" />
+                <label th:if="${oauthProvider != T(io.github.sunday.devfolio.entity.table.user.AuthProvider).LOCAL}" class="mb-4">비밀번호 수정 불가
+                    <input type="hidden" th:field="*{password}"/>
                 </label>
 
                 <label>Github URL
-                    <input type="text" th:field="*{githubUrl}" class="border rounded w-full px-3 py-2"/>
+                    <div class="flex">
+                        <input type="text" th:field="*{githubUrl}" class="border rounded w-full px-3 py-2"/>
+                    </div>
                 </label>
 
                 <label>블로그 URL
-                    <input type="text" th:field="*{blogUrl}" class="border rounded w-full px-3 py-2"/>
+                    <div class="flex">
+                        <input type="text" th:field="*{blogUrl}" class="border rounded w-full px-3 py-2"/>
+                    </div>
                 </label>
 
                 <label class="col-span-2">회사/학교 정보
-                    <input type="text" th:field="*{affiliation}" class="border rounded w-full px-3 py-2"/>
+                    <div class="flex">
+                        <input type="text" th:field="*{affiliation}" class="border rounded w-full px-3 py-2"/>
+                    </div>
                 </label>
             </div>
 
-            <div class="mt-6 flex justify-end gap-2">
+            <div class="mt-6 flex justify-end gap-2 mb-4">
                 <a th:href="@{|/profile/${userIdx}?tab=resume|}" class="btn">취소</a>
                 <button type="submit" class="btn btn--primary">수정하기</button>
             </div>
         </form>
 
-        <hr class="my-6"/>
+        <hr class="mb-4"/>
 
         <!-- 이력서 수정은 프로젝트 별 에디터/업로드 화면으로 이동하도록 링크만 제공 -->
         <div>
