@@ -52,6 +52,7 @@ public class PostCreateRequestDto {
                 .likeCount(0)
                 .commentCount(0)
                 .createdAt(ZonedDateTime.now())
+                .updatedAt(ZonedDateTime.now())
                 .build();
     }
 }

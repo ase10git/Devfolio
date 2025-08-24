@@ -66,7 +66,7 @@ public class CommunityPost {
     private ZonedDateTime createdAt;
 
     /** 수정 일시 */
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private ZonedDateTime updatedAt;
 
     /** 게시글 카테고리 (study, question, general) */
