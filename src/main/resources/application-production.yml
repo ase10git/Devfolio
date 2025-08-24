@@ -22,7 +22,7 @@ spring:
             scope:
               - profile
               - email
-            redirect-uri: ${SECURITY_OAUTH2_GOOGLE_REDIRECT_URI_DEV}
+            redirect-uri: ${SECURITY_OAUTH2_GOOGLE_REDIRECT_URI_PROD}
         provider:
           google:
             authorization-uri: ${SECURITY_OAUTH2_GOOGLE_AUTHORIZATION_URI}
