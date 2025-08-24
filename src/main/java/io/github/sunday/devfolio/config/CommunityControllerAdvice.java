@@ -2,7 +2,7 @@ package io.github.sunday.devfolio.config;
 
 import io.github.sunday.devfolio.controller.community.CommunityController;
 import io.github.sunday.devfolio.controller.community.CommunityRestController;
-import io.github.sunday.devfolio.enums.CommunitySort;
+import io.github.sunday.devfolio.enums.community.CommunitySort;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;

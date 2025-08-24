@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.config;
 
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.service.auth.CustomUserDetailsService;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +22,7 @@ import java.util.Map;
  *
  * @author YourName
  * @see org.springframework.security.core.userdetails.UserDetails
- * @see io.github.sunday.devfolio.service.CustomUserDetailsService
+ * @see CustomUserDetailsService
  */
 @Getter
 public class CustomUserDetails implements UserDetails, OAuth2User {

@@ -1,6 +1,6 @@
-package io.github.sunday.devfolio.service.impl;
+package io.github.sunday.devfolio.service.auth.impl;
 
-import io.github.sunday.devfolio.service.EmailService;
+import io.github.sunday.devfolio.service.auth.EmailService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.dto;
+package io.github.sunday.devfolio.dto.user;
 
 import lombok.Data;
 

@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,10 +135,17 @@ public class AIService {
      * 포트폴리오 템플릿 추천 요청용 URL 생성
      */
     private String buildPortfolioRequestUrl(String type) throws IOException {
-        Path path = new ClassPathResource("/static/prompts/portfolio_template.txt").getFile().toPath();
-        String template = Files.readString(path);
-        String convert = new String(template.getBytes(StandardCharsets.UTF_8));
-        String prompt = String.format(convert, type);
+        // JAR 내부에서도 접근 가능하게 InputStream 사용
+        ClassPathResource resource = new ClassPathResource("static/prompts/portfolio_template.txt");
+        String template;
+        try (InputStream inputStream = resource.getInputStream()) {
+            template = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+
+        // type 값을 삽입
+        String prompt = String.format(template, type);
+
+        // URL 생성
         return UriComponentsBuilder.fromPath(alanUrlQuestion)
                 .queryParam("content", prompt)
                 .queryParam("client_id", alanApiKey)

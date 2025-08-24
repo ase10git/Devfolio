@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.controller;
+package io.github.sunday.devfolio.controller.common;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

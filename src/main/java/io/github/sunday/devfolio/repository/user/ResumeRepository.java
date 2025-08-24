@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.repository;
+package io.github.sunday.devfolio.repository.user;
 
 import io.github.sunday.devfolio.entity.table.profile.Resume;
 import io.github.sunday.devfolio.entity.table.user.User;

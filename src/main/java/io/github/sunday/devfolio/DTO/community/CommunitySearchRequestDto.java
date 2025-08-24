@@ -1,7 +1,7 @@
 package io.github.sunday.devfolio.dto.community;
 
 import io.github.sunday.devfolio.annotation.community.CommunityCategoryValid;
-import io.github.sunday.devfolio.enums.CommunitySort;
+import io.github.sunday.devfolio.enums.community.CommunitySort;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.domain.Sort;

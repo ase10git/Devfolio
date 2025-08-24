@@ -3,7 +3,7 @@ package io.github.sunday.devfolio.controller.community;
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.community.*;
 import io.github.sunday.devfolio.entity.table.community.Category;
-import io.github.sunday.devfolio.enums.CommunitySort;
+import io.github.sunday.devfolio.enums.community.CommunitySort;
 import io.github.sunday.devfolio.service.community.CommunityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

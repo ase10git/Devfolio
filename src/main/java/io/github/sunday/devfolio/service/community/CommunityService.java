@@ -5,7 +5,7 @@ import io.github.sunday.devfolio.entity.table.community.CommunityComment;
 import io.github.sunday.devfolio.entity.table.community.CommunityLike;
 import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.UserRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
 import io.github.sunday.devfolio.repository.community.CommunityCommentRepository;
 import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
 import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
 import java.util.*;
 
 /**

@@ -2,13 +2,13 @@ package io.github.sunday.devfolio.service.portfolio;
 
 import io.github.sunday.devfolio.dto.portfolio.*;
 import io.github.sunday.devfolio.entity.table.portfolio.*;
-import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.enums.portfolio.PortfolioSort;
 import io.github.sunday.devfolio.dto.user.WriterDto;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.exception.portfolio.NoWriterFoundException;
 import io.github.sunday.devfolio.exception.portfolio.PortfolioNotFoundException;
 import io.github.sunday.devfolio.repository.portfolio.*;
-import io.github.sunday.devfolio.service.impl.UserServiceImpl;
+import io.github.sunday.devfolio.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

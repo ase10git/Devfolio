@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.user;
 
 import io.github.sunday.devfolio.entity.table.user.User;
 

@@ -1,9 +1,9 @@
-package io.github.sunday.devfolio.controller;
+package io.github.sunday.devfolio.controller.auth;
 
 import io.github.sunday.devfolio.entity.table.user.EmailVerification;
-import io.github.sunday.devfolio.repository.EmailVerificationRepository;
-import io.github.sunday.devfolio.repository.UserRepository;
-import io.github.sunday.devfolio.service.EmailService;
+import io.github.sunday.devfolio.repository.auth.EmailVerificationRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
+import io.github.sunday.devfolio.service.auth.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

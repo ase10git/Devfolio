@@ -1,7 +1,7 @@
 package io.github.sunday.devfolio.interceptor;
 
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.service.UserService;
+import io.github.sunday.devfolio.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

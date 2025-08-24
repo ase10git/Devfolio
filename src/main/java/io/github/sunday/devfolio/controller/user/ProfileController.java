@@ -1,13 +1,12 @@
-package io.github.sunday.devfolio.controller;
+package io.github.sunday.devfolio.controller.user;
 
 import io.github.sunday.devfolio.config.CustomUserDetails;
-import io.github.sunday.devfolio.dto.ProfileDto;
-import io.github.sunday.devfolio.dto.ProfileUpdateRequest;
+import io.github.sunday.devfolio.dto.user.ProfileDto;
+import io.github.sunday.devfolio.dto.user.ProfileUpdateRequest;
 import io.github.sunday.devfolio.entity.table.profile.Resume;
 import io.github.sunday.devfolio.entity.table.user.User;
-//import io.github.sunday.devfolio.service.ProfileService;
-import io.github.sunday.devfolio.service.ProfileService;
-import io.github.sunday.devfolio.service.ProfileUpdateService;
+import io.github.sunday.devfolio.service.user.ProfileService;
+import io.github.sunday.devfolio.service.user.ProfileUpdateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

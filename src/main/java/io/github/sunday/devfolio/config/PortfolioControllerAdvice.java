@@ -2,7 +2,7 @@ package io.github.sunday.devfolio.config;
 
 import io.github.sunday.devfolio.controller.portfolio.PortfolioController;
 import io.github.sunday.devfolio.controller.portfolio.PortfolioRestController;
-import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.enums.portfolio.PortfolioSort;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
