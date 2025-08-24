@@ -1,5 +1,6 @@
 package io.github.sunday.devfolio.dto.community;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommentCreateRequestDto {
-    private Long postId;       // 어느 게시글에 달리는 댓글인지 식별
-    private Long parentId;     // 부모 댓글 ID (대댓글이 아닐 경우 null)
-    private String content;    // 댓글 내용
+    private Long postId;
+    private Long parentId;
+    @NotBlank(message = "잘못된 댓글 형식입니다.")
+    private String content;
 }
