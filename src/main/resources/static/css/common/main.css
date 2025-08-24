@@ -107,15 +107,19 @@ section {
 
 .service-card {
     width: 100%;
-    max-width: 948px;
+    max-width: 1048px;
     display: grid;
     grid-template-columns: repeat(2, minmax(300px, 1fr));
 }
 
 .service-image-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: var(--box-radius-15) 0 0 var(--box-radius-15);
     overflow: hidden;
     border: 1px solid #CFE8FF;
+    background-color: #FCFEFF;
 }
 
 .service-image-box img {
@@ -143,8 +147,31 @@ section {
     gap: 15px;
 }
 
+.service-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.service-title p {
+    color: #313131;
+}
+
+.service-meta .divider-line {
+    width: 100%;
+    height: 1px;
+    background-color: white;
+}
+
 .description {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
 }
 
 .link-box {

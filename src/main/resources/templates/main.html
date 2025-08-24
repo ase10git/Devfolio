@@ -30,15 +30,44 @@
         <div class="service-box">
           <div class="service-card">
             <div class="service-image-box">
+              <img th:src="@{/assets/images/service-profile.png}" alt="프로필 기능 설명">
+            </div>
+            <div class="service-meta">
+              <div class="service-info">
+                <div class="service-title">
+                  <h3>프로필 관리</h3>
+                  <p>프로필 페이지에서 프로필을 관리하고 활동 내역을 확인해보세요</p>
+                </div>
+                <div class="divider-line"></div>
+                <ul class="description">
+                  <li>개발자 프로필에서 <strong>개인 정보 수정</strong></li>
+                  <li>포트폴리오 및 커뮤니티 활동 내역을 한눈에 확인</li>
+                  <li>이력서 작성 기능(예정)</li>
+                </ul>
+              </div>
+              <div class="link-box"><a th:href="@{/profile}">바로 가기</a></div>
+            </div>
+          </div>
+        </div>
+        <div class="service-box">
+          <div class="service-card">
+            <div class="service-image-box">
               <img th:src="@{/assets/images/service-portfolio.png}" alt="포트폴리오 기능 설명">
             </div>
             <div class="service-meta">
               <div class="service-info">
-                <h3>포트폴리오 검색 및 작성</h3>
-                <div class="description">
+                <div class="service-title">
+                  <h3>포트폴리오 검색 및 작성</h3>
                   <p>다른 개발자들의 포트폴리오를 검색하거나 새 포트폴리오를 추가해보세요.</p>
                   <p>자유 형식과 AI 제공 템플릿으로 원하는 템플릿 적용해서 프로젝트별 포트폴리오를 만들 수 있습니다.</p>
                 </div>
+                <div class="divider-line"></div>
+                <ul class="description">
+                  <li>다른 개발자들의 <strong>포트폴리오 검색</strong></li>
+                  <li><strong>포트폴리오 작성</strong> 및 자유 형식 / AI 템플릿 제공</li>
+                  <li><strong>수정</strong>과 <strong>삭제</strong> 기능으로 지속적인 관리 가능</li>
+                  <li>마음에 드는 포트폴리오에 <strong>좋아요 표시</strong> 지원</li>
+                </ul>
               </div>
               <div class="link-box"><a th:href="@{/portfolio}">바로 가기</a></div>
             </div>
@@ -51,10 +80,17 @@
             </div>
             <div class="service-meta">
               <div class="service-info">
-                <h3>커뮤니티</h3>
-                <div class="description">
+                <div class="service-title">
+                  <h3>커뮤니티</h3>
                   <p>커뮤니티에서 다른 개발자들과 소통하고 스터디 그룹을 모집해보세요.</p>
                 </div>
+                <div class="divider-line"></div>
+                <ul class="description">
+                  <li>게시글 <strong>검색</strong>, <strong>작성</strong>, <strong>수정</strong>, <strong>삭제</strong></li>
+                  <li>게시글에 <strong>좋아요</strong>를 눌러 소통 강화</li>
+                  <li><strong>댓글과 대댓글</strong>을 통해 활발한 토론 가능</li>
+                  <li>스터디 그룹 모집, 질문과 응답, 자유 게시판 제공</li>
+                </ul>
               </div>
               <div class="link-box"><a th:href="@{/community}">바로 가기</a></div>
             </div>
