@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class CommunityController {
      * 이 메소드 하나가 모두 처리하도록 합니다.
      * URL이 바뀌지 않고 로직만 통일됩니다.
      */
-    @GetMapping({"", "/search"}) // <-- 핵심 수정: {"", "/search"}
+    @GetMapping({"", "/search"})
     public String showPosts(
             @Valid @ModelAttribute("requestDto") CommunitySearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -172,8 +173,15 @@ public class CommunityController {
      */
     @PostMapping("/{postId}/comments")
     public String createComment(@PathVariable Long postId,
-                                @ModelAttribute("commentRequest") CommentCreateRequestDto requestDto,
-                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                @Valid @ModelAttribute("commentRequest") CommentCreateRequestDto requestDto,
+                                BindingResult bindingResult,
+                                @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/community/" + postId;
+        }
+
         if (customUserDetails == null) {
             return "redirect:/login";
         }

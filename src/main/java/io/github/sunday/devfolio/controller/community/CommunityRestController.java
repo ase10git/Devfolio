@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.controller.community;
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.community.CommentUpdateRequestDto;
 import io.github.sunday.devfolio.service.community.CommunityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CommunityRestController {
      * @return 성공 시 HTTP 200 OK, 실패 시 에러 응답
      */
     @PutMapping("/comments")
-    public ResponseEntity<String> updateComment(@RequestBody CommentUpdateRequestDto requestDto,
+    public ResponseEntity<String> updateComment(@Valid @RequestBody CommentUpdateRequestDto requestDto,
                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (customUserDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
