@@ -12,43 +12,71 @@
 <header th:replace="~{fragments/header :: header}"></header>
 <main class="service-main">
   <section class="visual">
-    <img th:src="@{/assets/images/main-information-visual.png}" alt="서비스 소개 이미지">
-    <div>
-      <h1>개발자를 위한 프로젝트 포트폴리오 공유 사이트</h1>
-      <p>Devfolio는 개발자를 위한 프로젝트 포트폴리오 제작 사이트로 다양한 포트폴리오를 제작하고 공유하는 플랫폼입니다.</p>
+    <div class="container">
+      <img th:src="@{/assets/images/main-information-visual.png}" alt="서비스 소개 이미지">
+      <div class="main-title">
+        <h1>개발자를 위한 프로젝트 포트폴리오 공유 사이트</h1>
+        <p>Devfolio는 개발자를 위한 프로젝트 포트폴리오 제작 사이트로 다양한 포트폴리오를 제작하고 공유하는 플랫폼입니다.</p>
+      </div>
     </div>
   </section>
-  <section class="service-section">
-    <header class="service-header">
-      <h2>주요 기능 소개</h2>
-      <p>Devfolio에서 템플릿화된 포트폴리오와 이력서를 관리하고 다른 사람들과 공유하세요</p>
-    </header>
-    <div class="service-info">
-      <div class="service-card">
-        <div class="service-image-box">
-          <img>
-        </div>
-        <div class="service-meta">
-          <div>
-            <h3 class="service-title">포트폴리오 검색 및 작성</h3>
-            <p class="description">다른 개발자들의 포트폴리오를 검색하거나 새 포트폴리오를 추가해보세요.</p>
-            <p>자유 형식과 AI 제공 템플릿으로 원하는 템플릿 적용해서 프로젝트별 포트폴리오를 만들 수 있습니다.</p>
+  <section>
+    <div class="container">
+      <header class="service-header">
+        <h2>주요 기능 소개</h2>
+        <p>Devfolio에서 포트폴리오를 다른 사람들과 공유하고 커뮤니티에서 다양한 의견을 나눠보세요</p>
+      </header>
+      <div class="service-container">
+        <div class="service-box">
+          <div class="service-card">
+            <div class="service-image-box">
+              <img th:src="@{/assets/images/service-portfolio.png}" alt="포트폴리오 기능 설명">
+            </div>
+            <div class="service-meta">
+              <div class="service-info">
+                <h3>포트폴리오 검색 및 작성</h3>
+                <div class="description">
+                  <p>다른 개발자들의 포트폴리오를 검색하거나 새 포트폴리오를 추가해보세요.</p>
+                  <p>자유 형식과 AI 제공 템플릿으로 원하는 템플릿 적용해서 프로젝트별 포트폴리오를 만들 수 있습니다.</p>
+                </div>
+              </div>
+              <div class="link-box"><a th:href="@{/portfolio}">바로 가기</a></div>
+            </div>
           </div>
-          <div><a th:href="@{/portfolio}">바로 가기</a></div>
+        </div>
+        <div class="service-box">
+          <div class="service-card">
+            <div class="service-image-box">
+              <img th:src="@{/assets/images/service-community.png}" alt="커뮤니티 기능 설명">
+            </div>
+            <div class="service-meta">
+              <div class="service-info">
+                <h3>커뮤니티</h3>
+                <div class="description">
+                  <p>커뮤니티에서 다른 개발자들과 소통하고 스터디 그룹을 모집해보세요.</p>
+                </div>
+              </div>
+              <div class="link-box"><a th:href="@{/community}">바로 가기</a></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
-  <section class="team-section">
-    <header class="service-header">
-      <h2>주요 기능 소개</h2>
-      <p>Devfolio에서 템플릿화된 포트폴리오와 이력서를 관리하고 다른 사람들과 공유하세요</p>
-    </header>
-    <div>
-      <div>
-        <img>
+  <section>
+    <div class="container">
+      <header class="team-header">
+        <h2>팀 소개</h2>
+      </header>
+      <div class="team-container">
+        <div class="team-logo-box">
+          <img th:src="@{/assets/images/devfolio-logo-title.png}" alt="devfolio 로고">
+        </div>
+        <div class="team-description">
+          <h3>Team Sunday</h3>
+          <p>이스트소프트 백엔드 개발자 양성 과정 오르미 11기</p>
+        </div>
       </div>
-      <div>Team Sunday 설명</div>
     </div>
   </section>
 </main>
