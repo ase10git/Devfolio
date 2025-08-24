@@ -20,15 +20,17 @@
                 <th:block th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == comment.authorUserIdx}">
                     <button type="button" class="btn-edit" th:data-comment-id="${comment.commentId}">수정</button>
                     <button type="button" class="btn-delete-comment" th:data-comment-id="${comment.commentId}">삭제</button>
-                    <button type="button" class="btn-reply" th:data-comment-id="${comment.commentId}"
-                            th:if="${#authentication.isAuthenticated()}">답글 작성</button>
                 </th:block>
+                <button type="button" class="btn-reply" th:data-comment-id="${comment.commentId}"
+                        th:if="${#authentication.isAuthenticated()}">답글 작성</button>
             </div>
         </div>
 
-        <div class="reply-form-container"></div>
-        <div th:if="${not #lists.isEmpty(comment.children)}" class="replies">
-            <div th:replace="~{this :: commentTree(comments=${comment.children})}"></div>
+        <div class="replies">
+            <div class="reply-form-container"></div>
+            <div th:if="${not #lists.isEmpty(comment.children)}">
+                <div th:replace="~{this :: commentTree(comments=${comment.children})}"></div>
+            </div>
         </div>
     </div>
 </div>
