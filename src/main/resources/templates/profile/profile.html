@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>프로필</title>
+    <title>이력서</title>
     <link rel="stylesheet" th:href="@{/css/profilepage/profile.css}">
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
@@ -46,7 +46,7 @@
     <nav class="space-y-1">
         <a th:href="@{|/profile/${user.userIdx}?tab=resume|}"
            th:classappend="${tab=='resume'} ? ' bg-blue-100' : ''"
-           class="block px-4 py-2 rounded hover:bg-gray-100">프로필</a>
+           class="block px-4 py-2 rounded hover:bg-gray-100">이력서</a>
         <a th:href="@{|/profile/${user.userIdx}?tab=portfolio|}"
            th:classappend="${tab=='portfolio'} ? ' bg-blue-100' : ''"
            class="block px-4 py-2 rounded hover:bg-gray-100">포트폴리오</a>
@@ -95,8 +95,8 @@
     <!-- 사용자 정보 -->
     <section class="bg-white p-6 rounded shadow mb-6 grid grid-cols-2 gap-4 text-sm">
         <div>
-            <p><strong>이메일:</strong> <span th:text="${user.email}">user@example.com</span></p>
-            <p><strong>GitHub:</strong>
+            <p class="mb-4"><strong>이메일:</strong> <span th:text="${user.email}">user@example.com</span></p>
+            <p class="mb-4"><strong>GitHub:</strong>
                 <a th:href="${user.githubUrl}" target="_blank" class="text-blue-600" th:text="${user.githubUrl}">github</a>
             </p>
             <p><strong>Blog:</strong>
