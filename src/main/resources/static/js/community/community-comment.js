@@ -3,21 +3,22 @@ document.addEventListener('DOMContentLoaded', function () {
     // '답글' 버튼 클릭 이벤트
     document.querySelectorAll('.btn-reply').forEach(button => {
         button.addEventListener('click', function() {
-            // 페이지에 이미 열려있는 다른 대댓글 폼이 있다면 먼저 제거
             const existingReplyForm = document.querySelector('.reply-form-container .comment-write-box');
             if (existingReplyForm) {
                 existingReplyForm.remove();
             }
 
             const commentId = this.dataset.commentId;
-            const commentItem = document.getElementById('comment-' + commentId);
-            const replyFormContainer = commentItem.querySelector('.reply-form-container');
 
-            // 대댓글 폼의 HTML을 생성하여 삽입
-            replyFormContainer.innerHTML = createReplyFormHtml(commentId);
+            const commentItemContainer = this.closest('.comment-item');
+            const replyFormContainer = commentItemContainer.querySelector('.replies .reply-form-container');
 
-            // 동적으로 생성된 폼의 요소들에 이벤트 리스너를 다시 연결
-            addEventListenersToReplyForm(replyFormContainer);
+            if (replyFormContainer) {
+                replyFormContainer.innerHTML = createReplyFormHtml(commentId);
+                addEventListenersToReplyForm(replyFormContainer);
+            } else {
+                console.error('.reply-form-container를 찾을 수 없습니다.');
+            }
         });
     });
 
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // '삭제' 버튼 클릭 이벤트
-    document.querySelectorAll('.btn-delete').forEach(button => {
+    document.querySelectorAll('.btn-delete-comment').forEach(button => {
         button.addEventListener('click', function() {
             if (confirm('정말로 댓글을 삭제하시겠습니까?')) {
                 const commentId = this.dataset.commentId;
@@ -151,18 +152,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (response.ok) {
-                const commentElement = document.getElementById('comment-' + commentId);
+                const commentElement = document.getElementById('comment-container-' + commentId);
+
                 if (commentElement) {
                     const commentsToRemove = commentElement.querySelectorAll('.comment-item');
-                    const deletedCount = 1 + commentsToRemove.length; // 본인(1) + 자식들
+                    const deletedCount = 1 + commentsToRemove.length;
 
                     const countSpan = document.getElementById('comment-count');
                     if (countSpan) {
                         const currentCount = parseInt(countSpan.textContent, 10);
-                        countSpan.textContent = currentCount - deletedCount;
+                        countSpan.textContent = Math.max(0, currentCount - deletedCount);
                     }
 
                     commentElement.remove();
+                } else {
+                    console.error('삭제할 댓글 요소를 찾지 못했습니다: comment-container-' + commentId);
                 }
             } else {
                 const errorMessage = await response.text();
@@ -173,4 +177,5 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('오류가 발생했습니다.');
         }
     }
+
 });
