@@ -70,7 +70,7 @@ a:hover{ text-decoration: underline; }
 
 .bg-white{ background: var(--card); }
 .bg-gray-100{ background: var(--bg); }
-.bg-blue-600{ background: var(--primary); }
+.bg-blue-600{ background: #3A5BA0; }
 .bg-blue-100{ background: var(--primary-100); }
 
 .text-white{ color: #fff; }
@@ -164,13 +164,13 @@ h1.text-2xl{
   padding:.5rem 1rem; border-radius: var(--radius); border:1px solid var(--border);
   background:#fff; color: var(--text);
 }
-.btn--primary{ background: var(--primary); color:#fff; border-color: transparent; }
+.btn--primary{ background: #3A5BA0; color:#fff; border-color: transparent; }
 .btn--muted{ background:#f3f4f6; }
 .btn:hover{ filter: brightness(0.98); }
 
 .check-btn{
 padding: 0.5rem 1rem;
-    background-color: var(--primary);
+    background-color: #3A5BA0;
     color: white;
     border-radius: 0.5rem;
     border: none;
