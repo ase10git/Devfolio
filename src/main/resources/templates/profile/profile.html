@@ -148,7 +148,7 @@
             <div th:each="p : ${posts}" class="border-b py-4 flex items-center justify-between">
                 <div class="mr-4">
                     <h3 class="font-semibold">
-                        <a th:text="${p.title}" th:href="@{|/posts/${p.postIdx}|}">게시글 제목</a>
+                        <a th:text="${p.title}" th:href="@{|/community/${p.postIdx}|}">게시글 제목</a>
                     </h3>
                     <p class="text-sm text-gray-500" th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</p>
                 </div>
