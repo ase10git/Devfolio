@@ -136,8 +136,6 @@
                 <form th:action="@{|/profile/portfolios/${pf.portfolioIdx}/like|}" method="post" class="inline">
                     <input type="hidden" name="ownerUserIdx" th:value="${user.userIdx}"/>
                     <input type="hidden" name="tab" value="portfolio"/>
-                    <button type="submit" class="px-3 py-1 rounded border"
-                            th:text="${likedPortfolioIds.contains(pf.portfolioIdx)} ? '좋아요 취소' : '좋아요'">좋아요</button>
                 </form>
             </div>
         </div>
@@ -172,7 +170,7 @@
                     <a th:href="@{|/profile/${pf.user.userIdx}|}" class="mr-4 text-gray-600" th:text="${pf.user.nickname}">작성자</a>
                     <span class="mr-auto" th:text="${pf.title}">제목</span>
                     <form th:action="@{|/profile/portfolios/${pf.portfolioIdx}/like|}" method="post" class="inline">
-                        <input type="hidden" name="ownerUserIdx" th:value="${user.userId}"/>
+                        <input type="hidden" name="ownerUserIdx" th:value="${user.userIdx}"/>
                         <input type="hidden" name="tab" value="likes"/>
                         <button type="submit" class="px-3 py-1 rounded border">좋아요 취소</button>
                     </form>

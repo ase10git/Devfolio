@@ -15,6 +15,7 @@ import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
 import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioLikeRepository;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioRepository;
+import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class ProfileService {
     private final CommunityPostRepository postRepo;
     private final PortfolioLikeRepository portfolioLikeRepo;
     private final CommunityLikeRepository CommunityLikeRepo;
+    private final PortfolioLikeService portfolioLikeService;
 
     // -------- 요약/팔로우/이력서 --------
 
@@ -131,20 +133,15 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean togglePortfolioLike(User currentUser, Long portfolioIdx) {
+    public void togglePortfolioLike(User currentUser, Long portfolioIdx) throws Exception {
         if (currentUser == null) throw new IllegalStateException("로그인이 필요합니다");
-        Portfolio pf = portfolioRepo.findById(portfolioIdx)
-                .orElseThrow(() -> new IllegalArgumentException("퐅트폴리오가 존재하지 않습니다"));
-        if (portfolioLikeRepo.existsByUserAndPortfolio(currentUser, pf)) {
-            portfolioLikeRepo.deleteByUserAndPortfolio(currentUser, pf);
-            return false;
+        Boolean isLiked = portfolioLikeService.userLikedPortfolio(currentUser.getUserIdx(), portfolioIdx);
+
+        if (isLiked) {
+            portfolioLikeService.removeLike(portfolioIdx, currentUser.getUserIdx());
+        } else {
+            portfolioLikeService.addLike(portfolioIdx, currentUser.getUserIdx());
         }
-        portfolioLikeRepo.save(PortfolioLike.builder()
-                .user(currentUser)
-                .portfolio(pf)
-                .likedAt(ZonedDateTime.now(ZoneId.of("UTC")))
-                .build());
-        return true;
     }
 
     @Transactional

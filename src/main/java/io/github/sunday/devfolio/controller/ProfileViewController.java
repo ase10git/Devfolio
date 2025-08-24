@@ -9,6 +9,7 @@ import io.github.sunday.devfolio.entity.table.profile.Resume;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.service.ProfileService;
 import io.github.sunday.devfolio.service.ProfileUpdateService;
+import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -137,7 +138,12 @@ public class ProfileViewController {
                                       @RequestParam(defaultValue = "portfolio") String tab,
                                       @AuthenticationPrincipal CustomUserDetails currentUserDetails) {
         User currentUser = (currentUserDetails != null) ? currentUserDetails.getUser() : null;
-        profileService.togglePortfolioLike(currentUser, portfolioIdx);
+        try {
+            profileService.togglePortfolioLike(currentUser, portfolioIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/error";
+        }
         return "redirect:/profile/" + ownerUserIdx + "?tab=" + tab;
     }
 
