@@ -45,7 +45,9 @@
                   <li>이력서 작성 기능(예정)</li>
                 </ul>
               </div>
-              <div class="link-box"><a th:href="@{/profile}">바로 가기</a></div>
+              <div class="link-box" th:if="${session.loginUserIdx}">
+                <a th:href="@{/profile/{userId}(userId=${session.loginUserIdx})}">바로 가기</a>
+              </div>
             </div>
           </div>
         </div>
