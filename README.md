@@ -48,7 +48,35 @@
 
 ---
 ## 스크린샷
+### 메인 페이지
+<img width="1254" height="871" alt="main 1" src="https://github.com/user-attachments/assets/6796a215-da9b-4b8d-8d89-168b882caede" />
+<img width="1254" height="913" alt="main 2" src="https://github.com/user-attachments/assets/00660aa4-4d32-499f-a18f-8b4e4998f201" />
+<img width="1259" height="919" alt="main 3" src="https://github.com/user-attachments/assets/e49600e8-2171-414f-95ea-c8ef6d68d7c6" />
 
+### 로그인/회원가입
+<img width="831" height="771" alt="login 1" src="https://github.com/user-attachments/assets/a18e1456-6089-4970-aabf-36bc55912612" />
+<img width="784" height="1240" alt="signup 1" src="https://github.com/user-attachments/assets/3bd29829-6e32-4a4d-a4de-18ea2a194dc0" />
 
+### 프로필
+<img width="1309" height="679" alt="profile 1" src="https://github.com/user-attachments/assets/7b281651-7279-4380-9a3e-768aa9d39617" />
+<img width="1296" height="1045" alt="profile 2" src="https://github.com/user-attachments/assets/32e43991-1682-48c4-884e-edc4702d75fe" />
+<img width="1305" height="624" alt="profile 3" src="https://github.com/user-attachments/assets/32269472-9211-42ff-b983-5311390b518a" />
+<img width="1305" height="687" alt="profile 4" src="https://github.com/user-attachments/assets/b370b7f3-c035-41ed-b9fb-1836bfcdad50" />
+
+### 포트폴리오
+<img width="1300" height="977" alt="portfolio 1" src="https://github.com/user-attachments/assets/c593c69b-70a9-4ba2-b3ef-bfca6066b4bb" />
+<img width="1298" height="1052" alt="portfolio 2" src="https://github.com/user-attachments/assets/054178b7-446c-40f1-9aca-f996fcce00fb" />
+<img width="1302" height="1139" alt="portfolio 3" src="https://github.com/user-attachments/assets/479a4de0-2fb5-4904-94b4-a61887237e2e" />
+<img width="1307" height="1270" alt="portfolio 4" src="https://github.com/user-attachments/assets/5028184b-1284-4cbb-8c30-6504ee050efc" />
+<img width="1304" height="1313" alt="portfolio 5" src="https://github.com/user-attachments/assets/a532d8bd-2592-410e-82fc-31ba169c06b3" />
+<img width="1288" height="1178" alt="portfolio 6" src="https://github.com/user-attachments/assets/7f69d125-b35c-4e1a-86d4-6ae5038b2f15" />
+<img width="1282" height="1244" alt="portfolio 7" src="https://github.com/user-attachments/assets/0ebf2050-0474-4421-ae87-642a85d560ce" />
+
+### 커뮤니티
+<img width="1294" height="1274" alt="community 1" src="https://github.com/user-attachments/assets/499e451b-4aa7-499d-9b7f-02362b42d1f4" />
+<img width="1289" height="1064" alt="community 2" src="https://github.com/user-attachments/assets/bbcc4bb4-d37e-45f4-b4cb-9b3fa4f2f041" />
+<img width="1263" height="877" alt="community 3" src="https://github.com/user-attachments/assets/0cdd8346-87c8-4e9f-8d62-e3ab07ac6888" />
+<img width="1222" height="1265" alt="community 4" src="https://github.com/user-attachments/assets/640997a4-7c67-4949-9096-2e56e750fa55" />
+<img width="1268" height="1261" alt="community 5" src="https://github.com/user-attachments/assets/8ffe13eb-ead5-4fd0-a060-51b51a14e41b" />
 
 ---
