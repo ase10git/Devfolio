@@ -34,33 +34,6 @@ public class CommunityService {
     private final CommunityQueryDslRepository communityQueryDslRepository;
 
     /**
-     * 게시글 목록을 페이징하여 조회합니다.
-     *
-     * @param pageable 페이징 및 정렬 정보
-     * @return 페이징 처리된 게시글 목록 (PostListResponse)
-     */
-
-    public Page<PostListResponseDto> getPosts(CommunitySearchRequestDto requestDto) {
-        Sort sort = Sort.by(requestDto.getDirection(), requestDto.getSort().getFieldName());
-        Pageable pageable = PageRequest.of(requestDto.getPage(), requestDto.getSize(), sort);
-        Page<CommunityPost> postPage = communityPostRepository.findAll(pageable);
-
-        return postPage.map(post -> new PostListResponseDto(
-                post.getPostIdx(),
-                post.getTitle(),
-                post.getUser().getNickname(),
-                post.getCategory(),
-                post.getCreatedAt(),
-                post.getViews(),
-                post.getLikeCount(),
-                post.getStatus(),
-                post.getContent(),
-                post.getUser().getProfileImg(),
-                post.getCommentCount()
-        ));
-    }
-
-    /**
      * 게시글을 검색합니다
      *
      * @return 페이징 처리된 게시글 목록 (PostListResponse)
@@ -80,6 +53,7 @@ public class CommunityService {
      * @param user   현재 로그인한 사용자 (좋아요 여부 확인용, null 가능)
      * @return 게시글 상세 정보
      */
+    @Transactional
     public PostDetailResponseDto getPost(Long postId, Long userId) {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다: " + postId));

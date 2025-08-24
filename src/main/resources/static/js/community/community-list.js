@@ -1,6 +1,12 @@
 const url = new URL(window.location.href);
 const params = new URLSearchParams(window.location.search);
 
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
 /**
  * 카테고리 탭 스타일 지정
  */
