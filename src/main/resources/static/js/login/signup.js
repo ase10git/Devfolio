@@ -133,6 +133,13 @@ async function verifyCode() {
     if (res.ok) {
         msgEl.innerText = "이메일 인증에 성공하셨습니다.";
         msgEl.style.color = "green";
+        // 성공 시 입력 잠금
+        document.getElementById("email").readOnly = true;
+        document.getElementById("email-code").readOnly = true;
+        // 성공 시 버튼 비활성화
+        document.getElementById("email-send").disabled = true;
+        document.getElementById("email-verify").disabled = true;
+        document.getElementById("email-verify").textContent = "인증 완료";
     } else {
         msgEl.innerText = msg;
         msgEl.style.color = "red";

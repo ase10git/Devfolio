@@ -64,14 +64,14 @@
                 <label>이메일</label>
                 <div class="input-row">
                     <input type="email" th:field="*{email}" id="email" placeholder="이메일 (필수 입력)" class="input-field" required />
-                    <button type="button" onclick="sendCode()" class="check-btn">인증코드 발송</button>
+                    <button type="button" id="email-send" onclick="sendCode()" class="check-btn">인증코드 발송</button>
                 </div>
                 <div class="msg" id="email-send-msg"></div>
             </div>
             <div class="input-box">
                 <div class="input-row">
                     <input type="text" id="email-code" placeholder="6자리 인증 코드 입력" class="input-field" />
-                    <button type="button" onclick="verifyCode()" class="check-btn">인증 확인</button>
+                    <button type="button" id="email-verify" onclick="verifyCode()" class="check-btn">인증 확인</button>
                 </div>
                 <div class="msg" id="email-verify-msg"></div>
                 <div class="guide-text">이메일로 전송된 인증 코드를 입력해 주세요.</div>
