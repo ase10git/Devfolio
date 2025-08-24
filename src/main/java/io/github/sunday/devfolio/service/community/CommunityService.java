@@ -68,11 +68,9 @@ public class CommunityService {
     public Page<PostListResponseDto> searchPosts(CommunitySearchRequestDto searchRequestDto) {
         Sort sort = Sort.by(searchRequestDto.getDirection(), searchRequestDto.getSort().getFieldName());
         Pageable pageable = PageRequest.of(searchRequestDto.getPage(), searchRequestDto.getSize(), sort);
-        List<CommunityPost> postList = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
-        List<PostListResponseDto> list = postList.stream()
-                .map(post -> PostListResponseDto.from(post))
-                .toList();
-        return new PageImpl<>(list, pageable, list.size());
+        Page<CommunityPost> postPage = communityQueryDslRepository.findAllByKeywordAndCategory(searchRequestDto, pageable);
+
+        return postPage.map(PostListResponseDto::from);
     }
 
     /**

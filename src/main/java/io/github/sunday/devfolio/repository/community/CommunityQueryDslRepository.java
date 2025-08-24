@@ -13,11 +13,14 @@ import io.github.sunday.devfolio.entity.table.community.Category;
 import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.community.QCommunityPost;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 게시글 Entity를 대상으로 하는 QueryDSL 리포지토리
@@ -33,7 +36,7 @@ public class CommunityQueryDslRepository {
      * 정렬 기준과 방향 설정 가능
      * 페이지네이션 적용
      */
-    public List<CommunityPost> findAllByKeywordAndCategory(CommunitySearchRequestDto searchRequestDto, Pageable pageable) {
+    public Page<CommunityPost> findAllByKeywordAndCategory(CommunitySearchRequestDto searchRequestDto, Pageable pageable) {
         QCommunityPost communityPost = QCommunityPost.communityPost;
 
         // 조건 설정
@@ -47,23 +50,28 @@ public class CommunityQueryDslRepository {
 
         // 키워드 조건별 rank 생성 및 booleanBuilder 업데이트
         NumberTemplate<Float> rank = buildTsQueryCondition(communityPost, booleanBuilder, keyword);
-        // 정렬 순서 설정
-        OrderSpecifier<?>[] orderSpecifiers = buildOrderSpecifier(pageable, rank, communityPost);
+
+        // 콘텐츠 조회 쿼리 실행
+        List<CommunityPost> content = executeContentQuery(communityPost, booleanBuilder, rank, pageable);
+
+        // 전체 개수 조회 쿼리 실행
+        Long totalCount = executeCountQuery(communityPost, booleanBuilder);
 
         // 쿼리문 실행
-        return executeCommunityQuery(communityPost, booleanBuilder, rank, orderSpecifiers, pageable);
+        return new PageImpl<>(content, pageable, totalCount);
     }
 
     /**
      * 공통 쿼리 요청 로직
      */
-    private List<CommunityPost> executeCommunityQuery(
+    private List<CommunityPost> executeContentQuery(
             QCommunityPost communityPost,
             BooleanBuilder booleanBuilder,
             NumberTemplate<Float> rank,
-            OrderSpecifier<?>[] orderSpecifiers,
             Pageable pageable
     ) {
+        OrderSpecifier<?>[] orderSpecifiers = buildOrderSpecifier(pageable, rank, communityPost);
+
         JPAQuery<?> query = (rank != null) ?
                 queryFactory.select(communityPost, rank).from(communityPost)
                 : queryFactory.select(communityPost).from(communityPost);
@@ -74,12 +82,24 @@ public class CommunityQueryDslRepository {
                 .orderBy(orderSpecifiers);
 
         if (rank != null) {
-            return ((JPAQuery<Tuple>) query).fetch()
-                    .stream()
-                    .map(tuple -> tuple.get(communityPost))
+            List<Tuple> results = (List<Tuple>) query.fetch();
+            return results.stream()
+                    .map(tuple -> tuple.get(0, CommunityPost.class))
+                    .filter(Objects::nonNull)
                     .toList();
         }
-        return ((JPAQuery<CommunityPost>) query).fetch();
+        return (List<CommunityPost>) query.fetch();
+    }
+
+    /**
+     *  전체 개수 조회 로직
+     */
+    private Long executeCountQuery(QCommunityPost communityPost, BooleanBuilder booleanBuilder) {
+        return queryFactory
+                .select(communityPost.count())
+                .from(communityPost)
+                .where(booleanBuilder)
+                .fetchOne();
     }
 
     /**

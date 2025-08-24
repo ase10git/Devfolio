@@ -26,31 +26,18 @@ public class CommunityController {
     private final CommunityService communityService;
 
     /**
-     * 커뮤니티 게시글 목록 페이지를 표시합니다.
+     * 커뮤니티 게시글 목록 및 검색 결과를 모두 처리하는 통합 메소드.
+     * @GetMapping에 여러 경로를 지정하여 /community 와 /community/search 요청을
+     * 이 메소드 하나가 모두 처리하도록 합니다.
+     * URL이 바뀌지 않고 로직만 통일됩니다.
      */
-    @GetMapping
-    public String listPosts(@Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
-                            Model model) {
-        Page<PostListResponseDto> postPage = communityService.getPosts(requestDto);
-        model.addAttribute("postPage", postPage);
-        model.addAttribute("requestDto", requestDto);
-        model.addAttribute("categories", Category.values());
-        model.addAttribute("sortOptions", CommunitySort.values());
-        return "community/community_list";
-    }
-
-    /**
-     * 커뮤니티 게시글 목록 페이지를 표시합니다.
-     *
-     * @param model    뷰에 전달할 데이터 모델
-     * @return 뷰 템플릿 경로
-     */
-    @GetMapping("/search")
-    public String searchPosts(
-            @Valid @ModelAttribute("searchRequestDto") CommunitySearchRequestDto requestDto,
+    @GetMapping({"", "/search"}) // <-- 핵심 수정: {"", "/search"}
+    public String showPosts(
+            @Valid @ModelAttribute("requestDto") CommunitySearchRequestDto requestDto,
             BindingResult bindingResult,
             Model model
     ) {
+        // (내부 로직은 searchPosts와 동일)
         List<String> errorMessages = new ArrayList<>();
         if (bindingResult.hasErrors()) {
             errorMessages = bindingResult.getAllErrors()
@@ -58,7 +45,10 @@ public class CommunityController {
                     .map(ObjectError::getDefaultMessage)
                     .toList();
         }
+
+        // 서비스의 searchPosts 메소드를 호출합니다. (이 메소드는 검색 조건이 없으면 전체를 조회합니다)
         Page<PostListResponseDto> postPage = communityService.searchPosts(requestDto);
+
         model.addAttribute("postPage", postPage);
         model.addAttribute("requestDto", requestDto);
         model.addAttribute("categories", Category.values());
@@ -67,6 +57,7 @@ public class CommunityController {
         if (!errorMessages.isEmpty()) {
             model.addAttribute("error", errorMessages);
         }
+
         return "community/community_list";
     }
 
