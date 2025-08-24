@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.dto.portfolio;
 
-import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.enums.portfolio.PortfolioSort;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

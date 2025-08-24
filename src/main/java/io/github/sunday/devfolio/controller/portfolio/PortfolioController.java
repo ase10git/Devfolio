@@ -2,7 +2,7 @@ package io.github.sunday.devfolio.controller.portfolio;
 
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.dto.portfolio.*;
-import io.github.sunday.devfolio.enums.PortfolioSort;
+import io.github.sunday.devfolio.enums.portfolio.PortfolioSort;
 import io.github.sunday.devfolio.service.portfolio.PortfolioCategoryService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioLikeService;
 import io.github.sunday.devfolio.service.portfolio.PortfolioService;

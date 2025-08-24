@@ -1,7 +1,7 @@
 package io.github.sunday.devfolio.config;
 
-import io.github.sunday.devfolio.service.CustomOAuth2UserService;
-import io.github.sunday.devfolio.service.UserService;
+import io.github.sunday.devfolio.service.auth.CustomOAuth2UserService;
+import io.github.sunday.devfolio.service.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

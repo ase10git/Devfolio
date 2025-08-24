@@ -1,6 +1,6 @@
 package io.github.sunday.devfolio.scheduler;
 
-import io.github.sunday.devfolio.repository.EmailVerificationRepository;
+import io.github.sunday.devfolio.repository.auth.EmailVerificationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

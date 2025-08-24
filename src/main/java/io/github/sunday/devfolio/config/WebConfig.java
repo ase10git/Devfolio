@@ -1,7 +1,7 @@
 package io.github.sunday.devfolio.config;
 
 import io.github.sunday.devfolio.interceptor.LoginUserInterceptor;
-import io.github.sunday.devfolio.service.UserService;
+import io.github.sunday.devfolio.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

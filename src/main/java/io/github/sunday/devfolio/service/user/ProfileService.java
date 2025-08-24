@@ -1,6 +1,6 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.user;
 
-import io.github.sunday.devfolio.dto.ProfileDto;
+import io.github.sunday.devfolio.dto.user.ProfileDto;
 import io.github.sunday.devfolio.entity.table.community.CommunityLike;
 import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.portfolio.Portfolio;
@@ -8,9 +8,9 @@ import io.github.sunday.devfolio.entity.table.portfolio.PortfolioLike;
 import io.github.sunday.devfolio.entity.table.profile.Follow;
 import io.github.sunday.devfolio.entity.table.profile.Resume;
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.FollowRepository;
-import io.github.sunday.devfolio.repository.ResumeRepository;
-import io.github.sunday.devfolio.repository.UserRepository;
+import io.github.sunday.devfolio.repository.user.FollowRepository;
+import io.github.sunday.devfolio.repository.user.ResumeRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
 import io.github.sunday.devfolio.repository.community.CommunityLikeRepository;
 import io.github.sunday.devfolio.repository.community.CommunityPostRepository;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioLikeRepository;

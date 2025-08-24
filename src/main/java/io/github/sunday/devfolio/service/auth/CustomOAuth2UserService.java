@@ -1,8 +1,9 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.auth;
 
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import io.github.sunday.devfolio.entity.table.user.User;
+import io.github.sunday.devfolio.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

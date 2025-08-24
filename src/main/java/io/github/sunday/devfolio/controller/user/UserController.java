@@ -1,11 +1,11 @@
-package io.github.sunday.devfolio.controller;
+package io.github.sunday.devfolio.controller.user;
 
-import io.github.sunday.devfolio.dto.UserSignupDto;
+import io.github.sunday.devfolio.dto.auth.UserSignupDto;
 import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.EmailVerificationRepository;
-import io.github.sunday.devfolio.service.UserService;
+import io.github.sunday.devfolio.repository.auth.EmailVerificationRepository;
+import io.github.sunday.devfolio.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

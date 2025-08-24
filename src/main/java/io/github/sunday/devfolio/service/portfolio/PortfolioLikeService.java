@@ -5,7 +5,7 @@ import io.github.sunday.devfolio.entity.table.portfolio.PortfolioLike;
 import io.github.sunday.devfolio.entity.table.user.User;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioLikeRepository;
 import io.github.sunday.devfolio.repository.portfolio.PortfolioRepository;
-import io.github.sunday.devfolio.service.impl.UserServiceImpl;
+import io.github.sunday.devfolio.service.user.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

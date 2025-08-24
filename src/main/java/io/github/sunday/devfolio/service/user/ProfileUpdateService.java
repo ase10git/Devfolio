@@ -1,12 +1,13 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.user;
 
 
-import io.github.sunday.devfolio.dto.ProfileUpdateRequest;
+import io.github.sunday.devfolio.dto.user.ProfileUpdateRequest;
 import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import io.github.sunday.devfolio.entity.table.user.EmailVerification;
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.EmailVerificationRepository;
-import io.github.sunday.devfolio.repository.UserRepository;
+import io.github.sunday.devfolio.repository.auth.EmailVerificationRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
+import io.github.sunday.devfolio.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;

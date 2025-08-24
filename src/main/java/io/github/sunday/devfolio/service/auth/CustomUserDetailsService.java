@@ -1,8 +1,8 @@
-package io.github.sunday.devfolio.service;
+package io.github.sunday.devfolio.service.auth;
 
 import io.github.sunday.devfolio.config.CustomUserDetails;
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.UserRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

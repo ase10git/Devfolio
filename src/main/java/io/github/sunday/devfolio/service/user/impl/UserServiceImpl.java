@@ -1,9 +1,9 @@
-package io.github.sunday.devfolio.service.impl;
+package io.github.sunday.devfolio.service.user.impl;
 
 import io.github.sunday.devfolio.entity.table.user.User;
-import io.github.sunday.devfolio.repository.EmailVerificationRepository;
-import io.github.sunday.devfolio.repository.UserRepository;
-import io.github.sunday.devfolio.service.UserService;
+import io.github.sunday.devfolio.repository.auth.EmailVerificationRepository;
+import io.github.sunday.devfolio.repository.user.UserRepository;
+import io.github.sunday.devfolio.service.user.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

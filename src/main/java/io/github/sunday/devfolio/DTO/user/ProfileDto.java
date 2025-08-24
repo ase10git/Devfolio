@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.dto;
+package io.github.sunday.devfolio.dto.user;
 
 import io.github.sunday.devfolio.entity.table.user.AuthProvider;
 import lombok.Builder;

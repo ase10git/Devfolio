@@ -1,4 +1,4 @@
-package io.github.sunday.devfolio.enums;
+package io.github.sunday.devfolio.enums.community;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
