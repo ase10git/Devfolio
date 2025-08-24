@@ -90,15 +90,19 @@ public class CommunityController {
      * 새로운 게시글을 등록 처리합니다.
      */
     @PostMapping("/new")
-    public String createPost(@ModelAttribute("postRequest") PostCreateRequestDto requestDto,
+    public String createPost(@Valid @ModelAttribute("postRequest") PostCreateRequestDto requestDto,
+                             BindingResult bindingResult,
                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        if (bindingResult.hasErrors()) {
+            return "community/community_write";
+        }
 
         if (customUserDetails == null) {
             return "redirect:/login";
         }
 
         Long userId = customUserDetails.getUser().getUserIdx();
-
         Long newPostId = communityService.createPost(requestDto, userId);
         return "redirect:/community/" + newPostId;
     }
@@ -132,8 +136,16 @@ public class CommunityController {
      */
     @PostMapping("/{postId}/edit")
     public String editPost(@PathVariable Long postId,
-                           @ModelAttribute("postRequest") PostUpdateRequestDto requestDto,
-                           @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                           @Valid @ModelAttribute("postRequest") PostUpdateRequestDto requestDto,
+                           BindingResult bindingResult,
+                           @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                           Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEditMode", true);
+            return "community/community_write";
+        }
+
         if (customUserDetails == null) { return "redirect:/login"; }
 
         Long userId = customUserDetails.getUser().getUserIdx();
