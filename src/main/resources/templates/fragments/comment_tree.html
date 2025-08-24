@@ -7,7 +7,7 @@
         <div class="comment-box" th:id="'comment-' + ${comment.commentId}">
             <div class="comment-header">
                 <div class="comment-author">
-                    <img th:src="${comment.authorProfileImg != null ? comment.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필" class="profile-img-small">
+                    <img th:src="${comment.authorProfileImg != null ? comment.authorProfileImg : '/assets/icon/person-fill.svg'}" alt="프로필" class="profile-img-small">
                     <strong th:text="${comment.authorNickname}"></strong>
                 </div>
                 <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
