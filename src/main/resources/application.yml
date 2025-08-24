@@ -4,6 +4,8 @@ server:
       enabled: false
 
 spring:
+  profiles:
+    active: production
   application:
     name: DevFolio
   servlet:
