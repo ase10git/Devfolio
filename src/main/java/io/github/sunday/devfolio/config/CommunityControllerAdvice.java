@@ -19,38 +19,49 @@ import java.beans.PropertyEditorSupport;
 public class CommunityControllerAdvice {
 
     /**
-     * 모든 String 타입 입력에 대해 기본 XSS 방어 및 공백 제거를 수행합니다.
-     * 가장 엄격한 Safelist.basic()을 사용합니다.
+     * 커뮤니티 검색 요청이 들어올 때 DTO 내의 String에서 script를 제거
      */
-    @InitBinder
-    public void initStringBinder(WebDataBinder binder) {
+    @InitBinder("requestDto")
+    public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
             @Override
             public void setAsText(String text) {
-                if (text == null) {
+                if (text != null) {
+                    String safeText = Jsoup.clean(text, Safelist.basic());
+                    super.setAsText(safeText.trim());
+                } else {
                     super.setValue(null);
-                    return;
                 }
-                // HTML 태그가 거의 없는 일반적인 문자열 필드를 위한 설정
-                String safeText = Jsoup.clean(text, Safelist.basic());
-                super.setAsText(safeText.trim());
             }
         });
-    }
 
-    /**
-     * CommunitySort Enum 타입 변환을 처리합니다.
-     */
-    @InitBinder
-    public void initCommunitySortBinder(WebDataBinder binder) {
+        // sort 유효성 검증
         binder.registerCustomEditor(CommunitySort.class, new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
                 CommunitySort sort = CommunitySort.fromName(text);
                 if (sort == null) {
-                    sort = CommunitySort.UPDATED_AT; // 기본값
+                    sort = CommunitySort.UPDATED_AT;
                 }
                 setValue(sort);
+            }
+        });
+    }
+
+    /**
+     * 커뮤니티 게시글, 댓글의 작성, 수정 요청이 들어올 때 DTO 내의 String에서 script를 제거
+     */
+    @InitBinder({"postRequest", "commentRequest"})
+    public void initBinderToWrite(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true) {
+            @Override
+            public void setAsText(String text) {
+                if (text != null) {
+                    String safeText = Jsoup.clean(text, Safelist.relaxed());
+                    super.setAsText(safeText.trim());
+                } else {
+                    super.setValue(null);
+                }
             }
         });
     }

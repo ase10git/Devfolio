@@ -397,3 +397,7 @@
 .detail-post-status.status-inactive {
     background-color: #A0AEC0;
 }
+
+.alert-danger {
+    color: red;
+}
