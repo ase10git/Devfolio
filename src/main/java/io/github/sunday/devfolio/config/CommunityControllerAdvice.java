@@ -1,6 +1,7 @@
 package io.github.sunday.devfolio.config;
 
 import io.github.sunday.devfolio.controller.community.CommunityController;
+import io.github.sunday.devfolio.controller.community.CommunityRestController;
 import io.github.sunday.devfolio.enums.CommunitySort;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 
 import java.beans.PropertyEditorSupport;
 
-@ControllerAdvice(assignableTypes = CommunityController.class)
+/**
+ * 커뮤니티 컨트롤러에 적용되는 사전 동작
+ */
+@ControllerAdvice(assignableTypes = {CommunityController.class, CommunityRestController.class})
 public class CommunityControllerAdvice {
 
     /**
