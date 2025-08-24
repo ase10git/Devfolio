@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>이력서</title>
+    <title>프로필 페이지</title>
     <link rel="stylesheet" th:href="@{/css/profilepage/profile.css}">
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
@@ -168,7 +168,7 @@
                 <div th:if="${#lists.isEmpty(likesPortfolios)}" class="text-gray-500 mb-4">좋아요한 포트폴리오가 없습니다.</div>
                 <div th:each="pf : ${likesPortfolios}" class="border-b py-3 flex items-center justify-between">
                     <a th:href="@{|/profile/${pf.user.userIdx}|}" class="mr-4 text-gray-600" th:text="${pf.user.nickname}">작성자</a>
-                    <span class="mr-auto" th:text="${pf.title}">제목</span>
+                    <a th:href="@{|/portfolio/${pf.portfolioIdx}|}" class="mr-auto" th:text="${pf.title}">제목</a>
                     <form th:action="@{|/profile/portfolios/${pf.portfolioIdx}/like|}" method="post" class="inline">
                         <input type="hidden" name="ownerUserIdx" th:value="${user.userIdx}"/>
                         <input type="hidden" name="tab" value="likes"/>
@@ -180,7 +180,7 @@
                 <div th:if="${#lists.isEmpty(likesPosts)}" class="text-gray-500">좋아요한 게시글이 없습니다.</div>
                 <div th:each="p : ${likesPosts}" class="border-b py-3 flex items-center justify-between">
                     <a th:href="@{|/profile/${p.user.userIdx}|}" class="mr-4 text-gray-600" th:text="${p.user.nickname}">작성자</a>
-                    <span class="mr-auto" th:text="${p.title}">제목</span>
+                    <a th:href="@{|/community/${p.postIdx}|}" class="mr-auto" th:text="${p.title}">제목</a>
                     <form th:action="@{|/profile/posts/${p.postIdx}/like|}" method="post" class="inline">
                         <input type="hidden" name="ownerUserIdx" th:value="${user.userIdx}"/>
                         <input type="hidden" name="tab" value="likes"/>
