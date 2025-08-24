@@ -34,8 +34,16 @@ public class SecurityConfig {
                         .requestMatchers("/api/portfolio/list**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/ckeditor5/**", "/prompts/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/community", "/community/**").permitAll()
-                        .requestMatchers("/community/**").authenticated()
+                        .requestMatchers(
+                                "/community/new",
+                                "/community/*/edit",
+                                "/community/*/delete",
+                                "/community/*/comments",
+                                "/community/*/like"
+                        ).authenticated()
+
+                        // 2. (신규) 그 외 모든 /community/** 경로의 GET 요청은 모두에게 허용합니다. (목록, 상세 조회 등)
+                        .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

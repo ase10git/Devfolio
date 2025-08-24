@@ -88,7 +88,7 @@
 }
 .search-bar .search-btn {
     border: none;
-    background-color: #339af0;
+    background-color: #3A5BA0;
     color: white;
     padding: 0 1.2rem;
     cursor: pointer;
@@ -103,8 +103,8 @@
     margin-bottom: 1.5rem;
 }
 .sort-tabs button {
-    color: #868e96;
-    background-color: #f1f3f5;
+    color: #000;
+    background-color: #CFE8FF;
     text-decoration: none;
     padding: 0.4rem 0.9rem;
     border-radius: 20px;
@@ -115,12 +115,12 @@
     cursor: pointer;
 }
 .sort-tabs button.active {
-    background-color: #339af0;
+    background-color: #2C99FF;
     color: white;
     font-weight: 700;
 }
 .btn-primary {
-    background-color: #339af0;
+    background-color: #3A5BA0;
     color: white;
     padding: 0.75rem 1.25rem;
     border-radius: 8px;
@@ -228,4 +228,9 @@
     color: white;
     border-color: #339af0;
     font-weight: bold;
+}
+
+.tag.completed {
+    background-color: #e9ecef;
+    color: #868e96;
 }
