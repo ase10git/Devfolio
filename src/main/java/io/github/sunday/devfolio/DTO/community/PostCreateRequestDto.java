@@ -3,6 +3,7 @@ package io.github.sunday.devfolio.dto.community;
 import io.github.sunday.devfolio.entity.table.community.Category;
 import io.github.sunday.devfolio.entity.table.community.CommunityPost;
 import io.github.sunday.devfolio.entity.table.user.User;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,13 +20,16 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor // 기본 생성자도 필요합니다.
 public class PostCreateRequestDto {
     private String title;
+
     private String content;
+
+    @NotNull(message = "카테고리를 선택해주세요.")
     private Category category;
-    private String status = "ACTIVE"; // 상태는 기본값으로 설정하거나 선택 가능하게 할 수 있습니다.
+
+    private String status = "ACTIVE";
 
     public void setContent(String content) {
         if (content != null) {
-            // content 필드에 대해서만 relaxed Safelist를 적용
             this.content = Jsoup.clean(content, Safelist.relaxed());
         } else {
             this.content = null;
@@ -43,7 +47,7 @@ public class PostCreateRequestDto {
                 .title(this.title)
                 .content(this.content)
                 .category(this.category)
-                .status(this.status) // 기본값 설정
+                .status(this.status)
                 .views(0)
                 .likeCount(0)
                 .commentCount(0)
