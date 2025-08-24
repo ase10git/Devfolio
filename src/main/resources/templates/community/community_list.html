@@ -5,14 +5,13 @@
     <title>커뮤니티</title>
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/styles.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_list.css}">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
 <div class="page-wrapper">
-    <header th:replace="~{fragments/header :: header}"></header>
     <div class="page-title-area">
         <h1>커뮤니티</h1>
         <p>커뮤니티에서 스터디 그룹을 모집하거나 질의응답을 통해 다른 개발자와 소통하세요</p>
@@ -46,7 +45,7 @@
                 </select>
                 <input type="text" name="keyword" placeholder="검색 키워드를 입력해주세요"
                        th:value="${requestDto.keyword}">
-                <button type="submit" class="search-btn"><img th:src="@{/assets/icon/search.svg}" alt="검색 아이콘"/></button>
+                <button type="submit" class="search-btn"><img th:src="@{/assets/icon/search_white.svg}" alt="검색 아이콘"/></button>
             </form>
 
             <!-- 2. 정렬 탭과 글쓰기 버튼 -->
@@ -70,7 +69,9 @@
                 <div th:unless="${postPage.isEmpty()}" class="post-list">
                     <article class="post-item" th:each="post : ${postPage.content}">
                         <div class="post-item-main">
-                            <span class="tag" th:classappend="${post.status == 'ACTIVE'} ? 'recruiting' : 'completed'"
+                            <span class="tag"
+                                  th:if="${post.category.name() == 'study'}"
+                                  th:classappend="${post.status == 'ACTIVE'} ? 'recruiting' : 'completed'"
                                   th:text="${post.status == 'ACTIVE'} ? '모집중' : '모집완료'"></span>
                             <h3 class="post-title"><a th:href="@{/community/{id}(id=${post.postIdx})}" th:text="${post.title}"></a></h3>
                             <p class="post-category"
@@ -85,9 +86,9 @@
                                 <span class="timestamp" th:text="' • ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
                             </div>
                             <div class="post-stats">
-                                <span><img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘" /> <span th:text="${post.views}"></span></span>
+                                <span><img th:src="@{/assets/icon/eye.svg}" alt="조회수 아이콘"/> <span th:text="${post.views}"></span></span>
                                 <span>♥ <span th:text="${post.likeCount}"></span></span>
-                                <span><img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘" /> <span th:text="${post.commentCount}"></span></span>
+                                <span><img th:src="@{/assets/icon/chat.svg}" alt="댓글 아이콘"/> <span th:text="${post.commentCount}"></span></span>
                             </div>
                         </div>
                     </article>

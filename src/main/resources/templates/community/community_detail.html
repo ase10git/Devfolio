@@ -5,10 +5,9 @@
     <title th:text="${post.title}">게시글 상세</title>
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/styles.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_layout.css}">
     <link rel="stylesheet" th:href="@{/css/community/community_detail.css}">
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
@@ -20,11 +19,19 @@
                 <div class="title-and-tags">
                     <span class="tag"
                           th:text="${post.category.name() == 'study' ? '스터디 그룹 모집' :
-                (post.category.name() == 'question' ? '질문 & 답변' : '자유 게시판')}"></span>
-                    <h1 th:text="${post.title}"></h1>
+                            (post.category.name() == 'question' ? '질문 & 답변' : '자유 게시판')}"></span>
+                    <div class="title-wrapper">
+                        <h1 th:text="${post.title}"></h1>
+                        <th:block th:if="${post.category.name() == 'study'}">
+                            <span class="detail-post-status"
+                                  th:text="${post.status == 'ACTIVE' ? '모집중' : '모집완료'}"
+                                  th:classappend="${post.status == 'ACTIVE' ? 'status-active' : 'status-inactive'}">
+                            </span>
+                        </th:block>
+                    </div>
                 </div>
                 <div class="action-buttons"
-                     th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == post.authorUserIdx}">
+                     th:if="${#authorization.expression('isAuthenticated()') and #authentication.principal.getUser().getUserIdx() == post.authorUserIdx}">
                     <a th:href="@{/community/{id}/edit(id=${post.postIdx})}" class="btn-secondary">수정</a>
                     <form th:action="@{/community/{id}/delete(id=${post.postIdx})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
                         <button type="submit" class="btn-secondary">삭제</button>
@@ -33,39 +40,59 @@
             </header>
 
             <div class="author-meta">
-                <img th:src="${post.authorProfileImg != null ? post.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필">
-                <span class="author-name" th:text="${post.authorNickname}"></span>
-                <span class="divider">|</span>
-                <span class="timestamp" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
-                <div class="post-stats">
-                    <span>조회 <span th:text="${post.views}"></span></span>
-                    <span>좋아요 <span th:text="${post.likeCount}"></span></span>
+                <div class="author-profile">
+                    <img th:src="${post.authorProfileImg != null ? post.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필">
+                    <span class="author-name" th:text="${post.authorNickname}"></span>
+                </div>
+                <div class="post-info">
+                    <span class="timestamp" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+                    <div class="post-stats">
+                        <span class="views">
+                            <img th:src="@{/assets/icon/eye.svg}" alt="조회수"/>
+                            <span th:text="${post.views}">0</span>
+                        </span>
+                        <span class="likes">
+                            <img th:src="@{/assets/icon/hand-thumbs-up.svg}" alt="좋아요"/>
+                            <span th:text="${post.likeCount}">0</span>
+                        </span>
+                        <span class="comments">
+                            <img th:src="@{/assets/icon/chat.svg}" alt="댓글 수"/>
+                            <span th:text="${post.totalCommentCount}">0</span>
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <article class="post-content" th:utext="${post.content}"></article>
+            <section class="post-content" th:utext="${post.content}"></section>
 
             <div class="like-button-wrapper">
                 <form th:action="@{/community/{id}/like(id=${post.postIdx})}" method="post">
-                    <button type="submit" class="btn-like" th:classappend="${post.likedByCurrentUser} ? 'liked' : ''">
-                        <span th:text="${post.likedByCurrentUser} ? '♡ 좋아요 취소' : '♥ 좋아요'"></span>
-                    </button>
+                    <div class="like-button-wrapper">
+                        <form th:action="@{/community/{id}/like(id=${post.postIdx})}" method="post">
+                            <button type="submit" class="btn-like" th:classappend="${post.likedByCurrentUser} ? 'liked' : ''">
+                                <span class="like-icon" th:text="${post.likedByCurrentUser ? '♡' : '♥'}"></span>
+                                <span class="like-text" th:text="${post.likedByCurrentUser ? '좋아요 취소' : '좋아요'}"></span>
+                            </button>
+                        </form>
+                    </div>
                 </form>
             </div>
         </div>
 
         <!-- 댓글 섹션 -->
         <section class="comment-container">
-            <h2>댓글 <span id="comment-count" th:text="${post.totalCommentCount}"></span></h2>
+            <h2>댓글 <span id="comment-count" th:text="${post.totalCommentCount}"></span> 개</h2>
 
             <div class="comment-write-box" id="main-comment-form-container" th:if="${#authentication.isAuthenticated()}">
-                <form th:action="@{/community/{id}/comments(id=${post.postIdx})}" th:object="${commentRequest}" method="post" class="comment-form" id="main-comment-form">
-                    <input type="hidden" th:field="*{parentId}" />
-                    <textarea th:field="*{content}" placeholder="댓글을 작성해주세요" required></textarea>
-                    <div class="comment-form-actions">
-                        <button type="submit" class="btn-submit">작성</button>
-                    </div>
-                </form>
+                <div class="comment-form-area">
+                    <form th:action="@{/community/{id}/comments(id=${post.postIdx})}" th:object="${commentRequest}" method="post" class="comment-form" id="main-comment-form">
+                        <input type="hidden" th:field="*{parentId}"/>
+                        <textarea th:field="*{content}" placeholder="댓글 내용을 작성해주세요" required></textarea>
+                        <div class="comment-form-actions">
+                            <button type="submit" class="btn-submit">작성</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="comment-login-prompt" th:unless="${#authentication.isAuthenticated()}">
                 <p>댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.</p>

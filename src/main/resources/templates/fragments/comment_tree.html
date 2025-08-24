@@ -2,29 +2,31 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="commentTree(comments)" class="comment-list">
-    <!--/*@thymesVar id="comment" type="io.github.sunday.devfolio.dto.community.CommentResponse"*/-->
-    <div th:each="comment : ${comments}" class="comment-item" th:id="'comment-' + ${comment.commentId}">
-        <div class="comment-author">
-            <img th:src="${comment.authorProfileImg != null ? comment.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필" class="profile-img-small">
-            <strong th:text="${comment.authorNickname}"></strong>
-            <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-        </div>
-        <div class="comment-content" th:text="${comment.content}"></div>
+    <div th:each="comment : ${comments}" class="comment-item" th:id="'comment-container-' + ${comment.commentId}">
 
-        <div class="comment-actions">
-            <!-- 로그인한 사용자에게만 '답글' 버튼 표시 -->
-            <button type="button" class="btn-reply" th:data-comment-id="${comment.commentId}"
-                    th:if="${#authentication.isAuthenticated()}">답글</button>
+        <div class="comment-box" th:id="'comment-' + ${comment.commentId}">
+            <div class="comment-header">
+                <div class="comment-author">
+                    <img th:src="${comment.authorProfileImg != null ? comment.authorProfileImg : '/assets/images/default-profile.png'}" alt="프로필" class="profile-img-small">
+                    <strong th:text="${comment.authorNickname}"></strong>
+                </div>
+                <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+            </div>
 
-            <!-- [핵심 수정] 본인 댓글일 경우에만 '수정', '삭제' 버튼 표시 -->
-            <th:block th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == comment.authorUserIdx}">
-                <button type="button" class="btn-edit" th:data-comment-id="${comment.commentId}">수정</button>
-                <button type="button" class="btn-delete" th:data-comment-id="${comment.commentId}">삭제</button>
-            </th:block>
+            <div class="comment-content" th:text="${comment.content}"></div>
+
+            <div class="comment-actions">
+
+                <th:block th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == comment.authorUserIdx}">
+                    <button type="button" class="btn-edit" th:data-comment-id="${comment.commentId}">수정</button>
+                    <button type="button" class="btn-delete-comment" th:data-comment-id="${comment.commentId}">삭제</button>
+                    <button type="button" class="btn-reply" th:data-comment-id="${comment.commentId}"
+                            th:if="${#authentication.isAuthenticated()}">답글 작성</button>
+                </th:block>
+            </div>
         </div>
 
         <div class="reply-form-container"></div>
-
         <div th:if="${not #lists.isEmpty(comment.children)}" class="replies">
             <div th:replace="~{this :: commentTree(comments=${comment.children})}"></div>
         </div>
