@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<footer th:fragment="footer" class="footer">
+    <div class="site-info">
+        <ul>
+            <li>사업자 정보</li>
+            <li><a th:href="@{/main}">서비스 소개</a></li>
+            <li>운영정책</li>
+            <li>공지사항</li>
+            <li>문의사항</li>
+        </ul>
+    </div>
+    <div class="project-info">
+        <a href="https://github.com/ase10git/Devfolio">
+            <div class="icon-box">
+                <img th:src="@{/assets/icon/github.svg}" alt="github 아이콘">
+            </div>
+            <span>Team Sunday</span>
+        </a>
+    </div>
+</footer>
+</html>

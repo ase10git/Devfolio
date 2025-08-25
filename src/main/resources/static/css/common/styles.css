@@ -1,0 +1,305 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  --max-content-width: 1700px;
+  --box-radius-15: 15px;
+  --box-radius-10: 10px;
+  --box-radius-8: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+ul,
+li,
+ol {
+  list-style-type: none;
+}
+
+body {
+    background-color: #F0F8FF;
+}
+
+/* text type input option */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	border : none;
+	-webkit-text-fill-color: black;
+	-webkit-box-shadow: 0 0 0px 1000px #E8F0FF inset;
+    box-shadow: 0 0 0px 1000px #E8F0FF inset;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+input:autofill,
+input:autofill:hover,
+input:autofill:focus,
+input:autofill:active {
+	-webkit-text-fill-color: black;
+    -webkit-box-shadow: 0 0 0px 1000px #E8F0FF inset;
+    box-shadow: 0 0 0px 1000px #E8F0FF inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ckeditor style */
+@media print {
+	body {
+		margin: 0 !important;
+	}
+}
+
+:root {
+	--ck-content-font-family: 'Lato';
+}
+
+.main-container {
+	font-family: var(--ck-content-font-family);
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+	min-width: 795px;
+	max-width: 795px;
+}
+
+.ck-content h3.category {
+	font-family: 'Oswald';
+	font-size: 20px;
+	font-weight: bold;
+	color: #555;
+	letter-spacing: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+.ck-content h2.document-title {
+	font-family: 'Oswald';
+	font-size: 50px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.ck-content h3.document-subtitle {
+	font-family: 'Oswald';
+	font-size: 20px;
+	color: #555;
+	margin: 0 0 1em;
+	font-weight: bold;
+	padding: 0;
+}
+
+.ck-content p.info-box {
+	--background-size: 30px;
+	--background-color: #e91e63;
+	padding: 1.2em 2em;
+	border: 1px solid var(--background-color);
+	background:
+		linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)),
+		linear-gradient(
+			135deg,
+			transparent calc(100% - var(--background-size)),
+			var(--background-color) calc(100% - var(--background-size)),
+			var(--background-color)
+		);
+	border-radius: 10px;
+	margin: 1.5em 2em;
+	box-shadow: 5px 5px 0 #ffe6ef;
+}
+
+.ck-content span.marker {
+	background: yellow;
+}
+
+.ck-content span.spoiler {
+	background: #000;
+	color: #000;
+}
+
+.ck-content span.spoiler:hover {
+	background: #000;
+	color: #fff;
+}
+
+.ck-content .button {
+	display: inline-block;
+	width: 260px;
+	border-radius: 8px;
+	margin: 0 auto;
+	padding: 12px;
+	color: #ffffff;
+	font-size: 24px;
+	font-weight: 700;
+	text-align: center;
+	text-decoration: none;
+}
+
+.ck-content .button--green {
+	background-color: #406b1e;
+}
+
+.ck-content .button--black {
+	background-color: #141517;
+}
+
+/* loading spinner */
+.spinner-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #3A5BA0;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* common portfolio card style */
+.portfolio-card {
+    border: 1px solid #9D9D9D;
+    border-radius: var(--box-radius-15);
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.portfolio-card:hover {
+    box-shadow: 0 5px 10px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.portfolio-link {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .card-img-box {
+    width: 100%;
+    height: fit-content;
+    border-radius: var(--box-radius-15) var(--box-radius-15) 0 0;
+}
+
+.portfolio-link .card-img-box img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    object-fit: cover;
+    border-radius: var(--box-radius-15) var(--box-radius-15) 0 0;
+}
+
+.portfolio-link .card-info-box {
+    width: 100%;
+    padding: 0 15px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.portfolio-link .writer-meta {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+
+.portfolio-link .writer-profile {
+    width: 50px; height: 50px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 1px solid #9D9D9D;
+}
+
+.portfolio-link .writer-profile img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+
+.portfolio-link .writer-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.portfolio-link .portfolio-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-link .portfolio-info {
+    width: 100%;
+}
+
+.portfolio-link .portfolio-title {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.portfolio-link .category-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-box span {
+    padding: 3px 5px;
+    border-radius: var(--box-radius-8);
+    background-color: #CFE8FF;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* stats */
+.stats-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}

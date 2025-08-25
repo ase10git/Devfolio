@@ -1,0 +1,12 @@
+/* 전체 페이지 기본 스타일 */
+body {
+    background-color: #f0f8ff;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+    margin: 0;
+    color: #333;
+    padding-top: 60px;
+}
+
+/* 모든 페이지의 메인 컨텐츠를 감싸는 wrapper */
+.page-wrapper {
+}

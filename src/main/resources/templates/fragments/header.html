@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<header th:fragment="header">
+    <div class="fixed-header">
+        <div class="header-left">
+            <a href="/main" class="main-btn">
+                <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="devfolio-logo-img" />
+            </a>
+            <a th:href="@{/portfolio}" class="left-button">포트폴리오</a>
+            <a th:href="@{/community}" class="left-button">커뮤니티</a>
+        </div>
+
+        <div class="header-right">
+            <span>
+            <th:block th:if="${session.loginUserIdx == null}">
+              <form th:action="@{/login}" method="get" class="button-form">
+                <button type="submit" class="login-btn">로그인</button>
+              </form>
+            </th:block>
+
+            <th:block th:if="${session.loginUserIdx != null}">
+              <form th:action="@{/profile/{userId}(userId=${session.loginUserIdx})}" method="get" class="button-form">
+                <button type="submit" class="mypage-btn">My Page</button>
+              </form>
+
+              <form th:action="@{/logout}" method="post" class="button-form">
+                <button type="submit" class="login-btn">로그아웃</button>
+              </form>
+            </th:block>
+          </span>
+        </div>
+    </div>
+</header>
+</body>
+</html>

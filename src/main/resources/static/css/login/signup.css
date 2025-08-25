@@ -1,0 +1,227 @@
+.signup-main {
+    margin: 100px 0;
+    padding: 0 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: white;
+    border-radius: var(--box-radius-15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.logo-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    width: auto;
+    height: 50px;
+}
+
+.error-box {
+    color: red;
+}
+
+#signup-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.input-box {
+    width: 100%;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.input-field {
+    width: 400px;
+    height: 49px;
+    padding: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-radius: var(--box-radius-10);
+    background-color: #E8F0FF;
+}
+
+.input-field:focus {
+    box-shadow: 0 0 5px #3A5BA0;
+}
+
+.input-field.password {
+    width: 100%;
+}
+
+.password-toggle-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.password-toggle-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.eye-icon.hidden {
+    display: none;
+}
+
+.eye-slash-icon.hidden {
+    display: none;
+}
+
+.msg {
+    margin-top: 4px;
+    margin-left: 2px;
+    font-size: 16px;
+}
+
+.signup-btn {
+    width: 528px;
+    height: 49px;
+    background: #3A5BA0;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+}
+
+.signup-btn:hover {
+    opacity: 0.8;
+}
+
+.check-btn {
+    width: 120px;
+    height: 49px;
+    background: #3A5BA0;
+    font-size: 16px;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.check-btn:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.check-btn:hover {
+    opacity: 0.8;
+}
+
+.guide-text {
+    color: gray;
+    margin-bottom: 30px;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.login-box {
+    margin-top: 30px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.login {
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    color: #3A5BA0;
+    cursor: pointer;
+}
+
+.signup-box {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+.login:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        margin-top: 100px;
+        padding-top: 80px;
+    }
+
+    .input-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .input-field {
+        width: 100%;
+    }
+
+    .check-btn {
+        width: 100%;
+    }
+
+    .signupBtn {
+        width: 100%;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .guide-text {
+        font-size: 14px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    .login {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    body > div[style*="flex: 1"] > div {
+        width: 90%;
+    }
+}

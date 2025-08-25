@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/login/signup.css}">
+    <link>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="signup-main">
+    <section class="container">
+        <div class="logo-box">
+            <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="logo-img" />
+        </div>
+        <div th:if="${error}" class="error-box" th:text="${error}"></div>
+        <form method="post" th:object="${user}" th:action="@{/signup}" id="signup-form">
+            <div class="input-box">
+                <label>아이디</label>
+                <div class="input-row">
+                    <input type="text" th:field="*{loginId}" id="loginId" placeholder="아이디 (필수 입력)" class="input-field" required />
+                    <button type="button" onclick="checkLoginId()" class="check-btn">중복확인</button>
+                </div>
+                <div id="loginId-msg" class="msg"></div>
+                <div class="guide-text">영문/숫자 6~20자, 특수문자 X</div>
+            </div>
+            <div class="input-box">
+                <label>비밀번호</label>
+                <div class="input-row">
+                    <input type="password" th:field="*{password}" id="password" placeholder="비밀번호 (필수 입력)" oninput="checkPasswordMatch()" class="input-field password" required />
+                    <button type="button" class="password-toggle-button">
+                        <img th:src="@{/assets/icon/eye.svg}" alt="눈 아이콘" class="eye-icon">
+                        <img th:src="@{/assets/icon/eye-slash.svg}" alt="눈 슬래시 아이콘" class="eye-slash-icon hidden">
+                    </button>
+                </div>
+                <div class="msg"></div>
+                <div class="guide-text">영문+숫자 필수 8~20자, 특수문자 허용 (!@#$%^&*())</div>
+            </div>
+            <div class="input-box">
+                <label>비밀번호 확인</label>
+                <div class="input-row">
+                    <input type="password" th:field="*{passwordConfirm}" id="password-confirm" placeholder="비밀번호 확인 (필수 입력)" oninput="checkPasswordMatch()" class="input-field password" required />
+                    <button type="button" class="password-toggle-button">
+                        <img th:src="@{/assets/icon/eye.svg}" alt="눈 아이콘" class="eye-icon">
+                        <img th:src="@{/assets/icon/eye-slash.svg}" alt="눈 슬래시 아이콘" class="eye-slash-icon hidden">
+                    </button>
+                </div>
+                <div id="password-match-msg" class="msg"></div>
+                <div class="guide-text"></div>
+            </div>
+            <div class="input-box">
+                <label>닉네임</label>
+                <div class="input-row">
+                    <input type="text" th:field="*{nickname}" id="nickname" placeholder="닉네임 (필수)" class="input-field" required />
+                    <button type="button" onclick="checkNickname()" class="check-btn">중복확인</button>
+                </div>
+                <div id="nickname-msg" class="msg"></div>
+                <div class="guide-text">한글/영문/숫자 4~12자, 특수문자 X</div>
+            </div>
+            <div class="input-box">
+                <label>이메일</label>
+                <div class="input-row">
+                    <input type="email" th:field="*{email}" id="email" placeholder="이메일 (필수 입력)" class="input-field" required />
+                    <button type="button" id="email-send" onclick="sendCode()" class="check-btn">인증코드 발송</button>
+                </div>
+                <div class="msg" id="email-send-msg"></div>
+            </div>
+            <div class="input-box">
+                <div class="input-row">
+                    <input type="text" id="email-code" placeholder="6자리 인증 코드 입력" class="input-field" />
+                    <button type="button" id="email-verify" onclick="verifyCode()" class="check-btn">인증 확인</button>
+                </div>
+                <div class="msg" id="email-verify-msg"></div>
+                <div class="guide-text">이메일로 전송된 인증 코드를 입력해 주세요.</div>
+            </div>
+            <button type="submit" class="signup-btn">회원가입</button>
+        </form>
+        <div class="login-box">
+            <span>이미 계정이 있으신가요?</span>
+            <a th:href="@{/login}" class="login">로그인</a>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script th:src="@{/js/login/signup.js}"></script>
+</body>
+</html>

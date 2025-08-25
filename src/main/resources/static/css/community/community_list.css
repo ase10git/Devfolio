@@ -1,0 +1,236 @@
+/* --- 페이지 전체 제목 --- */
+.page-title-area {
+    text-align: center;
+    padding: 3rem 0 2rem; /* 위아래로 적절한 여백 부여 */
+}
+
+.page-title-area h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.page-title-area p {
+    margin: 0;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+/* --- 메인 레이아웃 --- */
+.community-main {
+    display: flex;
+    width: 85%;
+    max-width: 1400px;
+    margin: 0 auto 3rem;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* --- 왼쪽 사이드바 --- */
+.category-sidebar {
+    flex: 0 0 220px;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.category-sidebar h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+.category-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.category-sidebar a {
+    display: block;
+    padding: 0.8rem 1rem;
+    text-decoration: none;
+    color: #555;
+    border-radius: 8px;
+    font-weight: 500;
+}
+.category-sidebar a.active {
+    color: #1c7ed6;
+    font-weight: 700;
+    background-color: #e7f5ff;
+}
+
+/* --- 오른쪽 컨텐츠 영역 --- */
+.content-area {
+    flex-grow: 1;
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.search-bar {
+    display: flex;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+.search-bar select,
+.search-bar input {
+    border: none;
+    background: none;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    outline: none;
+}
+.search-bar input {
+    flex-grow: 1;
+    min-width: 250px;
+}
+.search-bar .search-btn {
+    border: none;
+    background-color: #3A5BA0;
+    color: white;
+    padding: 0 1.2rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* --- [핵심 수정] 정렬 탭과 글쓰기 버튼 레이아웃 --- */
+.actions-and-sort {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.sort-tabs button {
+    color: #000;
+    background-color: #CFE8FF;
+    text-decoration: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+}
+.sort-tabs button.active {
+    background-color: #2C99FF;
+    color: white;
+    font-weight: 700;
+}
+.btn-primary {
+    background-color: #3A5BA0;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- 게시글 목록 --- */
+.post-list-container {
+    border-top: 2px solid #343a40;
+}
+.no-posts {
+    text-align: center;
+    padding: 5rem 0;
+    color: #868e96;
+}
+.post-item {
+    padding: 1.5rem 0.5rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+.post-list .post-item:last-child {
+    border-bottom: none;
+}
+.tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+.tag.recruiting {
+    background-color: #e7f5ff;
+    color: #1c7ed6;
+}
+.post-title {
+    margin: 0.8rem 0;
+}
+.post-title a {
+    font-size: 1.2rem;
+    color: #212529;
+    text-decoration: none;
+    font-weight: 600;
+}
+.post-category {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    color: #868e96;
+}
+.post-snippet {
+    color: #495057;
+    line-height: 1.6;
+    margin: 0.5rem 0 0;
+    font-size: 0.9rem;
+}
+.post-item-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    color: #868e96;
+    font-size: 0.85rem;
+}
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.author-info img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+.post-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* --- 페이징 --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+.pagination ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 0.5rem;
+}
+.pagination a {
+    display: block;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #495047;
+    text-decoration: none;
+}
+.pagination li.disabled a {
+    color: #ccc;
+    pointer-events: none;
+}
+.pagination a.active {
+    background-color: #339af0;
+    color: white;
+    border-color: #339af0;
+    font-weight: bold;
+}
+
+.tag.completed {
+    background-color: #e9ecef;
+    color: #868e96;
+}

@@ -1,0 +1,472 @@
+.portfolio-main {
+    margin: 100px 0;
+    padding: 0 50px;
+    width: 100%;
+    position: relative;
+}
+
+.container {
+    width: 100%; max-width: var(--max-content-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+/* form section */
+.form-section {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 30px;
+    background-color: white;
+    border-radius: var(--box-radius-15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.title-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: var(--box-radius-8);
+}
+
+.title-box h1 {
+    font-size: 30px;
+    text-decoration: underline;
+}
+
+.title-box span {
+    font-size: 14px;
+    color: #F01717;
+}
+
+/* form */
+#write-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+
+.group-label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.group-label span {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.group-label .required-mark {
+    color: #F01717;
+}
+
+.input-group input {
+    padding: 10px 20px;
+    border-radius: var(--box-radius-10);
+    border: none;
+    outline: none;
+    color: #919191;
+    background-color: #E8F0FF;
+}
+
+#title {
+    flex: 1;
+    font-size: 18px;
+}
+
+#start-date, #end-date {
+    font-size: 14px;
+    font-family: inherit;
+}
+
+/* category */
+.category-input-group {
+    align-items: flex-start;
+}
+
+.category-list-box {
+    flex: 1;
+}
+
+.category-list-box > span:first-child {
+    color: #919191;
+    font-size: 14px;
+}
+
+.category-list {
+    margin-bottom: 10px;
+    flex: 1;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    border: 1px solid #565656;
+    border-radius: var(--box-radius-10);
+}
+
+.category-list li {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-list input {
+    scale: 1.5;
+}
+
+/* image input*/
+.image-input-group {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: none;
+    border-radius: 10px;
+    position: relative;
+}
+
+.image-label {
+    width: 100%;
+    height: 100%;
+    background-color: #E8F0FF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-label img {
+    width: 30px; height: 30px;
+    object-fit: cover;
+}
+
+.image-label.hidden img, .image-label.hidden span {
+    display: none;
+}
+
+.image-preview {
+    width: 100%; height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.preview-box, .original-image-box {
+    width: 100%; height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.image-preview img, #original-image {
+    width: 100%; height: 100%;
+    object-fit: contain;
+}
+
+#preview-image {
+    display: none;
+}
+
+#preview-image.visible {
+    display: block;
+}
+
+#original-image{
+    display: block;
+}
+
+#original-image.hidden {
+    display: none;
+}
+
+.img-remove-button {
+    display: none;
+}
+
+.img-remove-button.visible {
+    padding: 5px;
+    position: absolute;
+    top: 10px; right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #898989;
+    border: none;
+    border-radius: 50%;
+    z-index: 11;
+}
+
+.img-remove-button:hover {
+    opacity: 0.8;
+}
+
+.img-remove-button img {
+    width: 16px; height: 16px;
+    object-fit: cover;
+    filter: invert(1);
+}
+
+#thumbnail {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#thumbnail::-webkit-file-upload-button {
+    display: none;
+}
+
+/* description, ckeditor */
+.textarea-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.textarea-input-group .main-container,
+#editor-container, .textarea-input-group .editor-container__editor
+{
+    width: 100%;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+    min-width: 100px;
+    max-width: 100%;
+}
+
+.editor-container__editor p{
+    width: 100%;
+}
+
+.ck-editor__editable_inline {
+    min-height: 600px;
+}
+
+/* button wrap */
+.button-wrap {
+    width: 100%;;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-wrap button{
+    padding: 5px 8px;
+    border: none;
+    border-radius: var(--box-radius-10);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button-wrap button:hover {
+    opacity: 0.8;
+}
+
+.write-button {
+    background-color: #3A5BA0;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #B1B1B1;
+}
+
+.form-error {
+    display: none;
+}
+
+.form-error.visible {
+    display: block;
+    color: red;
+    font-size: 14px;
+}
+
+/* template select aside */
+.template-select {
+    height: fit-content;
+    padding: 20px;
+    position: fixed;
+    display: flex;
+    top: 80px;
+    right: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    z-index: 20;
+}
+
+.select-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.select-toggle-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background-color: #3A5BA0;
+    color:white;
+    border: none;
+    border-radius: var(--box-radius-15);
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.select-toggle-button img {
+    width: 16px; height: 16px;
+    object-fit: cover;
+    filter: invert(1);
+}
+
+.select-content {
+    width: 230px;
+    display: none;
+}
+
+.select-content.visible {
+    padding: 20px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    border-radius: var(--box-radius-15);
+    background-color: white;
+}
+
+.template-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.radio-input-group {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.radio-input-group input {
+    scale: 1.3;
+}
+
+.radio-input-group label {
+    font-weight: 500;
+}
+
+.template-list span {
+    width: 100%;
+    display: inline-block;
+    font-size: 14px;
+    color: #2F2F2F;
+}
+
+#template-ai {
+    border-radius: var(--box-radius-10);
+    padding: 3px 5px;
+    border:none;
+    background-color:#3A5BA0;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    scale: 1;
+}
+
+#template-ai:hover {
+    opacity: 0.8;
+}
+
+#template-ai:disabled {
+    cursor: not-allowed;
+    background-color: #B1B1B1;
+    color: black;
+}
+
+/* loading overlay */
+#loading-overlay {
+    width: 100%; height: 100%;
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+}
+
+#loading-overlay.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loading-overlay .spinner-box {
+    gap: 20px;
+}
+
+/* 수정 페이지에만 적용 */
+/* thumbnail remove */
+.remove-button-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+#thumbnail-remove {
+    scale: 1.2;
+    cursor: pointer;
+}
+
+.remove-button-box label {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#thumbnail-remove:checked ~ label {
+    color: red;
+}

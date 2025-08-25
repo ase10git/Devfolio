@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="commentTree(comments)" class="comment-list">
+    <div th:each="comment : ${comments}" class="comment-item" th:id="'comment-container-' + ${comment.commentId}">
+
+        <div class="comment-box" th:id="'comment-' + ${comment.commentId}">
+            <div class="comment-header">
+                <div class="comment-author">
+                    <img th:src="${comment.authorProfileImg != null ? comment.authorProfileImg : '/assets/icon/person-fill.svg'}" alt="프로필" class="profile-img-small">
+                    <strong th:text="${comment.authorNickname}"></strong>
+                </div>
+                <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+            </div>
+
+            <div class="comment-content" th:text="${comment.content}"></div>
+
+            <div class="comment-actions">
+
+                <th:block th:if="${#authentication.isAuthenticated() and #authentication.principal.getUser().getUserIdx() == comment.authorUserIdx}">
+                    <button type="button" class="btn-edit" th:data-comment-id="${comment.commentId}">수정</button>
+                    <button type="button" class="btn-delete-comment" th:data-comment-id="${comment.commentId}">삭제</button>
+                </th:block>
+                <button type="button" class="btn-reply" th:data-comment-id="${comment.commentId}"
+                        th:if="${#authentication.isAuthenticated()}">답글 작성</button>
+            </div>
+        </div>
+
+        <div class="replies">
+            <div class="reply-form-container"></div>
+            <div th:if="${not #lists.isEmpty(comment.children)}">
+                <div th:replace="~{this :: commentTree(comments=${comment.children})}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

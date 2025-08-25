@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>로그인</title>
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/styles.css}">
+  <link rel="stylesheet" th:href="@{/css/login/login.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<main class="login-main">
+  <section class="container">
+    <div class="logo-box">
+      <img th:src="@{/assets/icon/devfolio-logo.svg}" alt="로고" class="logo-img" />
+    </div>
+    <div class="msg-box">
+      <div th:if="${param.signupSuccess}" class="msg success">
+        회원가입이 완료되었습니다. 로그인해 주세요.
+      </div>
+
+      <div th:if="${loginErrorMessage}" class="msg error">
+        <span th:text="${loginErrorMessage}"></span>
+      </div>
+    </div>
+    <form method="post" th:action="@{/login}" id="login-form">
+      <div>
+        <label>아이디</label>
+        <div class="input-row">
+          <input type="text" name="loginId" placeholder="아이디를 입력해주세요" required class="input-field" />
+        </div>
+
+        <label>비밀번호</label>
+        <div class="input-row">
+          <input type="password" name="password" id="password" placeholder="비밀번호를 입력해주세요" required class="input-field" />
+          <button type="button" class="password-toggle-button">
+            <img th:src="@{/assets/icon/eye.svg}" alt="눈 아이콘" class="eye-icon">
+            <img th:src="@{/assets/icon/eye-slash.svg}" alt="눈 슬래시 아이콘" class="eye-slash-icon hidden">
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="login">로그인</button>
+        <button type="button" class="google-login" onclick="location.href='/oauth2/authorization/google'">
+          <div class="google-content">
+            <img th:src="@{/assets/icon/google-logo.svg}" alt="Google 로고" class="google-icon">
+            <span>Google로 로그인</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="signup-box">
+        <span>Devfolio 회원이 아니신가요?</span>
+        <a th:href="@{/signup}" class="signup">회원가입</a>
+      </div>
+    </form>
+  </section>
+</main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script type="module" th:src="@{/js/login/login.js}"></script>
+</body>
+</html>
